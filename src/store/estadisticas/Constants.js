@@ -1,0 +1,5 @@
+
+export const CARGANDO = "CARGANDO"
+export const ERROR2 = "ERROR2"
+export const TRAER_ESTADISTICAS = "TRAER_ESTADISTICAS"
+export const NO_CARGANDO = "NO_CARGANDO"
