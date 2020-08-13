@@ -36,7 +36,8 @@ import {
 } from 'native-base';
 import {enviarCorreo, resetStatus} from '../../store/licencias/actions';
 import CheckBox from '@react-native-community/checkbox';
-import Modal from 'react-native-modal';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import {Overlay } from 'react-native-elements';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -49,7 +50,6 @@ function FormContacto({route}) {
   const [checkPromociones, setCheckPromociones] = useState(false);
   const [checkPersonalizado, setCheckPersonalizado] = useState(false);
   const [bandera, setBandera] = useState(false);
-  const goLogin = () => navigation.navigate('Login');
   const [nombre, setnombre] = useState('');
   const [asunto, setasunto] = useState('');
   const [mensaje, setmensaje] = useState('');
@@ -57,9 +57,9 @@ function FormContacto({route}) {
   const [isModalVisible, setModalVisible] = useState(true);
   const inputRef = React.createRef();
 
-
   useEffect(() => {
     dispatch(resetStatus());
+     
   }, [status]);
 
   const handleSubmit = (values) => {
@@ -72,22 +72,33 @@ function FormContacto({route}) {
         values.mensaje,
         listCheck,
       ),
-
     );
-    inputRef.current.clear();
+    //inputRef.current.clear();
     //return resetValues();
   };
 
   const createThreeButtonAlert = () => {
     dispatch(resetStatus());
-    console.log(status + 'status en if');
-    Alert.alert(
-      'Aviso',
-      'Su correo fue enviado Satisfactoriamente',
-      [{text: 'OK', onPress: () => resetValues}],
-      {cancelable: false},
+    
+    //   <ModalTest 
+    //   titulo={"Aviso"} 
+    //   mensaje={"Su correo fue enviado Satisfactoriamente"}
+    //   mensajeBoton={"Aceptar"}
+    //   visible={true}
+    //   />
+    // 
+
+   Alert.alert(
+     'Aviso',
+    'Su correo fue enviado Satisfactoriamente',
+    [
+      { text: "Aceptar", onPress: () =>  navigation.navigate('Home') }
+    ]
+     
     );
+    
   };
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -100,22 +111,27 @@ function FormContacto({route}) {
     setemail('');
   };
 
+  if (cargando){
+
+  }
   return (
     <Container>
       {status === 200 || status === '200' ? createThreeButtonAlert() : null}
       <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
         <NavBar />
         <ScrollView>
+    
           <Formik
             initialValues={{
               nombre: nombre,
-              
               email: email,
               asunto: mensaje,
               mensaje: asunto,
             }}
-            onSubmit={(values) => {
-              handleSubmit(values);
+            enableReinitialize = { true } 
+            onSubmit={async (values, { resetForm }) => {
+              await handleSubmit(values)
+              resetForm()
             }}
             validationSchema={validationSchema}>
             {({
@@ -127,21 +143,22 @@ function FormContacto({route}) {
               touched,
               handleBlur,
               isSubmitting,
+              resetForm
             }) => (
               <Fragment>
-                            <View style={{flex: 1, alignContent: 'center'}}>
-                <View>
-                  <Text
-                    style={{
-                      marginTop: 25,
-                      fontSize: 17,
-                      textAlign: 'center',
-                      marginBottom: 15,
-                      fontWeight: 'bold',
-                    }}>
-                    FORMULARIO DE CONTACTO
-                  </Text>
-                </View>
+                <View style={{flex: 1, alignContent: 'center'}}>
+                  <View>
+                    <Text
+                      style={{
+                        marginTop: 25,
+                        fontSize: 17,
+                        textAlign: 'center',
+                        marginBottom: 15,
+                        fontWeight: 'bold',
+                      }}>
+                      FORMULARIO DE CONTACTO
+                    </Text>
+                  </View>
                 </View>
                 <FormInput
                   ref={inputRef}
@@ -233,30 +250,17 @@ function FormContacto({route}) {
                     //loading={isLoading}
                   />
                 </View>
+                
               </Fragment>
             )}
           </Formik>
 
-          <View style={{flex: 1}}>
-          <Button title="Show modal" onPress={toggleModal} />
-
-          <Modal isVisible={isModalVisible}>
-            <View style={{flex: 1,marginTop:500}}>
-              <Text>Hello!</Text>
-
-              <Button title="Hide modal" onPress={toggleModal} />
-            </View>
-          </Modal>
-        </View>
         </ScrollView>
         {/* <Button
           style={styles.botonAbajo}
           title="Volver"
           onPress={() => navigation.goBack()}
         /> */}
-
-  
-
       </SafeAreaView>
     </Container>
   );
@@ -289,7 +293,7 @@ const styles = StyleSheet.create({
   TextLabel: {
     fontWeight: 'bold',
     fontSize: 18,
-    marginLeft:40
+    marginLeft: 40,
   },
 });
 
@@ -303,3 +307,28 @@ const validationSchema = Yup.object().shape({
   mensaje: Yup.string().label('mensaje').required('mensaje requerido'),
   asunto: Yup.string().label('asunto').required('asunto requerido'),
 });
+
+
+const ModalTest = (props) => {
+  const [visible, setVisible] = React.useState(props.visible);
+  
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
+
+  return (
+    <View>
+      <Button onPress={toggleOverlay} />
+
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text>{props.titulo}</Text>
+        <Text>{props.mensaje}</Text>
+
+        <Button onPress={toggleOverlay} >
+
+          {props.mensajeBoton}
+        </Button>
+      </Overlay>
+    </View>
+  );
+};

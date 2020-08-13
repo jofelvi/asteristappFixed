@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, FlatList, View, Alert, Button, TouchableWithoutFeedback, Dimensions, Image, ScrollView, Keyboard, TouchableHighlight, TouchableOpacity } from 'react-native';
 import axios from 'axios'
-import Spinner from 'react-native-loading-spinner-overlay';
 import { Container, Header, Content, Card, CardItem, Text, Body, Left, Thumbnail } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 

@@ -51,6 +51,9 @@ export const traerDetalleNoticia = (item) => async (dispatch) => {
   dispatch({
     type: NO_CARGANDO
   })
+  dispatch({
+    type: CARGANDO
+  });
   try {
     axios.get(urlDetalleNoticias + item)
       .then(respuesta => {

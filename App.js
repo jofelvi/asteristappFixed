@@ -142,8 +142,6 @@ function StackPescadorFun() {
         component={Publicidad}
         options={{headerShown: false}}
       />
-
- 
       <StackPescador.Screen
         name="DetailNoticiaSlider"
         component={DetailNoticiaSlider}

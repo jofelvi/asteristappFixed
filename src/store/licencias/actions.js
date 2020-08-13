@@ -10,7 +10,7 @@ import {
   MODALIDAD_LICENCIA,
   STATUS,
   RESET_STATUS,
-  TRAER_LICENCIAS_VIGENTES_LIQUI
+  TRAER_LICENCIAS_VIGENTES_LIQUI,
 } from './Constants';
 import axios from 'axios';
 const URL_LIC_CADU =
@@ -26,7 +26,7 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
     const respuesta = (headers = {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + token
+        Authorization: 'Bearer ' + token,
       },
     });
     axios.get(URL, {headers}).then((respuesta) => {
@@ -57,18 +57,18 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
 
 export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
   const URLicenciasVgRoles = `https://licencias.fapd.org/json-licencias-vigentes-deportista/${uid}?_format=json`;
-  console.log("url "+ URLicenciasVgRoles)
-  console.log("token "+ token)
+  console.log('url ' + URLicenciasVgRoles);
+  console.log('token ' + token);
   // dispatch({
   //   type: CARGANDO,
   // });
-  console.log("antes try")
+  console.log('antes try');
   try {
-    console.log("entro try")
+    console.log('entro try');
     const respuesta = (headers = {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + token
+        Authorization: 'Bearer ' + token,
       },
     });
     axios.get(URLicenciasVgRoles, {headers}).then((respuesta) => {
@@ -105,7 +105,7 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
     headers = {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + token
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URL_LIC_CADU, {headers}).then((respuesta) => {
@@ -148,7 +148,7 @@ export const SolicitarLicencias = (
       url: URLSOLICITARLICENCIA,
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + token
+        Authorization: 'Bearer ' + token,
       },
       data: {
         uid: `${uid}`,
@@ -236,56 +236,65 @@ export const solicitarModalidades = (token) => async (dispatch) => {
   }
 };
 
-export const enviarCorreo = (nombre, email, asunto,mensaje, listCheck) => async (dispatch) => {
-  const URLenviarCorreo= 'https://licencias.fapd.org/enviaremail';
- 
-
-axios({
-       method: 'post',
-       url: URLenviarCorreo,
-       headers: {
-         'Content-Type': 'application/json',
-       },
-       data: {
-         nombre: `${nombre}`,
-         email: `${email}`,
-         asunto: `${asunto}`,
-         mensaje: `${mensaje}`,
-         checks: `${listCheck}`,
-       },
-     }).then((respuesta) => {
-       console.log(
-         '###################### ACTION AQUI RESPUESTA API enviaremail #######################',
-       );
-       return dispatch({
-         type: STATUS,
-         payload: respuesta.status,
-       });
-     }).catch (error => {
-     dispatch({
-       type: ERROR2,
-       payload: error.message,
-     })
+export const enviarCorreo = (
+  nombre,
+  email,
+  asunto,
+  mensaje,
+  listCheck,
+) => async (dispatch) => {
+  const URLenviarCorreo = 'https://licencias.fapd.org/enviaremail';
+  dispatch({
+    type: CARGANDO,
+  });
+  axios({
+    method: 'post',
+    url: URLenviarCorreo,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      nombre: `${nombre}`,
+      email: `${email}`,
+      asunto: `${asunto}`,
+      mensaje: `${mensaje}`,
+      checks: `${listCheck}`,
+    },
+  })
+    .then((respuesta) => {
+      console.log(
+        '###################### ACTION AQUI RESPUESTA API enviaremail #######################',
+      );
+      return (
+        dispatch({
+          type: STATUS,
+          payload: respuesta.status,
+        }),
+        dispatch({
+          type: NO_CARGANDO,
+        })
+      );
+    })
+    .catch((error) => {
+      dispatch({
+        type: ERROR2,
+        payload: error.message,
+      }),
+        dispatch({
+          type: NO_CARGANDO,
+        });
     });
-
 };
 
-
-
-
-
-export const resetStatus = () => async (dispatch) => { 
-dispatch({
-         type: RESET_STATUS
-       });
+export const resetStatus = () => async (dispatch) => {
+  dispatch({
+    type: RESET_STATUS,
+  });
 };
-
 
 export const traerLicenciasLiquidaciones = (respuesta) => async (dispatch) => {
-   
-        dispatch({
-          type: TRAER_LICENCIAS_VIGENTES_LIQUI,
-          payload: respuesta
-        })
-      
+  dispatch({
+    type: TRAER_LICENCIAS_VIGENTES_LIQUI,
+    payload: respuesta,
+  });
 };

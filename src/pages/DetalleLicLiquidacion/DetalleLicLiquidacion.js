@@ -59,30 +59,48 @@ export default function DetalleLicLiquidacion({route, props}) {
   }, [item]);
 
 
+
+  const _renderLicenciasDetails = licencias.map((item) =>  {
+    console.log(licencias.length)
+    if (licencias.length >=0 && !licencias.includes('1', 0)) {
+        console.log("entro a tiene datos")
+        
+        return(
+                <ListLicencias
+                  club={item.club}
+                  categoria={item.categoria}
+                  esPrimera={item.es_primera}
+                  fechaEmision={item.fecha_emision}
+                  importe={item.importe}
+                  modalidad={item.modalidad}
+                  nid={item.nid}
+                  numeroLicencia={item.numero_licencia}
+                  year={item.year}
+                  caducada={true}
+                />
+            
+               )
+    }else{
+        
+        return(
+            <Text style={{marginTop:20,textAlign: 'center', fontSize:15, color:'red'}}> No tiene licencias Asociadas a liquidaciones</Text>
+        )
+    }
+   
+
+  }
+  )
+
+
   return (
     <Container>
       <NavBar></NavBar>
-      {console.log(licenciasLiquidaciones)}
       <Content>
         <View style={styles.container}>
           <Text style={styles.TxtoTituloNew}>
-            {' '}
-            Licencias asociadas A liquidaciones :{' '}
+              Licencias Asociadas a Liquidacion
           </Text>
-          {licencias.map((item) => (
-            <ListLicencias
-              club={item.club}
-              categoria={item.categoria}
-              esPrimera={item.es_primera}
-              fechaEmision={item.fecha_emision}
-              importe={item.importe}
-              modalidad={item.modalidad}
-              nid={item.nid}
-              numeroLicencia={item.numero_licencia}
-              year={item.year}
-              caducada={true}
-            />
-          ))}
+         {_renderLicenciasDetails}
         </View>
 
       </Content>
@@ -107,11 +125,11 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   TxtoTituloNew: {
-    marginTop: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 20,
     fontWeight: 'bold',
     fontSize: 18,
+    textAlign:'center',
+
   },
   textTitle: {
     marginTop: 10,
