@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
 import { StyleSheet, FlatList, View, Alert, Button, TouchableWithoutFeedback, Dimensions, Image, ScrollView, Keyboard, TouchableHighlight, TouchableOpacity } from 'react-native';
 import axios from 'axios'
-import Spinner from 'react-native-loading-spinner-overlay';
 import { Container, Header, Content, Card, CardItem, Text, Body } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { navigationRef } from '../../../RootNavigation';
@@ -52,11 +51,11 @@ function Slide({ route }) {
     const URL = "https://fapd.org/";
 
 
-    const renderDetalle = responseApi.map((item) => {
+    const renderDetalle = responseApi.map((item, index) => {
         let result = regex.exec(item.imagen)
         let src = regex.exec(result)[1]
         return (
-            <View>
+            <View key={index}>
                 <Text style={{ textAlign: 'center', textTransform: "uppercase", fontWeight: '500' }}>{item.titulo}</Text>
                 <TouchableOpacity onPress={() => getItem(item.noticia)}>
                     <Card>

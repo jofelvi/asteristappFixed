@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  StyleSheet
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -17,7 +18,7 @@ import LoginScreen from './src/pages/LoginScreen/LoginScreen';
 import DetailsScreen from './src/pages/DetailNoticia/DetalleNoticia';
 import ListaNoticiasScreen from './src/pages/ListaNoticiasScreen/ListaNoticiasScreen';
 import PerfilScreen from './src/pages/PerfilScreen/PerfilScreen';
-import {ICONMENU, LOGOHERE} from './src/assets/image';
+import {ICONMENU, LOGOHERE, LOGINIMG} from './src/assets/image';
 import {ICONMENU2} from './src/assets/image';
 import Publicidad from './src/components/Publicidad/Publicidad';
 import PoliticasCookiesScreen from './src/pages/PoliticasCookiesScreen/PoliticaCookiesScreen';
@@ -49,6 +50,9 @@ import  {navigationRef} from './src/rutas/RootNavigation'
 import DetailsLicencias from './src/pages/DetailsLicencias/DetailsLicencias';
 import LiquidacionesScreen from './src/pages/LiquidacionesScreen/LiquidacionesScreen';
 import DetalleLicLiquidacion from './src/pages/DetalleLicLiquidacion/DetalleLicLiquidacion';
+import { Container } from 'native-base';
+import { Header, Body } from 'native-base'
+import SplashScreen from 'react-native-splash-screen';
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -60,6 +64,11 @@ const StackPescador = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function App() {
+
+  useEffect(() => {
+    SplashScreen.hide();
+
+}, [SplashScreen]);
   return (
     <Provider store={store}>
       <NavigationContainer ref={navigationRef}>
@@ -175,15 +184,17 @@ function StackPescadorFun() {
 
 function AppDrawer() {
   return (
+    <Container>
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
+      
       <Drawer.Screen
         name="Home"
         component={StackPescadorFun}
         options={{
           headerShown: false,
           drawerLabel: 'Home',
-          drawerIcon: ({focused, color, size}) => (
-            <Icon name="home" size={30} color="0053C9" />
+          drawerIcon: () => (
+            <Icon name="home" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -195,8 +206,8 @@ function AppDrawer() {
         options={{
           headerShown: false,
           drawerLabel: 'Login',
-          drawerIcon: ({focused, color, size}) => (
-            <Icon name="sign-in" size={30} color="0053C9" />
+          drawerIcon: () => (
+            <Icon name="sign-in" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -208,8 +219,8 @@ function AppDrawer() {
         options={{
           headerShown: false,
           drawerLabel: 'Contacto',
-          drawerIcon: ({focused, color, size}) => (
-            <Icon name="book" size={30} color="0053C9" />
+          drawerIcon: () => (
+            <Icon name="book" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -221,8 +232,8 @@ function AppDrawer() {
         options={{
           headerShown: false,
           drawerLabel: 'Cookies',
-          drawerIcon: ({focused, color, size}) => (
-            <IconFont5 name="cookie" size={30} color="0053C9" />
+          drawerIcon: () => (
+            <IconFont5 name="cookie" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -234,7 +245,7 @@ function AppDrawer() {
           headerShown: false,
           drawerLabel: 'Privacidad',
           drawerIcon: ({focused, color, size}) => (
-            <IconFont5 name="security" size={30} color="0053C9" />
+            <IconFont5 name="security" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -247,7 +258,7 @@ function AppDrawer() {
           headerShown: false,
           drawerLabel: 'Aviso Legal',
           drawerIcon: ({focused, color, size}) => (
-            <IconOcticons name="law" size={30} color="0053C9" />
+            <IconOcticons name="law" size={30} color="#0053C9" />
           ),
         }}
       />
@@ -269,5 +280,15 @@ function AppDrawer() {
         options={{ drawerLabel: () => null }} 
         /> */}
     </Drawer.Navigator>
+    </Container>
   );
 }
+
+
+const styles = StyleSheet.create({
+  drawerImage: {
+    height: 150,
+    width: 150,
+    borderRadius: 75
+  }
+});

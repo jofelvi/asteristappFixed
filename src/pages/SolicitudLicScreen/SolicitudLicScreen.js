@@ -37,23 +37,15 @@ import NavBar from '../../components/navbar/Navbar';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-function SolicitudLicScreen() {
-  const [select2, setSelect2] = useState('');
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [observaciones, setObservaciones] = useState();
-  const [errors, setErrors] = useState({});
+function SolicitudLicScreen() {
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const cargando = useSelector((state) => state.auth.cargando);
   const licencias = useSelector((state) => state.licencias);
 
   const modalidadLicSel = useSelector(
     (state) => state.licencias.modalidadesLic,
   );
-  const [checkAvisoLegal, setCheckAvisoLegal] = useState(false);
-  const [checkPromociones, setCheckPromociones] = useState(false);
-  const [checkPersonalizado, setCheckPersonalizado] = useState(false);
   const [SelecModalidadLic, setSelecModalidadLic] = useState('');
   const usuario = useSelector((state) => state.auth.usuario);
   const currenUser = useSelector((state) => state.auth.usuario.current_user);
@@ -63,12 +55,8 @@ function SolicitudLicScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {access_token} = usuario;
-  const [respuesta, setRespuesta] = useState();
-  const [bandera, setBandera] = useState(false);
   const status = useSelector((state) => state.licencias.status);
-  const validationSchema = Yup.object().shape({
-    observaciones: Yup.string().required('Por favor introducir observaciones'),
-  });
+
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
     dispatch(solicitarModalidades(access_token));
@@ -81,7 +69,7 @@ function SolicitudLicScreen() {
   });
 
   const handleSubmit = async (values) => {
-    setBandera(true);
+    //setBandera(true);
     const {uid} = currenUser;
     console.log('entro handle');
 
@@ -101,8 +89,7 @@ function SolicitudLicScreen() {
     Alert.alert(
       'Completado',
       'Su solicitud se envio con exito',
-      [{text: 'Aceptar'}],
-      {cancelable: false},
+      { text: "Aceptar", onPress: () =>  navigation.navigate('Home') }
     );
   };
 
@@ -111,13 +98,13 @@ function SolicitudLicScreen() {
     
   };
 
+  if (cargando){
 
+  }
   return (
     <Container>
     {status === 200 || status === '200' ? createThreeButtonAlert() : null}
-    {status === 403 || status === '403' ? handleLTokenExpired() : null}
-    
-    
+    {status === 403 || status === '403' ? handleLTokenExpired() : null }
       <NavBar></NavBar>
       <ScrollView
         keyboardShouldPersistTaps="always"
@@ -125,8 +112,9 @@ function SolicitudLicScreen() {
         <SafeAreaView style={styles.container}>
           <Formik
             initialValues={{observaciones: ''}}
-            onSubmit={(values) => {
-              handleSubmit(values);
+            onSubmit={async (values, { resetForm }) => {
+              await handleSubmit(values)
+              resetForm()
             }}
             validationSchema={validationSchema}>
             {({
@@ -207,7 +195,7 @@ function SolicitudLicScreen() {
                     buttonType="outline"
                     //onPress={handleSubmit}
                     onPress={() => handleSubmit()}
-                    title="Enviar SOlicitud"
+                    title="Enviar Solicitud"
                     buttonColor="#039BE5"
                     loading={isLoading}
                   />
@@ -223,6 +211,12 @@ function SolicitudLicScreen() {
 }
 
 export default SolicitudLicScreen;
+
+
+const validationSchema = Yup.object().shape({
+  observaciones: Yup.string().required('Por favor introducir observaciones'),
+});
+
 
 const styles = StyleSheet.create({
   container: {

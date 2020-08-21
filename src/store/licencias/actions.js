@@ -105,7 +105,7 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
     headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
     };
     axios.get(URL_LIC_CADU, {headers}).then((respuesta) => {
@@ -140,6 +140,7 @@ export const SolicitarLicencias = (
   observaciones,
   uid,
 ) => async (dispatch) => {
+
   const URLSOLICITARLICENCIA = 'https://licencias.fapd.org/enviaremail';
 
   try {
@@ -148,7 +149,7 @@ export const SolicitarLicencias = (
       url: URLSOLICITARLICENCIA,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + access_token,
       },
       data: {
         uid: `${uid}`,
@@ -163,7 +164,7 @@ export const SolicitarLicencias = (
       return dispatch({
         type: STATUS,
         payload: respuesta.status,
-      });
+      })
     });
   } catch (error) {
     console.log('error' + error.message);
@@ -198,6 +199,7 @@ export const traerDetalleNoticia = (item) => async (dispatch) => {
 };
 
 export const solicitarModalidades = (token) => async (dispatch) => {
+  console.log("entro solicitarModalidades "+ token )
   const URLGETMODALIDADES = `https://licencias.fapd.org/json-modalidades?_format=json`;
   dispatch({
     type: CARGANDO,
@@ -206,7 +208,7 @@ export const solicitarModalidades = (token) => async (dispatch) => {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
     };
     axios.get(URLGETMODALIDADES, {headers}).then((respuesta) => {

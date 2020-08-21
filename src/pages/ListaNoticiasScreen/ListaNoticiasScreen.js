@@ -39,7 +39,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import NavBar from '../../components/navbar/Navbar';
 import {useNavigation} from '@react-navigation/native';
 import * as RootNavigation from '@react-navigation/native';
-import { useScrollToTop } from '@react-navigation/native';
+import {useScrollToTop} from '@react-navigation/native';
+import {SearchBar} from 'react-native-elements';
 
 function ListaNoticiasScreen(props) {
   //State
@@ -55,20 +56,22 @@ function ListaNoticiasScreen(props) {
   const [count, setCount] = useState(0);
   const regex2 = /['"](.*?)['"]/;
   const navigation = useNavigation();
-  const URLBASE = "https://fapd.org";
+  const URLBASE = 'https://fapd.org';
   const [resJson, setresJson] = useState([]);
   const scroll = React.createRef();
   const ref = React.useRef(null);
+  let arrayholder = [];
+
   useScrollToTop(ref);
 
-  let contador = 0
+  let contador = 0;
   //useEffect
   useEffect(() => {
     //console.log(noticias)
     dispatch(traerNoticias(page));
     dispatch(traerCategorias());
     dispatch(traerEtiquetas());
-    hanndleApiPublicidad()
+    hanndleApiPublicidad();
   }, [page]);
 
   const hanndleApiPublicidad = () => {
@@ -105,7 +108,6 @@ function ListaNoticiasScreen(props) {
       });
   };
 
-
   const FlatListItemSeparator = () => {
     return (
       //Item Separator
@@ -132,25 +134,23 @@ function ListaNoticiasScreen(props) {
   };
 
   const handlepaPageNext = () => {
-    console.log(page + "pagina")
-    
+    console.log(page + 'pagina');
+
     if (page >= 0) {
       setPage(page + 1);
-      console.log(page + "pagina")
+      console.log(page + 'pagina');
       handleApiNoticias();
-     
+
       //scroll.current.scrollTo({x: 0, animated: false });
     }
   };
-  
+
   const handlepaPagePrev = () => {
     if (page >= 1) {
       setPage(page - 1);
       //handleApiNoticias();
       //scroll.current.scrollTo({x: 0, y: 0, animated: true});
       //scroll.current.scrollTo({x: 0, animated: false });
-
-
     }
   };
 
@@ -162,92 +162,100 @@ function ListaNoticiasScreen(props) {
     return <Picker.Item label={data.etiqueta} value={index} />;
   });
 
-  
   const getNoticiasFilter = () => {};
   const regex = /(<([^>]+)>)/gi;
   const URL = 'https://fapd.org/';
 
+  const searchFilterFunction = (text) => {
+    const newData = this.arrayholder.filter((item) => {
+      const itemData = `${item.name.title.toUpperCase()}   
+        ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
 
+      const textData = text.toUpperCase();
 
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({data: newData});
+  };
   return (
-    <Container   >
-      <SafeAreaView style={{flex: 1}}   >
-        <ScrollView 
-       ref={ref}
-        //ref={(c) => {scroll = c}}
-        style={styles.scrollView}>
-          <NavBar />
+    <Container>
+      <SafeAreaView style={{flex: 1}}>
+        <NavBar />
+        <ScrollView
+          ref={ref}
+          //ref={(c) => {scroll = c}}
+          style={styles.scrollView}>
           <Slide />
           <View style={styles.MainContainer}>
-            {/* <Carrusel /> */}
+            {/* <SearchBar
+              placeholder="Buscar Noticia"
+              //onChangeText={this.¡}
+              //value={search}
+              lightTheme
+              round
+              onChangeText={(text) => searchFilterFunction(text)}
+              autoCorrect={false}
+            /> */}
             <FlatList
               data={noticias.noticias}
               //extraData={resJson}
-              renderItem={({item, index}) => {               
-                if ( index === 2 || index === 5  || index === 8  ){
-                return (
-
+              renderItem={({item, index}) => {
+                if (index === 2 || index === 5 || index === 8) {
+                  return (
                     <View>
-                    {resJson.map(
-                      (item, index) => (
-                        (result = regex2.exec(item.imagen)),
-                        (src = regex2.exec(result)[1]),
-                        (
-                          <TouchableOpacity onPress={() => getItem2(item)}>
-                            <Card>
-                              <CardItem>
-                                <Left>
-                                  <Thumbnail source={{uri: URLBASE + src}} />
-                                  <CardItem header>
-                                    <Text>{item.titulo} </Text>
-                                  </CardItem>
-                                  <CardItem>
-                                    <Body>
-                                      <Text>{item.contenido}</Text>
-                                    </Body>
-                                  </CardItem>
-                                </Left>
-                              </CardItem>
-                            </Card>
-                          </TouchableOpacity>
-                        )
-                      ),
-                    )}
-                  </View>
-                );
-            }
-            return (
-                <Card>
-                    <TouchableOpacity //
-                        onPress={() => getItem(item.id)}>
-                        <View style={styles.newsListContainer}>
-                            <Image
-                                style={styles.newsImage}
-                                source={{ uri: URL + item.imagen }}
-                            />
-                            <View style={styles.newsInfo}>
-                                <Text
-                                    numberOfLines={3}
-                                    style={styles.newsTitle}
-                                    ellipsizeMode="tail">
-                                    {item.titulo}
-                                </Text>
-                                <Text
-                                    numberOfLines={4}
-                                    style={styles.newsDescription}
-                                    ellipsizeMode="tail">
-                                    {item.contenido.replace(regex, '')}
-                                </Text>
-                                <Text style={styles.categoriaText}>
-                                    {item.categorias}
-                                </Text>
-                            </View>
+                      {resJson.map(
+                        (item, index) => (
+                          (result = regex2.exec(item.imagen)),
+                          (src = regex2.exec(result)[1]),
+                          (
+                            <TouchableOpacity onPress={() => getItem2(item)}>
+                              <Card key={index} Thumbnail>
+                                <CardItem Thumbnail>
+                                  <Left>
+                                    <Thumbnail source={{uri: URLBASE + src}} />
+
+                                    <CardItem>
+                                      <Body>
+                                        <Text>{item.titulo} </Text>
+                                        <Text>{item.contenido}</Text>
+                                      </Body>
+                                    </CardItem>
+                                  </Left>
+                                </CardItem>
+                              </Card>
+                            </TouchableOpacity>
+                          )
+                        ),
+                      )}
+                    </View>
+                  );
+                }
+                return (
+                  <TouchableOpacity //
+                    onPress={() => getItem(item.id)}>
+                    <Card key={index}>
+                      <CardItem style={{paddingLeft:4,paddingRight:0,paddingBottom:0,paddingTop:0,alignItems:'center',minHeight: 110, maxHeight:'auto',}}>
+                        <View  style={{maxHeight:100,maxWidth:150, minWidth: 150, maxHeight:100}} >
+                          <Image
+                            style={styles.newsImage}
+                            source={{uri: URL + item.imagen}}
+                          />
                         </View>
-                    </TouchableOpacity>
-                </Card>
-             )
-               
-            
+                        <Body>
+                            <Text numberOfLines={2} style={styles.newsTitle}>{item.titulo} </Text>
+                          
+                          <Text
+                            numberOfLines={3}
+                            style={styles.newsDescription}>
+                            {item.contenido.replace(regex, '')}
+                          </Text>
+                          <Text style={styles.newsCategoria}>{item.categorias}</Text>
+                        </Body>
+                      </CardItem>
+                    </Card>
+                  </TouchableOpacity>
+                );
               }}
               keyExtractor={(item, index) => index.toString()}
             />
@@ -396,25 +404,22 @@ const styles = StyleSheet.create({
 
   newsListContainer: {
     width: '100%',
-    maxHeight: '70%',
-    minHeight: '70%',
-    height: '85%',
-    marginBottom: 4,
-    padding: 4,
+    maxHeight: '100%',
+    minHeight: '100%',
+    height: '100%',
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    //alignItems: 'center',
     justifyContent: 'space-between',
   },
   newsImage: {
-    flex: 1,
-    marginTop: 15,
-    flexBasis: '35%',
-    height: '100%',
-    maxHeight: '60%',
+    flexBasis: '55%',
+    height: 100,
+    maxHeight: 100,
     maxWidth: '100%',
     minHeight: '100%',
-    minWidth: '30%',
+    minWidth: '100%',
+    marginRight:8
   },
 
   newsInfo: {
@@ -428,20 +433,33 @@ const styles = StyleSheet.create({
   },
 
   newsTitle: {
-    fontSize: 16,
-    color: '#000000',
-    marginLeft: 8,
+    fontSize: 14,
+    //marginLeft: 4,
     textTransform: 'uppercase',
     fontWeight: '500',
     overflow: 'hidden',
-    marginRight: 5,
+    marginTop:5,
+    marginLeft:4
+    
+  },
+  newsCategoria: {
+    fontSize: 14,
+    //marginLeft: 4,
+    fontWeight: '600',
+    marginRight: 8,
+    marginTop:4,
+    marginLeft:4,
+    marginBottom:4
+    
   },
 
   newsDescription: {
     fontSize: 14,
-    marginRight: 5,
-    marginLeft: 8,
-    marginTop: 5,
+    overflow: 'hidden',
+    textAlign:'justify',
+    marginTop:5,
+    marginLeft:5,
+    marginRight:8
   },
 
   newsHeader: {
@@ -483,3 +501,39 @@ const styles = StyleSheet.create({
 });
 
 export default ListaNoticiasScreen;
+
+{
+  /* <Card>
+  <View style={styles.newsListContainer}>
+    <Image style={styles.newsImage} source={{uri: URL + item.imagen}} />
+    <View style={styles.newsInfo}>
+      <Text numberOfLines={3} style={styles.newsTitle}>
+        {item.titulo}
+      </Text>
+      <Text numberOfLines={4} style={styles.newsDescription}>
+        {item.contenido.replace(regex, '')}
+      </Text>
+      <Text style={styles.categoriaText}>{item.categorias}</Text>
+    </View>
+  </View>
+</Card>; */
+}
+
+{
+  /* <List>
+<ListItem thumbnail>
+  <Left>
+    <Thumbnail square source={{ uri: 'Image URL' }} />
+  </Left>
+  <Body>
+    <Text>Sankhadeep</Text>
+    <Text note numberOfLines={1}>Its time to build a difference . .</Text>
+  </Body>
+  <Right>
+    <Button transparent>
+      <Text>View</Text>
+    </Button>
+  </Right>
+</ListItem>
+</List> */
+}

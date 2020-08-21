@@ -1,4 +1,4 @@
-import React, {useState, Fragment} from 'react';
+import React, {useState, Fragment, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,10 +7,12 @@ import {
   Text,
   StatusBar,
   Button,
+  Image,
+  Dimensions,
+  BackHandler,
 } from 'react-native';
 
 import {
-  Header,
   LearnMoreLinks,
   Colors,
   DebugInstructions,
@@ -26,28 +28,69 @@ import {
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import Icon3 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon5 from 'react-native-vector-icons/Entypo';
 import * as RootNavigation from '../RootNavigation';
+import {traerUsuario} from '../../store/auth/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import {Header, Body, Container} from 'native-base';
+import {LOGONORMAL, LOGINIMG, LOGO} from '../../assets/image';
+import {Avatar} from 'react-native-paper';
 
 Icon2.loadFont();
+Icon3.loadFont();
+Icon4.loadFont();
+Icon5.loadFont();
 
 const myIcon3 = <Icon name="chevron-back-outline" size={40} color="#0053C9" />;
 
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+const {width} = Dimensions.get('window');
+const height = width * 0.5;
 
 function CustomDrawer({...props}) {
+  const auth = useSelector((state) => state.auth);
   const [isDeportista, setIsDeportista] = useState(true);
   const [isAdmin, setisAdmin] = useState(true);
   const [isGestor, setisGestor] = useState(true);
+  const rolesUser = useSelector((state) => state.auth.rolesUser);
+
+  // if (!rolesUser.includes('invitado')) {
+  //   rolesUser.includes('deportista')
+  //     ? setIsDeportista(true)
+  //     : setIsDeportista(false);
+  //   rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
+  //   rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
+  // } else {
+  //   setisGestor(false);
+  //   setisGestor(false);
+  //   setIsDeportista(false);
+  // }
+
+  useEffect(() => {
+
+}, []);
+
 
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      
-      {isGestor && <RutasGestorClub />}
-      {/* {isAdmin && <RutasAdminClub />}
-{isDeportista && <RutasDeportistas />}       */}
-    </DrawerContentScrollView>
+    <Container style={{flex: 1}}>
+      <DrawerContentScrollView {...props}>
+        <Header style={styles.drawerHeader}>
+
+            <Image style={styles.drawerImage} source={LOGONORMAL} resizeMode="contain" />
+            {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
+
+ 
+            <Text>Hola Bienvenido Usuario</Text>
+        </Header>
+
+        <DrawerItemList {...props} />
+
+        {isGestor && <RutasGestorClub />}
+        {/* {isAdmin && <RutasAdminClub />} */}
+        {isDeportista && <RutasDeportistas />}
+      </DrawerContentScrollView>
+    </Container>
   );
 }
 
@@ -55,27 +98,21 @@ function RutasAdminClub({...props}) {
   return (
     <Fragment>
       <DrawerItem
-        label="pantalla1"
-        icon={({color, size}) => (
-          <Icon name="home" style={{fontSize: size, color: color}} />
-        )}
-        onPress={() => RootNavigation.navigate('PantallaOculta',null)}
-      />
-      <DrawerItem
-        label="pantalla2"
-        icon={({color, size}) => {
-          myIcon3;
+        labelStyle={{
+          color: 'black',
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
         }}
-        onPress={() => RootNavigation.navigate('Home' , null)}
+        label="Menu Gestion"
         icon={({color, size}) => (
-          <Icon name="home" style={{fontSize: size, color: color}} />
+          <Icon4 name="fish" size={30} color="#0053C9" />
         )}
       />
       <DrawerItem
-        onPress={() => RootNavigation.navigate('PantallaOculta' ,null)}
+        onPress={() => RootNavigation.navigate('PantallaOculta', null)}
         label="pantalla3"
         icon={({color, size}) => (
-          <Icon name="home" style={{fontSize: size, color: color}} />
+          <Icon3 name="areachart" size={30} color="#0053C9" />
         )}
       />
     </Fragment>
@@ -86,26 +123,29 @@ function RutasGestorClub({...props}) {
   return (
     <Fragment>
       <DrawerItem
-        label="Gestión de deportistas"
-        icon={({color, size}) => {
-          myIcon3;
+        labelStyle={{
+          color: 'black',
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
         }}
+        label="Menu Gestion"
+        icon={({focused, color, size}) => (
+          <Icon4 name="fish" size={30} color="#0053C9" />
+        )}
+      />
+      <DrawerItem
+        label="Gestión de deportistas"
+        icon={({focused, color, size}) => (
+          <Icon3 name="addusergroup" size={30} color="#0053C9" />
+        )}
         onPress={() => RootNavigation.navigate('GestiónDeportistas', null)}
       />
       <DrawerItem
-        label="PantallaOculta"
-        icon={({color, size}) => (
-          <Icon name="home" style={{fontSize: size, color: color}} />
-        )}
-        onPress={() => RootNavigation.navigate('PantallaOculta',  null)}
-      />
-
-     <DrawerItem
         label="Liquidaciones Club"
-        icon={({color, size}) => (
-          <Icon name="home" style={{fontSize: size, color: color}} />
+        icon={({focused, color, size}) => (
+          <Icon name="money" size={30} color="#0053C9" />
         )}
-        onPress={() => RootNavigation.navigate('LiquidacionesScreen',  null)}
+        onPress={() => RootNavigation.navigate('LiquidacionesScreen', null)}
       />
     </Fragment>
   );
@@ -114,42 +154,46 @@ function RutasDeportistas({...props}) {
   return (
     <Fragment>
       <DrawerItem
-        label="Deportistas"
-        icon={({color, size}) => {
-          myIcon3;
+        labelStyle={{
+          color: 'black',
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
         }}
+        label="Menu Deportistas"
+        icon={({focused, color, size}) => (
+          <Icon4 name="fish" size={30} color="#0053C9" />
+        )}
       />
       <DrawerItem
         label="Solicitud de Licencia"
-        icon={({color, size}) => {
-          myIcon3;
-        }}
+        icon={({focused, color, size}) => (
+          <Icon3 name="addfile" size={30} color="#0053C9" />
+        )}
         onPress={() => RootNavigation.navigate('SolicitudLic', null)}
       />
       <DrawerItem
         label="Ficha Tecnica"
-        icon={({color, size}) => {
-          myIcon3;
-        }}
-        onPress={() => RootNavigation.navigate('FormPerfilScreen' , null)}
+        icon={({focused, color, size}) => (
+          <Icon3 name="form" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('FormPerfilScreen', null)}
       />
 
-     <DrawerItem
+      <DrawerItem
         label="Licencias en Vigor"
-        icon={({color, size}) => {
-          myIcon3;
-        }}
-        onPress={() => RootNavigation.navigate('LicenciasActivas' , null)}
+        icon={({focused, color, size}) => (
+          <Icon3 name="carryout" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('LicenciasActivas', null)}
       />
 
       <DrawerItem
         label="Licencias en Caducadas"
-        icon={({color, size}) => {
-          myIcon3;
-        }}
-        onPress={() => RootNavigation.navigate('LicenciasCaducadas' , null)}
+        icon={({focused, color, size}) => (
+          <Icon4 name="card-bulleted-off-outline" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('LicenciasCaducadas', null)}
       />
-
     </Fragment>
   );
 }
@@ -158,6 +202,19 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
   },
+  drawerHeader: {
+    height: 150,
+    backgroundColor: '#f3f0ec',
+    flexDirection:'column',
+    alignItems:'center',
+    alignSelf : "center",
+    width:'100%'
+  },
+  drawerImage: {
+    borderColor:'#f3f0ec',
+    backgroundColor:'transparent'
+  },
+  imagen: {width: '70%', height},
 });
 
 export default CustomDrawer;
