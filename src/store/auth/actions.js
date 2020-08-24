@@ -91,7 +91,39 @@ const respuesta = axios({
     });
 
 };
+export const cerrarSession = (username, password) => async (dispatch) => {
+  dispatch({
+    type: CARGANDO,
+  });
+        dispatch({
+          type: TRAER_USUARIO,
+          payload: [],
+        })
+        dispatch({
+          type: ROLES_USER,
+          payload: [],
+        })
+        dispatch({
+          type: NO_CARGANDO,
+        })
+        dispatch({
+          type: TOKEN,
+          payload: "",
+        })
+        dispatch({
+          type: CSRF_TOKEN,
+          payload: "",
+        })
+        dispatch({
+          type: LOGOUT_TOKEN,
+          payload: "",
+        })
+        dispatch({
+          type: UID,
+          payload: "",
+        })
 
+};
 export const traerPerfil = (uid, token) => (dispatch) => {
   dispatch({
     type: CARGANDO,

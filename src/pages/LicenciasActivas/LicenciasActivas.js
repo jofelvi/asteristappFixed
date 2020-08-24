@@ -54,11 +54,11 @@ class LicenciasActivas extends Component {
 
 
     render_text = () => {
-        if (this.props.licencias.detalleLicenciasVig.length === 0 || this.props.licencias.detalleLicenciasVig.length === null) {
+       
             return <Text style={{ paddingTop: 25, paddingLeft: 5 }}>
                 Lo siento su usuario {this.props.auth.usuario.current_user.name} no tiene licencias activas
                  </Text>
-        }
+        
     }
     render() {
         if (this.props.auth.cargando === true) {
@@ -70,7 +70,7 @@ class LicenciasActivas extends Component {
                 <View style={styles.container}>
                     <NavBar></NavBar>
                     <Text style={styles.TxtoTituloNew} > LICENCIAS EN VIGOR: </Text>
-                    {this.props.licencias.detalleLicenciasVig.length !== 0 ? this.render_text() : null }
+                    {this.props.licencias.licenciasVig.length <= 0 ? this.render_text() : null }
                     {
 
                         this.props.licencias.licenciasVig.map((item) => (
@@ -107,7 +107,8 @@ class LicenciasActivas extends Component {
                 <View style={styles.container}>
 
                     <Text style={styles.TxtoTituloNew} > LICENCIAS VIGENTES: </Text>
-                    {this.render_text()}
+                    {console.log( this.props.licencias.licenciasVigRoles.length <= 0 )}
+                    { this.props.licencias.licenciasVigRoles.length <= 0 || this.props.licencias.licenciasVigRoles === []? this.render_text(): null}
                     {
                         this.props.licencias.licenciasVigRoles.map((item) => (
 

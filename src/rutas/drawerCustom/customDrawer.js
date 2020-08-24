@@ -32,7 +32,7 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon5 from 'react-native-vector-icons/Entypo';
 import * as RootNavigation from '../RootNavigation';
-import {traerUsuario} from '../../store/auth/actions';
+import {traerUsuario, cerrarSession} from '../../store/auth/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {Header, Body, Container} from 'native-base';
 import {LOGONORMAL, LOGINIMG, LOGO} from '../../assets/image';
@@ -54,40 +54,44 @@ function CustomDrawer({...props}) {
   const [isAdmin, setisAdmin] = useState(true);
   const [isGestor, setisGestor] = useState(true);
   const rolesUser = useSelector((state) => state.auth.rolesUser);
+  const uid = useSelector((state) => state.auth.uid);
+  const dispatch = useDispatch();
 
-  // if (!rolesUser.includes('invitado')) {
-  //   rolesUser.includes('deportista')
-  //     ? setIsDeportista(true)
-  //     : setIsDeportista(false);
-  //   rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
-  //   rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
-  // } else {
-  //   setisGestor(false);
-  //   setisGestor(false);
-  //   setIsDeportista(false);
-  // }
-
+  
+cerrarSession
   useEffect(() => {
+    if (!rolesUser.includes('invitado')) {
+      rolesUser.includes('deportista')? setIsDeportista(true): setIsDeportista(false);
+      rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
+      rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
+    } else {
+      setisGestor(false);
+      setisAdmin(false);
+      setIsDeportista(false);
+    }
+  }, [auth]);
 
-}, []);
 
 
   return (
     <Container style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         <Header style={styles.drawerHeader}>
+          <Image
+            style={styles.drawerImage}
+            source={LOGONORMAL}
+            resizeMode="contain"
+          />
+          {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
 
-            <Image style={styles.drawerImage} source={LOGONORMAL} resizeMode="contain" />
-            {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
-
- 
-            <Text>Hola Bienvenido Usuario</Text>
+          <Text >Bienvenido Usuario Numero  {uid}</Text>
+          { uid != ""? <Button title="cerrar sesion"onPress={()=>{dispatch(cerrarSession())}}/> : null}
         </Header>
 
         <DrawerItemList {...props} />
 
         {isGestor && <RutasGestorClub />}
-        {isAdmin && <RutasAdminClub />} 
+        {isAdmin && <RutasAdminClub />}
         {isDeportista && <RutasDeportistas />}
       </DrawerContentScrollView>
     </Container>
@@ -146,7 +150,6 @@ function RutasGestorClub({...props}) {
           <Icon name="money" size={30} color="#0053C9" />
         )}
         onPress={() => RootNavigation.navigate('LiquidacionesScreen', null)}
-        
       />
     </Fragment>
   );
@@ -206,14 +209,14 @@ const styles = StyleSheet.create({
   drawerHeader: {
     height: 150,
     backgroundColor: '#f3f0ec',
-    flexDirection:'column',
-    alignItems:'center',
-    alignSelf : "center",
-    width:'100%'
+    flexDirection: 'column',
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: '100%',
   },
   drawerImage: {
-    borderColor:'#f3f0ec',
-    backgroundColor:'transparent'
+    borderColor: '#f3f0ec',
+    backgroundColor: 'transparent',
   },
   imagen: {width: '70%', height},
 });
