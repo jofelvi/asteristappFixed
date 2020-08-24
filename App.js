@@ -69,6 +69,8 @@ function App() {
     SplashScreen.hide();
 
 }, [SplashScreen]);
+
+
   return (
     <Provider store={store}>
       <NavigationContainer ref={navigationRef}>

@@ -16,7 +16,6 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {traerUsuario, traerDeportistas} from '../../store/auth/actions';
 import Loading from '../../components/Loading/Loading';
-import CookieManager from '@react-native-community/cookies';
 import NavBar from '../../components/navbar/Navbar';
 import {Button, Menu, Divider, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -32,6 +31,7 @@ function GestiónDeportistas() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [visible, setVisible] = React.useState(false);
+  const cargando = useSelector((state) => state.auth.cargando);
 
   useEffect(() => {
     console.log('entro acces');
@@ -56,6 +56,7 @@ function GestiónDeportistas() {
       {cancelable: false},
     );
   };
+  
   const _renderList = listaDeportistas.map((item, index) => {
     if (listaDeportistas.length >= 1) {
       return (
@@ -150,11 +151,14 @@ function GestiónDeportistas() {
     });
   };
 
+  if (cargando === true) {
+    return <Loading isVisible={cargando} text={'CARGANDO...'} />;
+  }
   return (
     <Container>
       <SafeAreaView style={styles.container}>
         <NavBar></NavBar>
-        {console.log(listaDeportistas + 'token aqui3')}
+        {console.log(listaDeportistas + 'Lista deportistas')}
         <ScrollView keyboardShouldPersistTaps="always">
           <Text style={styles.TxtoTituloNew}> Gestion Deportistas: </Text>
           <View style={{marginLeft:5, marginRight:5}}>

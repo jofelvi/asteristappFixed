@@ -57,6 +57,7 @@ function FormContacto({route}) {
   const [isModalVisible, setModalVisible] = useState(true);
   const inputRef = React.createRef();
 
+
   useEffect(() => {
     dispatch(resetStatus());
      
@@ -78,45 +79,27 @@ function FormContacto({route}) {
   };
 
   const createThreeButtonAlert = () => {
-    dispatch(resetStatus());
-    
-    //   <ModalTest 
-    //   titulo={"Aviso"} 
-    //   mensaje={"Su correo fue enviado Satisfactoriamente"}
-    //   mensajeBoton={"Aceptar"}
-    //   visible={true}
-    //   />
-    // 
-
-   Alert.alert(
-     'Aviso',
-    'Su correo fue enviado Satisfactoriamente',
-    [
-      { text: "Aceptar", onPress: () =>  navigation.navigate('Home') }
-    ]
-     
+    Alert.alert(
+      'Aviso',
+      'Su correo fue enviado Satisfactoriamente',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'Aceptar', onPress: () => navigation.navigate('Home') }
+      ],
+      { cancelable: false }
     );
-    
-  };
 
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-  const resetValues = () => {
-    console.log('reset form');
-    setasunto('');
-    setnombre('');
-    setmensaje('');
-    setemail('');
-  };
-
-  if (cargando){
-
-  }
+    dispatch(resetStatus());
+    }
+  
   return (
     <Container>
-      {status === 200 || status === '200' ? createThreeButtonAlert() : null}
+      {    status === 200 || status === '200' ? createThreeButtonAlert() : null
+}
       <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
         <NavBar />
         <ScrollView>
@@ -129,8 +112,8 @@ function FormContacto({route}) {
               mensaje: asunto,
             }}
             enableReinitialize = { true } 
-            onSubmit={async (values, { resetForm }) => {
-              await handleSubmit(values)
+            onSubmit={ (values, { resetForm }) => {
+              handleSubmit(values)
               resetForm()
             }}
             validationSchema={validationSchema}>
@@ -161,7 +144,6 @@ function FormContacto({route}) {
                   </View>
                 </View>
                 <FormInput
-                  ref={inputRef}
                   name="nombre"
                   value={values.nombre}
                   onChangeText={handleChange('nombre')}

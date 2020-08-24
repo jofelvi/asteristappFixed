@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LICENCIAICON } from '../../assets/image';
 import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,Card} from 'native-base';
 import { parseZone } from 'moment';
+import Loading from '../../components/Loading/Loading';
 
 
 
@@ -53,21 +54,23 @@ class LicenciasActivas extends Component {
 
 
     render_text = () => {
-        if (this.props.licencias.detalleLicenciasVig.length ===0 ) {
+        if (this.props.licencias.detalleLicenciasVig.length === 0 || this.props.licencias.detalleLicenciasVig.length === null) {
             return <Text style={{ paddingTop: 25, paddingLeft: 5 }}>
                 Lo siento su usuario {this.props.auth.usuario.current_user.name} no tiene licencias activas
                  </Text>
         }
     }
     render() {
-        //const auth = useSelector((state) => state.auth);
+        if (this.props.auth.cargando === true) {
+            return <Loading isVisible={this.props.auth.cargando} text={'CARGANDO...'} />;
+        }
         if (!this.state.admin) {
             return (
 
                 <View style={styles.container}>
                     <NavBar></NavBar>
                     <Text style={styles.TxtoTituloNew} > LICENCIAS EN VIGOR: </Text>
-                    {this.render_text()}
+                    {this.props.licencias.detalleLicenciasVig.length !== 0 ? this.render_text() : null }
                     {
 
                         this.props.licencias.licenciasVig.map((item) => (

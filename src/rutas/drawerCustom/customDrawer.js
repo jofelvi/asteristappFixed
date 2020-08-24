@@ -87,7 +87,7 @@ function CustomDrawer({...props}) {
         <DrawerItemList {...props} />
 
         {isGestor && <RutasGestorClub />}
-        {/* {isAdmin && <RutasAdminClub />} */}
+        {isAdmin && <RutasAdminClub />} 
         {isDeportista && <RutasDeportistas />}
       </DrawerContentScrollView>
     </Container>
@@ -146,6 +146,7 @@ function RutasGestorClub({...props}) {
           <Icon name="money" size={30} color="#0053C9" />
         )}
         onPress={() => RootNavigation.navigate('LiquidacionesScreen', null)}
+        
       />
     </Fragment>
   );

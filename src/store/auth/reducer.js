@@ -19,6 +19,7 @@ import {
   UID,
   CLUB_ID_ENCARGADO,
   CLUB_ID,
+  RESET_STATUS
 } from './Constants';
 
 export const INITIAL_STATE = {
@@ -30,30 +31,8 @@ export const INITIAL_STATE = {
   isLoad: false,
   mail: '',
   field_user_apellido1: '',
-  field_user_apellido2: '',
-  field_user_baja: '',
-  field_user_clubs: '',
-  field_user_codpostal: '',
-  field_user_codpostal_alter: '',
-  field_user_fechanac: '',
-  field_user_gestionclub: '',
-  field_user_nif: '',
-  field_user_nombre: '',
-  field_user_nomcompleto: '',
-  field_user_pais: '',
-  field_user_pais_alter: '',
-  field_user_poblacion: '',
-  field_user_poblacion_alter: '',
-  field_user_provincia: '',
-  field_user_provincia_alter: '',
-  field_user_sexo: '',
-  field_user_telefono1: '',
-  field_user_telefono2: '',
-  field_user_tutor_nif: '',
-  field_user_tutor_nombre: '',
-  field_user_tutor_observaciones: '',
   listDeportistas: [],
-  status: '',
+  status: '1',
   listLiquidaciones: [],
   csrf_token: '',
   access_token: '',
@@ -97,6 +76,8 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, usuario: []};
     case STATUS:
       return {...state, status: action.payload};
+      case RESET_STATUS:
+        return {...state, status: "1"};
     case TRAER_LIQUIDACIONES:
       return {...state, listLiquidaciones: action.payload};
     case CSRF_TOKEN:

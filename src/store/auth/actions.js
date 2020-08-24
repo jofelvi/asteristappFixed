@@ -19,6 +19,7 @@ import {
   UID,
   CLUB_ID_ENCARGADO,
   CLUB_ID,
+  RESET_STATUS
 } from './Constants';
 import axios from 'axios';
 const session_url = 'https://licencias.fapd.org/user/login?_format=json';
@@ -27,8 +28,7 @@ export const traerUsuario = (username, password) => async (dispatch) => {
   dispatch({
     type: CARGANDO,
   });
-  try {
-    const respuesta = await axios({
+const respuesta = axios({
       method: 'post',
       url: session_url,
       headers: {
@@ -37,7 +37,7 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       data: {
         name: `${username}`,
         pass: `${password}`,
-      },
+      }
     }).then((respuesta) => {
       console.log('funcion login');
       const {
@@ -47,53 +47,49 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         logout_token,
       } = respuesta.data;
       const {roles, uid} = current_user;
-      return (
         dispatch({
           type: TRAER_USUARIO,
           payload: respuesta.data,
-        }),
+        })
         dispatch({
           type: ROLES_USER,
           payload: roles,
-        }),
+        })
         dispatch({
           type: NO_CARGANDO,
-        }),
+        })
         dispatch({
           type: TOKEN,
           payload: access_token,
-        }),
+        })
         dispatch({
           type: CSRF_TOKEN,
           payload: csrf_token,
-        }),
+        })
         dispatch({
           type: LOGOUT_TOKEN,
           payload: logout_token,
-        }),
+        })
         dispatch({
           type: UID,
           payload: uid,
-        }),
-        dispatch({
-          type: STATUS,
-          payload: '1',
         })
-      );
-    });
-  } catch (error) {
-    return (
+    }).catch(function (error) {
+      console.log(error.response.status+  "status error aqui");
       dispatch({
         type: ERROR2,
         payload: error,
-      }),
+      })
       dispatch({
         type: NO_CARGANDO,
       })
-    );
+      dispatch({
+        type: STATUS,
+        payload: error.response.status,
+      })
+      console.log("final" )
+    });
 
-    //CookieManager.clearAll(),
-  }
 };
 
 export const traerPerfil = (uid, token) => (dispatch) => {
@@ -217,7 +213,8 @@ export const isload = () => (dispatch) => {
 
 export const editarPerfil = (uid, token, data) => (dispatch) => {
   console.log(token);
-  
+  const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
   try {
     console.log('entro try');
     axios(
@@ -226,7 +223,7 @@ export const editarPerfil = (uid, token, data) => (dispatch) => {
         url: URLperfil,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
+          'Authorization': 'Bearer ' + token,
         },
         data: data,
       },
@@ -254,16 +251,17 @@ export const editarPerfil = (uid, token, data) => (dispatch) => {
 };
 
 export const traerDeportistas = (token) => (dispatch) => {
-  console.log(token + ' token ');
   console.log('entro a traer deportista');
-  const URLGETLISUSERCLUB =
-    'https://licencias.fapd.org/json-deportistas-club?_format=json';
+  const URLGETLISUSERCLUB ='https://licencias.fapd.org/json-deportistas-club?_format=json';
 
+    dispatch({
+      type: CARGANDO,
+    });
   try {
-    const headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
     };
     axios.get(URLGETLISUSERCLUB, {headers}).then((respuesta) => {
@@ -273,14 +271,20 @@ export const traerDeportistas = (token) => (dispatch) => {
       dispatch({
         type: TRAER_DEPORTISTAS,
         payload: respuesta.data,
-      });
+      })
+      dispatch({
+        type: NO_CARGANDO,
+      })
     });
   } catch (error) {
     console.log('error' + error.message);
     dispatch({
       type: ERROR2,
       payload: error.message,
-    });
+    })
+    dispatch({
+      type: NO_CARGANDO,
+    })
   }
 };
 
@@ -313,4 +317,11 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
       payload: error.message,
     });
   }
+};
+
+
+export const resetStatus = () => async (dispatch) => {
+  dispatch({
+    type: RESET_STATUS,
+  });
 };

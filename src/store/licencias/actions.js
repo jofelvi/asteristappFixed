@@ -23,12 +23,12 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
     type: CARGANDO,
   });
   try {
-    const respuesta = (headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
-    });
+    };
     axios.get(URL, {headers}).then((respuesta) => {
       console.log(
         '###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################',
@@ -57,23 +57,19 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
 
 export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
   const URLicenciasVgRoles = `https://licencias.fapd.org/json-licencias-vigentes-deportista/${uid}?_format=json`;
-  console.log('url ' + URLicenciasVgRoles);
-  console.log('token ' + token);
-  // dispatch({
-  //   type: CARGANDO,
-  // });
-  console.log('antes try');
+  dispatch({
+  type: CARGANDO,
+  });
   try {
-    console.log('entro try');
-    const respuesta = (headers = {
+   let headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
-    });
+    };
     axios.get(URLicenciasVgRoles, {headers}).then((respuesta) => {
       console.log(
-        '###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################',
+        '###################### ACTION AQUI RESPUESTA API traerLicenciasVigRoles #######################',
       );
       return (
         dispatch({
@@ -102,7 +98,7 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
     type: CARGANDO,
   });
   try {
-    headers = {
+   let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
@@ -205,7 +201,7 @@ export const solicitarModalidades = (token) => async (dispatch) => {
     type: CARGANDO,
   });
   try {
-    const headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
@@ -265,7 +261,7 @@ export const enviarCorreo = (
   })
     .then((respuesta) => {
       console.log(
-        '###################### ACTION AQUI RESPUESTA API enviaremail #######################',
+        '###################### ACTION AQUI RESPUESTA API enviaremail ####################### ' + respuesta.status,
       );
       return (
         dispatch({

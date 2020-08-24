@@ -19,7 +19,7 @@ import {LOGO, LOGINIMG} from '../../assets/image';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {traerUsuario} from '../../store/auth/actions';
+import {traerUsuario, resetStatus} from '../../store/auth/actions';
 import Loading from '../../components/Loading/Loading';
 import CookieManager from '@react-native-community/cookies';
 import NavBar from '../../components/navbar/Navbar';
@@ -41,7 +41,7 @@ function LoginScreen() {
   const [banderaError, setBanderaError] = useState(false);
   const {width: screenWidth} = Dimensions.get('window');
   const status = useSelector((state) => auth.status);
-
+  const [counter, setcounter] = useState("0");
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .label('username')
@@ -52,12 +52,20 @@ function LoginScreen() {
   });
 
   useEffect(() => {
-    if (auth.usuario.access_token === null || auth.usuario.length <= 0)
+    //status === 400 || status === '400'? dispatch(resetStatus()) : null
+    {status === 400 || status === '400' ? createTwoButtonAlert(): null}
+    if (auth.usuario.access_token === null || auth.usuario.length <= 0){
       CookieManager.clearAll();
+    }
     else {
       goHome();
     }
   }, [auth]);
+
+  const resetSta = () => {
+    dispatch(resetStatus());
+    console.log("reset status")
+    }
 
   const goHome = () => navigation.navigate('Home');
 
@@ -65,35 +73,36 @@ function LoginScreen() {
     setIsLoading(true);
     setPassword(values.password);
     setUsername(values.username);
-
    await dispatch(traerUsuario(values.username, values.password))
   };
 
-  const handleReset = () => {
-    // setPassword("")
-    // setUsername("")
-  };
   const createTwoButtonAlert = () => {
-    if (auth.error2 === '400' && banderaError === true) {
-      setBanderaError(false);
-      Alert.alert(
-        'Aviso',
-        'NIF/NIE O/U contraseña Invalido',
-        [{text: 'Aceptar'}],
-        {cancelable: false},
-      );
-    }
+    //dispatch(resetStatus());
+    Alert.alert(
+      'Aviso',
+      'NIF/NIE O/U contraseña Invalido',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'Aceptar', onPress: () => console.log('acept Pressed') }
+      ],
+      { cancelable: false }
+    );
+      resetSta()
   };
 
   if (cargando === true) {
     return <Loading isVisible={cargando} text={'CARGANDO...'} />;
-  } else {
+  }
     return (
       <Container>
         <NavBar></NavBar>
         <ScrollView keyboardShouldPersistTaps="always">
           <SafeAreaView style={styles.container}>
-            {createTwoButtonAlert()}
+            {console.log(status + " status en login")}
             <Formik
               initialValues={{username: '', password: ''}}
               onSubmit={(values) => {
@@ -147,8 +156,8 @@ function LoginScreen() {
                       onPress={() => handleSubmit()}
                       title="Iniciar Sesion"
                       buttonColor="#039BE5"
-                      disabled={!isValid || isLoading}
-                      loading={isLoading}
+                      disabled={!isValid || cargando}
+                      loading={cargando}
                     />
                   </View>
                 </Fragment>
@@ -158,7 +167,7 @@ function LoginScreen() {
         </ScrollView>
       </Container>
     );
-  }
+  
 }
 
 export default LoginScreen;

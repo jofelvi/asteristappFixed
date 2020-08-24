@@ -17,3 +17,8 @@ export const LOGOUT_TOKEN = "LOGOUT_TOKEN"
 export const UID = "UID"
 export const CLUB_ID_ENCARGADO = "CLUB_ID_ENCARGADO"
 export const CLUB_ID = "CLUB_ID"
+export const STATUS = "STATUS"
+export const RESET_STATUS = "RESET_STATUS"
+
+
+

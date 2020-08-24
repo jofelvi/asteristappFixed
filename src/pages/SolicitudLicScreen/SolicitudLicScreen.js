@@ -86,11 +86,15 @@ function SolicitudLicScreen() {
   const createThreeButtonAlert = () => {
     dispatch(resetStatus());
     console.log(status + 'status en if');
-    Alert.alert(
+
+    Alert.prompt(
       'Completado',
-      'Su solicitud se envio con exito',
-      { text: "Aceptar", onPress: () =>  navigation.navigate('Home') }
-    );
+     'Su solicitud se envio con exito',
+     [
+       { text: "Aceptar", onPress: ()=> goHome() }
+     ],
+     { cancelable: false }
+     );
   };
 
 
@@ -197,7 +201,7 @@ function SolicitudLicScreen() {
                     onPress={() => handleSubmit()}
                     title="Enviar Solicitud"
                     buttonColor="#039BE5"
-                    loading={isLoading}
+                    //loading={isLoading}
                   />
                 </View>
 
