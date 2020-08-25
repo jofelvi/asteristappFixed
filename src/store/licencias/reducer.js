@@ -43,32 +43,27 @@ export default (state = INITIAL_STATE, action) => {
     case TRAER_LICENCIAS_VIGENTES:
       return {
         ...state,
-        licenciasVig: action.payload,
-        cargando: false,
+        licenciasVig: action.payload
       };
     case TRAER_LICENCIAS_VIGENTES_ROLES:
       return {
         ...state,
-        licenciasVigRoles: action.payload,
-        cargando: false,
+        licenciasVigRoles: action.payload
       };
     case SOLICITAR_LICENCIAS:
       return {
         ...state,
-        solicitarLic: action.payload,
-        cargando: false,
+        solicitarLic: action.payload
       };
     case TRAER_DETALLE_LICENCIAS_VIGENTES:
       return {
         ...state,
-        detalleLicenciasVig: action.payload,
-        cargando: false,
+        detalleLicenciasVig: action.payload
       };
     case TRAER_LICENCIAS_CADUCADAS:
       return {
         ...state,
-        solicitarLicCadu: action.payload,
-        cargando: false,
+        solicitarLicCadu: action.payload
       };
 
     case ERROR2:

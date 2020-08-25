@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   TextInput
 } from 'react-native';
-
+import {useDispatch, useSelector} from 'react-redux';
 import {connect} from 'react-redux';
 import * as usuarioActions from '../../store/auth/actions';
 import * as licenciasActions from '../../store/licencias/actions';
@@ -34,6 +34,9 @@ import {
 } from 'native-base';
 import {parseZone} from 'moment';
 import Loading from '../../components/Loading/Loading';
+import axios from 'axios';
+import { TRAER_PERFIL, CLUB_ID, CLUB_ID_ENCARGADO } from '../../store/auth/Constants';
+
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -42,7 +45,8 @@ class LicenciasVigenYear extends Component {
     super(props);
     this.state = {
       admin: false,
-      yeartInput: ""
+      yeartInput: "",
+      clubId:""
     };
     this.GetItem = this.GetItem.bind(this);
   }
@@ -52,30 +56,67 @@ class LicenciasVigenYear extends Component {
     const {current_user} = this.props.auth.usuario;
     const {uid} = current_user;
     const {roles} = this.props.auth.rolesUser;
-    const detalleLicenciasVig = this.props.licencias.detalleLicenciasVig;
     let rol = this.props.auth.usuario.current_user.roles;
-    this.props.traerPerfil(uid, access_token);
-
-    if (
-      rol.includes('contabilidad') ||
-      rol.includes('gestión') ||
-      rol.includes('directiva') ||
-      rol.includes('club')
-    ) {
-      console.log('entro traerLicenciasVigYears');
-      this.getlicencias();
+    //this.props.traerPerfil(uid, access_token);
+    this.handleapiPerfil(uid, access_token)
+    //this.handleapiPerfil(uid,access_token)
+    const year3 = new Date().getFullYear();
+    if ( rol.includes('contabilidad') ||rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
+        //this.getlicencias(year3);
+        console.log("entro if")
     }
   }
 
-  getlicencias = (year) => {
+  handleapiPerfil= (uid, token) =>{
+    const { dispatch } = this.props;   
+    const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    };
+    
+      axios.get(URLperfil, {headers}).then((respuesta) => {
+        console.log('exito entro funcion  respuesta API TRAER PERFIL');
+        const {
+          field_user_clubs,
+          roles,
+          field_user_gestionclub,
+        } = respuesta.data;
+        if (roles.filter((e) => e.target_id === 'club').length > 0) {
+          console.log(field_user_gestionclub[0].target_id);
+          clubId = field_user_gestionclub[0].target_id
+          this.setState({clubId:clubId})
+          const year3 = new Date().getFullYear();
+          this.getlicencias(year3,clubId)
+        }
+
+      });
+  }
+
+  getlicencias = (year, clubId) => {
+      console.log("entro get licencis")
     const access_token = this.props.auth.usuario.access_token;
     const nidClub = this.props.auth.clubIdEncargado;
     console.log(year + 'year ------------------');
     year === undefined || year === '' ? 2020 : year;
     console.log(year + 'year ------------------');
-    this.props.traerLicenciasYears(nidClub, year, access_token);
+    this.props.traerLicenciasYears(clubId, year, access_token);
+    
   };
 
+  getlicenciasByDate = (year) => {
+    console.log("entro get licencis")
+  const access_token = this.props.auth.usuario.access_token;
+  const nidClub = this.state.clubId;
+  console.log(year + 'year ------------------');
+  year === undefined || year === '' ? 2020 : year;
+  console.log(year + 'year ------------------');
+  this.props.traerLicenciasYears(nidClub, year, access_token);
+  
+};
+  
   GetItem(item) {
     this.props.navigation.navigate('DetalailLicencias2', {
       item: item,
@@ -87,6 +128,7 @@ class LicenciasVigenYear extends Component {
       <Text style={{paddingTop: 25, paddingLeft: 5}}>
         Lo siento su usuario {this.props.auth.usuario.current_user.name} no
         tiene licencias activas
+        
       </Text>
     );
   };
@@ -98,22 +140,18 @@ class LicenciasVigenYear extends Component {
   }
   
   handleFilter = () => {
-    this.getlicencias(this.state.yeartInput)
+    this.getlicenciasByDate(this.state.yeartInput)
     console.log(this.state.yeartInput)
   };
 
   render() {
-    if (this.props.licencias.cargando === true) {
-      return (
-        <Loading
-          isVisible={this.props.licencias.cargando}
-          text={'CARGANDO...'}
-        />
-      );
-    }
-
+    
+    const year3 = new Date().getFullYear();
+   console.log("cargando......" + this.props.licencias.cargando)
     return (
+        
       <View style={styles.container}>
+          {this.props.licencias.cargando === true ?<Loading isVisible={this.props.licencias.cargando}text={'CARGANDO...'}/>: null }
         <NavBar></NavBar>
         <Container>
           <ScrollView>
@@ -154,6 +192,7 @@ class LicenciasVigenYear extends Component {
                       <Text note>Nid: {item.nid}</Text>
                       <Text note>Numero Licencia: {item.numero_licencia}</Text>
                       <Text note>Año: {item.year}</Text>
+                      { item.year < year3? <Text note style={{color:'red'}}>LICENCIA CADUCADA </Text> : null}
                     </View>
                   </View>
                 </Card>

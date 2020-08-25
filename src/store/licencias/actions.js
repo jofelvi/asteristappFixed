@@ -11,7 +11,7 @@ import {
   STATUS,
   RESET_STATUS,
   TRAER_LICENCIAS_VIGENTES_LIQUI,
-  TRAER_LICENCIAS_VIGENTES_YEARS
+  TRAER_LICENCIAS_VIGENTES_YEARS,
 } from './Constants';
 import axios from 'axios';
 const URL_LIC_CADU =
@@ -27,7 +27,7 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
     let headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URL, {headers}).then((respuesta) => {
@@ -59,13 +59,13 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
 export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
   const URLicenciasVgRoles = `https://licencias.fapd.org/json-licencias-vigentes-deportista/${uid}?_format=json`;
   dispatch({
-  type: CARGANDO,
+    type: CARGANDO,
   });
   try {
-   let headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URLicenciasVgRoles, {headers}).then((respuesta) => {
@@ -99,10 +99,10 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
     type: CARGANDO,
   });
   try {
-   let headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URL_LIC_CADU, {headers}).then((respuesta) => {
@@ -137,7 +137,6 @@ export const SolicitarLicencias = (
   observaciones,
   uid,
 ) => async (dispatch) => {
-
   const URLSOLICITARLICENCIA = 'https://licencias.fapd.org/enviaremail';
 
   try {
@@ -146,7 +145,7 @@ export const SolicitarLicencias = (
       url: URLSOLICITARLICENCIA,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + access_token,
+        Authorization: 'Bearer ' + access_token,
       },
       data: {
         uid: `${uid}`,
@@ -161,7 +160,7 @@ export const SolicitarLicencias = (
       return dispatch({
         type: STATUS,
         payload: respuesta.status,
-      })
+      });
     });
   } catch (error) {
     console.log('error' + error.message);
@@ -196,7 +195,7 @@ export const traerDetalleNoticia = (item) => async (dispatch) => {
 };
 
 export const solicitarModalidades = (token) => async (dispatch) => {
-  console.log("entro solicitarModalidades "+ token )
+  console.log('entro solicitarModalidades ' + token);
   const URLGETMODALIDADES = `https://licencias.fapd.org/json-modalidades?_format=json`;
   dispatch({
     type: CARGANDO,
@@ -205,7 +204,7 @@ export const solicitarModalidades = (token) => async (dispatch) => {
     let headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URLGETMODALIDADES, {headers}).then((respuesta) => {
@@ -262,7 +261,8 @@ export const enviarCorreo = (
   })
     .then((respuesta) => {
       console.log(
-        '###################### ACTION AQUI RESPUESTA API enviaremail ####################### ' + respuesta.status,
+        '###################### ACTION AQUI RESPUESTA API enviaremail ####################### ' +
+          respuesta.status,
       );
       return (
         dispatch({
@@ -298,16 +298,16 @@ export const traerLicenciasLiquidaciones = (respuesta) => async (dispatch) => {
   });
 };
 
+export const traerLicenciasYears = (nidClub, year, token) => async (dispatch,) => {
 
-export const traerLicenciasYears = (nidClub, year, token) => async (dispatch) => {
-  
-  const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`
+  const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`;
+
+  console.log("URL URL URL " + URLicenciasVgYear)
   dispatch({
-  type: CARGANDO,
-  });
+    type: CARGANDO,
+  })
   try {
-    
-   let headers = {
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
@@ -318,7 +318,6 @@ export const traerLicenciasYears = (nidClub, year, token) => async (dispatch) =>
       console.log(
         '###################### ACTION AQUI RESPUESTA API traerLicenciasYears #######################',
       );
-      console.log(respuesta.data)
       return (
         dispatch({
           type: TRAER_LICENCIAS_VIGENTES_YEARS,
