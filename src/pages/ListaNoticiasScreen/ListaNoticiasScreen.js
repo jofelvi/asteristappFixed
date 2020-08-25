@@ -41,6 +41,7 @@ import {useNavigation} from '@react-navigation/native';
 import * as RootNavigation from '@react-navigation/native';
 import {useScrollToTop} from '@react-navigation/native';
 import {SearchBar} from 'react-native-elements';
+import { TRAER_NOTICIAS } from '../../store/noticias/Constants';
 
 function ListaNoticiasScreen(props) {
   //State
@@ -108,6 +109,26 @@ function ListaNoticiasScreen(props) {
       });
   };
 
+  const handleApiNoticiasFiltrar = (categoria, etiqueta) => {
+    etiqueta === undefined || etiqueta === "undefined" ? etiqueta = "" : etiqueta
+    let URLNOTICIASFILTER = `https://fapd.org/json-noticias?categorias=${categoria}&etiquetas=${etiqueta}`
+    console.log(URLNOTICIASFILTER)
+    axios
+      .get(URLNOTICIASFILTER)
+      .then((res) => {
+        //datasplit = res.data.splice(0, 10);
+        console.log("entro funcion  filtrar" )
+        console.log(res.data);
+        dispatch({
+          type: TRAER_NOTICIAS,
+          payload: res.data,
+        })
+      })
+      .catch((err) => {
+        console.log('error in request', err);
+        //Alert.alert("error in request", err)
+      });
+  };
   const FlatListItemSeparator = () => {
     return (
       //Item Separator
@@ -122,7 +143,13 @@ function ListaNoticiasScreen(props) {
       selectEtiqueta != '' &&
       selectEtiqueta != 'Seleccione Uno'
     ) {
-      console.log('dos valores');
+      let respuestaEtiquetas = selectEtiqueta === "0" || selectEtiqueta === ''? "" : _findEtiquetas(selectEtiqueta)
+      let respuestaCategoria = _findCategorias(selectCategoria)
+      console.log('dos valores' + selectCategoria + "   "+ selectEtiqueta);
+      console.log('Etiqueta categoria' + respuestaCategoria);
+      console.log('Etiqueta ' + respuestaEtiquetas);
+
+      handleApiNoticiasFiltrar(respuestaCategoria, respuestaEtiquetas)
     }
   };
   const getItem = (item) => {
@@ -161,6 +188,24 @@ function ListaNoticiasScreen(props) {
   const _renderEtiquetas = etiquetas.map((data, index) => {
     return <Picker.Item label={data.etiqueta} value={index} />;
   });
+
+  const _findEtiquetas = (key)=> {
+    let etiqueta  = ""
+    const index = etiquetas.findIndex(x => {
+      if (x.id == key  )
+        etiqueta = x.etiqueta
+      })
+     return etiqueta
+  };
+
+  const _findCategorias = (key)=> {
+    let categoria = ""
+    const index = categorias.findIndex(x => {
+      if (x.id == key  )
+          categoria = x.categoria
+      })
+     return categoria
+  };
 
   const getNoticiasFilter = () => {};
   const regex = /(<([^>]+)>)/gi;
@@ -263,10 +308,12 @@ function ListaNoticiasScreen(props) {
             <View style={styles.containerButton}>
               <View style={styles.buttonContainer}>
                 <Button
-                  disabled={page > 0 ? false : true}
+                  active={page === 0 ? false : true}
                   small
                   info
-                  onPress={() => handlepaPagePrev()}>
+                  onPress={() => handlepaPagePrev()}
+
+                  >
                   <Text style={styles.textButton}>Anterior pagina</Text>
                 </Button>
               </View>

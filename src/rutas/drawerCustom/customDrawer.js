@@ -151,6 +151,14 @@ function RutasGestorClub({...props}) {
         )}
         onPress={() => RootNavigation.navigate('LiquidacionesScreen', null)}
       />
+      <DrawerItem
+        label="Licencias Por Ejercicio"
+        icon={({focused, color, size}) => (
+          <Icon name="money" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('LicenciasVigenYear', null)}
+      />
+
     </Fragment>
   );
 }

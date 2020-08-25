@@ -53,6 +53,8 @@ import DetalleLicLiquidacion from './src/pages/DetalleLicLiquidacion/DetalleLicL
 import { Container } from 'native-base';
 import { Header, Body } from 'native-base'
 import SplashScreen from 'react-native-splash-screen';
+import LicenciasVigenYear from './src/pages/LicenciasVigenYear/LicenciasVigenYear';
+import DetalleLicenciasYear from './src/pages/DetalleLicenciasYear/DetalleLicenciasYear';
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -97,11 +99,13 @@ function StackPescadorFun() {
         component={GestiónDeportistas}
         options={{headerShown: false}}
       />
+
       <StackPescador.Screen
         name="EditDeportista"
         component={EditDeportista}
         options={{headerShown: false}}
       />
+
       <StackPescador.Screen
         name="FormContacto"
         component={FormContacto}
@@ -122,6 +126,11 @@ function StackPescadorFun() {
       <StackPescador.Screen
         name="DetailsLicencias"
         component={DetailsLicencias}
+        options={{headerShown: false}}
+      />
+      <StackPescador.Screen
+        name="DetalailLicencias2"
+        component={DetalleLicenciasYear}
         options={{headerShown: false}}
       />
       <StackPescador.Screen
@@ -180,9 +189,18 @@ function StackPescadorFun() {
         options={{headerShown: false}}
       />
 
+    <StackPescador.Screen
+        name="LicenciasVigenYear"
+        component={LicenciasVigenYear}
+        options={{headerShown: false}}
+      />
+
+  
+
     </StackPescador.Navigator>
   );
 }
+
 
 function AppDrawer() {
   return (

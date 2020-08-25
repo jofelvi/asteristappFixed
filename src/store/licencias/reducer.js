@@ -10,20 +10,22 @@ import {
   MODALIDAD_LICENCIA,
   STATUS,
   RESET_STATUS,
-  TRAER_LICENCIAS_VIGENTES_LIQUI
-} from "./Constants";
+  TRAER_LICENCIAS_VIGENTES_LIQUI,
+  TRAER_LICENCIAS_VIGENTES_YEARS,
+} from './Constants';
 
 export const INITIAL_STATE = {
   licenciasVig: [],
   detalleLicenciasVig: [],
   cargando: false,
-  error2: "",
+  error2: '',
   licenciasVigRoles: [],
   solicitarLic: [],
   solicitarLicCadu: [],
-  modalidadesLic:[],
-  status:"1",
-  licenciasLiquidaciones:[]
+  modalidadesLic: [],
+  status: '1',
+  licenciasLiquidaciones: [],
+  licenciasYears: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -31,72 +33,75 @@ export default (state = INITIAL_STATE, action) => {
     case CARGANDO:
       return {
         ...state,
-        cargando: true
-      }
+        cargando: true,
+      };
     case NO_CARGANDO:
       return {
         ...state,
-        cargando: false
-      }
+        cargando: false,
+      };
     case TRAER_LICENCIAS_VIGENTES:
       return {
         ...state,
         licenciasVig: action.payload,
-        cargando: false
+        cargando: false,
       };
     case TRAER_LICENCIAS_VIGENTES_ROLES:
       return {
         ...state,
         licenciasVigRoles: action.payload,
-        cargando: false
+        cargando: false,
       };
     case SOLICITAR_LICENCIAS:
       return {
         ...state,
         solicitarLic: action.payload,
-        cargando: false
+        cargando: false,
       };
     case TRAER_DETALLE_LICENCIAS_VIGENTES:
       return {
         ...state,
         detalleLicenciasVig: action.payload,
-        cargando: false
+        cargando: false,
       };
     case TRAER_LICENCIAS_CADUCADAS:
       return {
         ...state,
         solicitarLicCadu: action.payload,
-        cargando: false
+        cargando: false,
       };
 
     case ERROR2:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
       };
-      case STATUS:
-        return {
-          ...state,
-          status: action.payload
-        };
-        case RESET_STATUS:
-          return {
-            ...state,
-            status: "1"
-          };
-      case MODALIDAD_LICENCIA:
-        return {
-          ...state,
-          modalidadesLic: action.payload
-        };
-        case TRAER_LICENCIAS_VIGENTES_LIQUI:
-          return {
-            ...state,
-            licenciasLiquidaciones: action.payload
-          };
-        
+    case STATUS:
+      return {
+        ...state,
+        status: action.payload,
+      };
+    case RESET_STATUS:
+      return {
+        ...state,
+        status: '1',
+      };
+    case MODALIDAD_LICENCIA:
+      return {
+        ...state,
+        modalidadesLic: action.payload,
+      };
+    case TRAER_LICENCIAS_VIGENTES_LIQUI:
+      return {
+        ...state,
+        licenciasLiquidaciones: action.payload,
+      };
+    case TRAER_LICENCIAS_VIGENTES_YEARS:
+      return {
+        ...state,
+        licenciasYears: action.payload,
+      };
 
-        
     default:
       return state;
   }

@@ -132,10 +132,10 @@ export const traerPerfil = (uid, token) => (dispatch) => {
     type: ISLOAD,
   });
   const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
-  const headers = {
+  let headers = {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
+      'Authorization': 'Bearer ' + token,
     },
   };
   try {

@@ -11,6 +11,7 @@ import {
   STATUS,
   RESET_STATUS,
   TRAER_LICENCIAS_VIGENTES_LIQUI,
+  TRAER_LICENCIAS_VIGENTES_YEARS
 } from './Constants';
 import axios from 'axios';
 const URL_LIC_CADU =
@@ -294,5 +295,51 @@ export const traerLicenciasLiquidaciones = (respuesta) => async (dispatch) => {
   dispatch({
     type: TRAER_LICENCIAS_VIGENTES_LIQUI,
     payload: respuesta,
+  });
+};
+
+
+export const traerLicenciasYears = (nidClub, year, token) => async (dispatch) => {
+  
+  const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`
+  dispatch({
+  type: CARGANDO,
+  });
+  try {
+    
+   let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    };
+
+    axios.get(URLicenciasVgYear, {headers}).then((respuesta) => {
+      console.log(
+        '###################### ACTION AQUI RESPUESTA API traerLicenciasYears #######################',
+      );
+      console.log(respuesta.data)
+      return (
+        dispatch({
+          type: TRAER_LICENCIAS_VIGENTES_YEARS,
+          payload: respuesta.data,
+        }),
+        dispatch({
+          type: NO_CARGANDO,
+        })
+      );
+    });
+  } catch (error) {
+    console.log('error' + error.message);
+    dispatch({
+      type: ERROR2,
+      payload: error.message,
+    }),
+      dispatch({
+        type: NO_CARGANDO,
+      });
+  }
+  dispatch({
+    type: NO_CARGANDO,
   });
 };

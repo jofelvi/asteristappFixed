@@ -34,8 +34,7 @@ class LicenciasActivas extends Component {
         const detalleLicenciasVig = this.props.licencias.detalleLicenciasVig   
         let rol = this.props.auth.usuario.current_user.roles
         
-        if (rol.includes('authenticated') && rol.includes('contabilidad') || rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
-
+        if (rol.includes('contabilidad') || rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
             this.props.traerLicenciasVigRoles(uid, access_token);
             console.log("entro traerLicenciasVigRoles" )
         } else {
