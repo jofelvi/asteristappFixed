@@ -195,7 +195,6 @@ export const traerDetalleNoticia = (item) => async (dispatch) => {
 };
 
 export const solicitarModalidades = (token) => async (dispatch) => {
-  console.log('entro solicitarModalidades ' + token);
   const URLGETMODALIDADES = `https://licencias.fapd.org/json-modalidades?_format=json`;
   dispatch({
     type: CARGANDO,
@@ -208,10 +207,7 @@ export const solicitarModalidades = (token) => async (dispatch) => {
       },
     };
     axios.get(URLGETMODALIDADES, {headers}).then((respuesta) => {
-      console.log(
-        JSON.stringify(respuesta.data) +
-          '###################### ACTION AQUI RESPUESTA API solicitarModalidades #######################',
-      );
+      console.log('###################### ACTION AQUI RESPUESTA API solicitarModalidades #######################');
       return (
         dispatch({
           type: MODALIDAD_LICENCIA,

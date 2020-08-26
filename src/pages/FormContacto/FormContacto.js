@@ -37,7 +37,6 @@ import {
 import {enviarCorreo, resetStatus} from '../../store/licencias/actions';
 import CheckBox from '@react-native-community/checkbox';
 import { Modal, Portal, Provider } from 'react-native-paper';
-import {Overlay } from 'react-native-elements';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -78,7 +77,7 @@ function FormContacto({route}) {
     //return resetValues();
   };
 
-  const createThreeButtonAlert = () => {
+  const alertaFunt = () => {
     Alert.alert(
       'Aviso',
       'Su correo fue enviado Satisfactoriamente',
@@ -98,7 +97,7 @@ function FormContacto({route}) {
   
   return (
     <Container>
-      {    status === 200 || status === '200' ? createThreeButtonAlert() : null
+      {    status === 200 || status === '200' ? alertaFunt() : null
 }
       <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
         <NavBar />
@@ -289,28 +288,3 @@ const validationSchema = Yup.object().shape({
   mensaje: Yup.string().label('mensaje').required('mensaje requerido'),
   asunto: Yup.string().label('asunto').required('asunto requerido'),
 });
-
-
-const ModalTest = (props) => {
-  const [visible, setVisible] = React.useState(props.visible);
-  
-    const toggleOverlay = () => {
-      setVisible(!visible);
-    };
-
-  return (
-    <View>
-      <Button onPress={toggleOverlay} />
-
-      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-        <Text>{props.titulo}</Text>
-        <Text>{props.mensaje}</Text>
-
-        <Button onPress={toggleOverlay} >
-
-          {props.mensajeBoton}
-        </Button>
-      </Overlay>
-    </View>
-  );
-};

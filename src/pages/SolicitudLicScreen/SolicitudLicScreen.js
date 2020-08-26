@@ -1,3 +1,4 @@
+<script src="http://192.168.1.128:8097"></script>
 import React, {Fragment, useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -49,7 +50,6 @@ function SolicitudLicScreen() {
   const [SelecModalidadLic, setSelecModalidadLic] = useState('');
   const usuario = useSelector((state) => state.auth.usuario);
   const currenUser = useSelector((state) => state.auth.usuario.current_user);
-
   //const auth = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
@@ -60,7 +60,7 @@ function SolicitudLicScreen() {
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
     dispatch(solicitarModalidades(access_token));
-  }, []);
+  }, [status]);
 
   const goHome = () => navigation.navigate('Home');
 
@@ -83,18 +83,16 @@ function SolicitudLicScreen() {
     );
   };
 
-  const createThreeButtonAlert = () => {
-    dispatch(resetStatus());
-    console.log(status + 'status en if');
-
-    Alert.prompt(
+  const handleAlerta = () => {
+    Alert.alert(
       'Completado',
      'Su solicitud se envio con exito',
      [
-       { text: "Aceptar", onPress: ()=> goHome() }
+       { text: "Aceptar", onPress: () => goHome() }
      ],
-     { cancelable: false }
+     { cancelable: true }
      );
+     dispatch(resetStatus());
   };
 
 
@@ -107,7 +105,7 @@ function SolicitudLicScreen() {
   }
   return (
     <Container>
-    {status === 200 || status === '200' ? createThreeButtonAlert() : null}
+    {status === 200 || status === '200' ? handleAlerta() : null}
     {status === 403 || status === '403' ? handleLTokenExpired() : null }
       <NavBar></NavBar>
       <ScrollView

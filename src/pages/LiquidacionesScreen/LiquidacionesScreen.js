@@ -66,11 +66,13 @@ function LiquidacionesScreen() {
 
 
   const _renderList = listLiquidaciones.map((item, index) => {
+
       console.log(listLiquidaciones)
-      importeIngresado = item.importe_ingresado
-      totalLiquidacion = parseFloat(item.importe_cuotas) + parseFloat(item.importe_licencias) - parseFloat(item.bonificacion)
+      let importeIngresado = item.importe_ingresado
+      let  totalLiquidacion = parseFloat(item.importe_cuotas) + parseFloat(item.importe_licencias) - parseFloat(item.bonificacion)
       let totalNegativo = totalLiquidacion < importeIngresado ? false: true
       console.log(totalNegativo +" totalNegativo")
+
       return (
         <Card style={{marginTop: 5}}>
           <View>

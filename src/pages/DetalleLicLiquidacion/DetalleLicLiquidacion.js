@@ -44,8 +44,8 @@ export default function DetalleLicLiquidacion({route, props}) {
     const {item} = route.params;
     console.log(item + " parametro url")
     const URLLIC = `https://licencias.fapd.org/json-licencias-liquidacion/${item}?_format=json`;
-    console.log(URLLIC + " url +parametro url")
-    const headers = {
+    console.log(URLLIC + " url + parametro url")
+    let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + access_token,
@@ -54,8 +54,8 @@ export default function DetalleLicLiquidacion({route, props}) {
     
     const data = axios.get(URLLIC, {headers}).then((respuesta) => {
         console.log('exito entro funcion  respuesta API TRAER Licencias liquidaciones');
-        console.log("respuesta api " +respuesta.data)
-           dispatch(traerLicenciasLiquidaciones(respuesta))
+        console.log("respuesta api " + respuesta.data)
+           dispatch(traerLicenciasLiquidaciones(respuesta.data))
       });
   }, [item]);
 

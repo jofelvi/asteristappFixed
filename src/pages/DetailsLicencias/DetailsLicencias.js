@@ -54,7 +54,7 @@ export default class DetailsLicencias extends Component {
             importe={item.importe}
             modalidad={item.modalidad}
             nid={item.nid}
-            //numeroLicencia={item.numero_licencia}
+            numeroLicencia={item.numero_licencia}
             year={item.year}></ListLicencias>
 
           {this.render_code()}

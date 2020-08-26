@@ -152,6 +152,13 @@ function ListaNoticiasScreen(props) {
       handleApiNoticiasFiltrar(respuestaCategoria, respuestaEtiquetas)
     }
   };
+
+  const handleFilterCleans = () => {
+    setSelectCategoria(-1)
+    setSelectEtiqueta(-1)
+     handleApiNoticias()
+
+  };
   const getItem = (item) => {
     //RootNavigation.navigate('DetailNoticiaSlider', {item: item });
 
@@ -355,7 +362,7 @@ function ListaNoticiasScreen(props) {
               onValueChange={(itemValue, itemIndex) =>
                 setSelectEtiqueta(itemValue)
               }>
-              <Picker.Item label="Seleccione Uno" value="0" />
+              <Picker.Item label="Seleccione Uno" value="-1" />
 
               {_renderEtiquetas}
             </Picker>
@@ -367,7 +374,7 @@ function ListaNoticiasScreen(props) {
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button small info onPress={() => handleFilter()}>
+              <Button small info onPress={() => handleFilterCleans()}>
                 <Text style={styles.textButton}>Eliminar Filtros</Text>
               </Button>
             </View>
@@ -548,39 +555,3 @@ const styles = StyleSheet.create({
 });
 
 export default ListaNoticiasScreen;
-
-{
-  /* <Card>
-  <View style={styles.newsListContainer}>
-    <Image style={styles.newsImage} source={{uri: URL + item.imagen}} />
-    <View style={styles.newsInfo}>
-      <Text numberOfLines={3} style={styles.newsTitle}>
-        {item.titulo}
-      </Text>
-      <Text numberOfLines={4} style={styles.newsDescription}>
-        {item.contenido.replace(regex, '')}
-      </Text>
-      <Text style={styles.categoriaText}>{item.categorias}</Text>
-    </View>
-  </View>
-</Card>; */
-}
-
-{
-  /* <List>
-<ListItem thumbnail>
-  <Left>
-    <Thumbnail square source={{ uri: 'Image URL' }} />
-  </Left>
-  <Body>
-    <Text>Sankhadeep</Text>
-    <Text note numberOfLines={1}>Its time to build a difference . .</Text>
-  </Body>
-  <Right>
-    <Button transparent>
-      <Text>View</Text>
-    </Button>
-  </Right>
-</ListItem>
-</List> */
-}

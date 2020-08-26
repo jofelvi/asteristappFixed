@@ -89,6 +89,8 @@ class LicenciasActivas extends Component {
                                                 <Text note>Importe: {item.importe}</Text>
                                                 <Text note>Modalidad: {item.modalidad}</Text>
                                                 <Text note>Año: {item.year}</Text>
+                                                <Text note>Numero Licencia: {item.numero_licencia}</Text>
+                                                
                                             </View>
                                               
                                         </View>
@@ -107,10 +109,11 @@ class LicenciasActivas extends Component {
 
                     <Text style={styles.TxtoTituloNew} > LICENCIAS VIGENTES: </Text>
                     {console.log( this.props.licencias.licenciasVigRoles.length <= 0 )}
+                    {console.log(JSON.stringify(this.props.licencias.licenciasVigRoles))}
                     { this.props.licencias.licenciasVigRoles.length <= 0 || this.props.licencias.licenciasVigRoles === []? this.render_text(): null}
                     {
                         this.props.licencias.licenciasVigRoles.map((item) => (
-
+                        
                             <ListLicencias
                                 club={item.club}
                                 categoria={item.categoria}

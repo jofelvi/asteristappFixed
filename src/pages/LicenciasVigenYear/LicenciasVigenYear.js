@@ -96,7 +96,8 @@ class LicenciasVigenYear extends Component {
   }
 
   getlicencias = (year, clubId) => {
-      console.log("entro get licencis")
+      
+    console.log("entro get licencis")
     const access_token = this.props.auth.usuario.access_token;
     const nidClub = this.props.auth.clubIdEncargado;
     console.log(year + 'year ------------------');
@@ -113,7 +114,7 @@ class LicenciasVigenYear extends Component {
   console.log(year + 'year ------------------');
   year === undefined || year === '' ? 2020 : year;
   console.log(year + 'year ------------------');
-  this.props.traerLicenciasYears(nidClub, year, access_token);
+  this.props.traerLicenciasYears(nidClub, year, access_token);  
   
 };
   
