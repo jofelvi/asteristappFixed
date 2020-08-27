@@ -54,7 +54,7 @@ export default function DetalleLicLiquidacion({route, props}) {
     
     const data = axios.get(URLLIC, {headers}).then((respuesta) => {
         console.log('exito entro funcion  respuesta API TRAER Licencias liquidaciones');
-        console.log("respuesta api " + respuesta.data)
+        console.log("respuesta api " + JSON.stringify(respuesta.data))
            dispatch(traerLicenciasLiquidaciones(respuesta.data))
       });
   }, [item]);

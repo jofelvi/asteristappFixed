@@ -329,7 +329,7 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,
       },
     };
     axios.get(URLGETLLIQUIDACIONES, {headers}).then((respuesta) => {

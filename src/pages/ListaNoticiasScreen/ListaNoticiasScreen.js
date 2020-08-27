@@ -152,12 +152,11 @@ function ListaNoticiasScreen(props) {
       handleApiNoticiasFiltrar(respuestaCategoria, respuestaEtiquetas)
     }
   };
-
+  
   const handleFilterCleans = () => {
     setSelectCategoria(-1)
     setSelectEtiqueta(-1)
      handleApiNoticias()
-
   };
   const getItem = (item) => {
     //RootNavigation.navigate('DetailNoticiaSlider', {item: item });

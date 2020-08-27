@@ -45,7 +45,7 @@ function LiquidacionesScreen() {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        'Authorization': 'Bearer ' + access_token,
       },
     };
     const data = axios.get(URLperfil, {headers}).then((respuesta) => {
@@ -80,7 +80,7 @@ function LiquidacionesScreen() {
               <View style={{marginTop: 5, marginLeft: 10}}>
                 <List>
                   <ListItem>
-                    <Text style={styles.TextItem}>nid: </Text>
+                    <Text style={styles.TextItem}>Numero ID: </Text>
                     <Text> {item.nid}</Text>
                   </ListItem>
                 </List>
@@ -88,7 +88,7 @@ function LiquidacionesScreen() {
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    fecha_liquidacion: 
+                    Fecha de Liquidacion: 
                     </Text>
                     <Text> {item.fecha_liquidacion}</Text>
                   </ListItem>
@@ -97,9 +97,9 @@ function LiquidacionesScreen() {
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    fecha_pago: 
+                    Fecha Pago: 
                     </Text>
-                    <Text>{item.fecha_pago}</Text>
+                    <Text> {item.fecha_pago}</Text>
                   </ListItem>
                 </List>
 
@@ -108,7 +108,7 @@ function LiquidacionesScreen() {
                     <Text style={styles.TextItem} note>
                     Importe Cuotas: 
                     </Text>
-                    <Text> {item.importe_cuotas}</Text>
+                    <Text>€ {item.importe_cuotas}</Text>
                   </ListItem>
                 </List>
 
@@ -117,31 +117,31 @@ function LiquidacionesScreen() {
                     <Text style={styles.TextItem} note>
                     Importe Licencias: 
                     </Text>
-                    <Text> {item.importe_licencias}</Text>
+                    <Text>€ {item.importe_licencias}</Text>
                   </ListItem>
                 </List>
                 
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    bonificacion: 
+                    Bonificacion: 
                     </Text>
-                    <Text> {item.bonificacion}</Text>
+                    <Text>€ {item.bonificacion}</Text>
                   </ListItem>
                 </List>
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    importe_ingresado: 
+                    Importe Ingresado: 
                     </Text>
-                    <Text> {item.importe_ingresado}</Text>
+                    <Text>€ {item.importe_ingresado}</Text>
                   </ListItem>
                 </List>
 
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    confirmada: 
+                    Confirmada: 
                     </Text>
                     <Text> {item.confirmada}</Text>
                   </ListItem>
@@ -151,7 +151,7 @@ function LiquidacionesScreen() {
                 <List>
                   <ListItem>
                     <Text style={styles.TextItem} note>
-                    fecha_confirmacion: 
+                    Fecha Confirmacion: 
                     </Text>
                     <Text> {item.fecha_confirmacion}</Text>
                   </ListItem>
@@ -163,10 +163,10 @@ function LiquidacionesScreen() {
                     <Text style={styles.TextItem} note>
                     Diferencia: 
                     </Text>
-                    <Text>
-                    {   totalNegativo=== true && totalLiquidacion }
+                    <Text> €  
+                     {   totalNegativo=== true && totalLiquidacion }
                     <Text style={{color:'red', marginLeft: 5}}>
-                    {  totalNegativo === false && totalLiquidacion }
+                     {  totalNegativo === false && totalLiquidacion }
                     </Text>
                     </Text>
                   </ListItem>

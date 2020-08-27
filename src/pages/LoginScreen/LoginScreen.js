@@ -27,29 +27,29 @@ import NavBar from '../../components/navbar/Navbar';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
+  
+const validationSchema = Yup.object().shape({
+  username: Yup.string()
+    .label('username')
+    .required('Por favor introducir un DNI'),
+  password: Yup.string()
+    .label('Constraseña')
+    .required('Por favor introducir contraseña'),
+});
+
+
 function LoginScreen() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const auth = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const cargando = useSelector((state) => auth.cargando);
-  //const auth = useSelector((state) => state.auth);
-  //const token = useSelector((state) => state.auth.info.token);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [banderaError, setBanderaError] = useState(false);
   const {width: screenWidth} = Dimensions.get('window');
   const status = useSelector((state) => auth.status);
   const [counter, setcounter] = useState("0");
-  const validationSchema = Yup.object().shape({
-    username: Yup.string()
-      .label('username')
-      .required('Por favor introducir un DNI'),
-    password: Yup.string()
-      .label('Constraseña')
-      .required('Por favor introducir contraseña'),
-  });
+
 
   useEffect(() => {
     //status === 400 || status === '400'? dispatch(resetStatus()) : null
@@ -137,12 +137,12 @@ function LoginScreen() {
                     errorValue={touched.username && errors.username}
                   />
                   <FormInput
-                    name="Contraseña"
+                    name="password"
                     value={values.password}
                     onChangeText={handleChange('password')}
                     placeholder="Introducir contraseña"
                     secureTextEntry
-                    onBlur={handleBlur('Contraseña')}
+                    onBlur={handleBlur('password')}
                     iconName="lock-closed-outline"
                     iconColor="#2C384A"
                   />
