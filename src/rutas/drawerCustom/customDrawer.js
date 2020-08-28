@@ -57,11 +57,11 @@ function CustomDrawer({...props}) {
   const uid = useSelector((state) => state.auth.uid);
   const dispatch = useDispatch();
 
-  
-cerrarSession
   useEffect(() => {
     if (!rolesUser.includes('invitado')) {
-      rolesUser.includes('deportista')? setIsDeportista(true): setIsDeportista(false);
+      rolesUser.includes('deportista')
+        ? setIsDeportista(true)
+        : setIsDeportista(false);
       rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
       rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
     } else {
@@ -71,7 +71,11 @@ cerrarSession
     }
   }, [auth]);
 
-
+  const cerrarSe = () => {
+    //RootNavigation.openDrawer();
+    RootNavigation.navigate('Home');
+    dispatch(cerrarSession());
+  };
 
   return (
     <Container style={{flex: 1}}>
@@ -84,8 +88,10 @@ cerrarSession
           />
           {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
 
-          <Text >Bienvenido Usuario Numero  {uid}</Text>
-          { uid != ""? <Button title="cerrar sesion"onPress={()=>{dispatch(cerrarSession())}}/> : null}
+          <Text>Bienvenido Usuario Numero {uid}</Text>
+          {uid != '' ? (
+            <Button title="cerrar sesion" onPress={() => { cerrarSe() }} />
+          ) : null}
         </Header>
 
         <DrawerItemList {...props} />
@@ -158,7 +164,13 @@ function RutasGestorClub({...props}) {
         )}
         onPress={() => RootNavigation.navigate('LicenciasVigenYear', null)}
       />
-
+      <DrawerItem
+        label="Estadisticas del Club"
+        icon={({focused, color, size}) => (
+          <Icon name="money" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('Estadisticas', null)}
+      />
     </Fragment>
   );
 }

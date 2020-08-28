@@ -49,7 +49,7 @@ function LoginScreen() {
   const {width: screenWidth} = Dimensions.get('window');
   const status = useSelector((state) => auth.status);
   const [counter, setcounter] = useState("0");
-
+  
 
   useEffect(() => {
     //status === 400 || status === '400'? dispatch(resetStatus()) : null
@@ -71,8 +71,8 @@ function LoginScreen() {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    setPassword(values.password);
-    setUsername(values.username);
+    //setPassword(values.password);
+   // setUsername(values.username);
    await dispatch(traerUsuario(values.username, values.password))
   };
 
