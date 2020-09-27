@@ -42,10 +42,11 @@ import {
 import moment from 'moment';
 import {Switch} from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
+import axios from 'axios'
 
 const {width: screenWidth} = Dimensions.get('window');
 
-function FormPerfilScreen() {
+function FormPerfilScreen({ route }) {
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const inputRef = React.createRef();
   const cargando = useSelector((state) => state.auth.cargando);
@@ -58,18 +59,43 @@ function FormPerfilScreen() {
   const [select2, setSelect2] = useState('');
   const [chosenDate, setChosenDate] = useState(new Date());
   const [initDate, setInitDate] = useState(new Date());
-
+  const [fechaNac, setfechaNac] = useState();
+  //aqui response api
+  const [sexo, setsexo] = useState();
+  const [activo, setactivo] = useState();
+  const [calle1, setcalle1] = useState();
+  const [calle2, setcalle2] = useState();
+  const [codPostal, setcodPostal] = useState();
+  const [codPostal2, setcodPostal2] = useState();
+  const [poblacion, setpoblacion] = useState();
+  const [poblacion2, setpoblacion2] = useState();
+  const [provincia, setprovincia] = useState();
+  const [provincia2, setprovincia2] = useState();
+  const [pais, setpais] = useState();
+  const [pais2, setpais2] = useState();
+  const [tutorNif, settutorNif] = useState();
+  const [tutornNombre, settutornNombre] = useState();
+  const [tutorObs, settutorObs] = useState();
+  //finapi response
   const [checked, setChecked] = useState(false);
   const load = useSelector((state) => state.auth.isLoad);
   const field_user_apellido1 = useSelector(
     (state) => state.auth.field_user_apellido1,
   );
+  const { item } = route.params;
   const navigation = useNavigation();
+  const [apiperfil, setApiperfil] = useState([]);
 
   useEffect(() => {
+
+
     //dispatch(traerPerfil(uid, access_token));
-    testCallback();
-  }, []);
+       const { item } = route.params;
+       
+      testCallback();
+ 
+    
+  }, [item]);
 
   const callback = React.useCallback((newDate) => {
     console.log("entro callback2 "+ newDate )
@@ -80,9 +106,27 @@ function FormPerfilScreen() {
   }, []);
 
   const testCallback = React.useCallback(() => {
-    dispatch(traerPerfil(uid, access_token));
+    handleApi();
   }, []);
 
+  const handleApi = ()=>{
+
+    const URLperfil = `https://licencias.fapd.org/user/${item}?_format=json`;
+
+  let headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + access_token,
+    },
+  };
+  
+    axios.get(URLperfil, {headers}).then((respuesta) => {
+      console.log('exito entro funcion  respuesta API TRAER PERFIL');
+       console.log("APIIII ", respuesta.data)
+      setApiperfil(respuesta.data)
+    });
+
+  }
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   const goLogin = () => navigation.navigate('Login');
@@ -105,7 +149,12 @@ function FormPerfilScreen() {
 
   const handleSubmit = async (values) => {
     console.log('entro handle');
-    let data = {
+    const data = {
+      uid:[
+        {
+           value: uid
+        }
+     ],
       field_user_nif: [
         {
           value: `${values.dni}`,
@@ -146,19 +195,9 @@ function FormPerfilScreen() {
           value: `${values.telefono2}`,
         },
       ],
-      field_user_fechanac: [
-        {
-          value: `${setearFechaNa()}`,
-        },
-      ],
       field_user_sexo: [
         {
           value: `${select2}`,
-        },
-      ],
-      field_user_lopd_aceptacion: [
-        {
-          value: `${true}`,
         },
       ],
       field_user_via: [
@@ -225,9 +264,9 @@ function FormPerfilScreen() {
         {
           value: `${values.tutorObs}`,
         },
-      ],
+      ]
     };
-
+   console.log(data)
     await dispatch(editarPerfil(uid, access_token, data));
   };
 
@@ -385,8 +424,7 @@ function FormPerfilScreen() {
           isSubmitting,
         }) => (
           <Fragment>
-            <Text> PERFIL DE USUARIO {name}: </Text>
-            <Text> Datos Personales: {name}: </Text>
+            <Text style={styles.TextEtiqutea}> DATOS USUARIO </Text>
             {setFirstValue(sexo)}
             <FormInput
               ref={inputRef}
@@ -477,7 +515,7 @@ function FormPerfilScreen() {
               onBlur={handleBlur('telefono2')}
             />
             <ErrorMessage errorValue={touched.telefono2 && errors.telefono2} />
-            <Text>Fecha de nacimiento</Text>
+            <Text style={styles.TextEtiqutea2}>FECHA DE NACIMIENTO</Text>
 
             <DatePicker
               style={{width: 200}}
@@ -601,7 +639,7 @@ function FormPerfilScreen() {
               onBlur={handleBlur('pais')}
             />
 
-            <Text> Direccion alternativa </Text>
+            <Text style={styles.TextEtiqutea}> DIRECCION ALTERNATIVA </Text>
 
             <FormInput
               label="CALLE"
@@ -644,7 +682,7 @@ function FormPerfilScreen() {
               placeholder="Pais"
               onBlur={handleBlur('pais2')}
             />
-            <Text>Datos del Tutor</Text>
+            <Text style={styles.TextEtiqutea}>DATOS DEL TUTOR</Text>
 
             <FormInput
               label="TUTOR NIF/NIE"
@@ -744,6 +782,22 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingTop: 0,
   },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,  
+    marginBottom:15
+  },
+  TextEtiqutea2: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    marginTop: 15,  
+    marginBottom:15,
+    marginLeft:10
+  }
 });
 
 export default FormPerfilScreen;
@@ -778,88 +832,3 @@ const validationSchema = Yup.object().shape({
   tutorNombre: Yup.string().label('tutorNombre'),
   Tutorobser: Yup.string().label('pais'),
 });
-
-/*
-
-
-let dni = values.dni;
-    let usuario =  values.usuario;
-    let name= values.name
-    let apellido= values.apellido
-    let apellido2= values.apellido2
-    let email= values.email
-    let telefono1= values.telefono1
-    let telefono2= values.telefono2
-
-    let direccion= values.direccion
-    let direccion2= values.direccion2
-
-    let codPostal= values.codPostal
-    let codPostal2= values.codPostal2
-
-    let poblacion= values.poblacion
-    let poblacion2= values.poblacion2
-
-    let provincia= values.provincia
-    let provincia2= values.provincia2
-
-    let pais= values.pais
-    let pais2= values.pais2
-
-    let tutorNif= values.tutorNif
-    let tutorNombre= values.tutorNombre
-    let tutorObs= values.tutorObs
-
-
-     let data  =  {
-      'field_user_nif': `${values.dni}`,
-      'field_user_nombre': `${values.name}`,
-      'field_user_apellido1': `${values.apellido}`,
-      'field_user_apellido2': `${values.apellido2}`,
-      'field_user_nomcompleto': `${values.name} ${values.apellido} ${values.apellido2}`,
-      'mail': `${values.email}`,
-      'field_user_telefono1': `${values.telefono1}`,
-      'field_user_telefono2': `${values.telefono2}`,
-      'field_user_fechanac': `${setearFechaNa()}`,
-      'field_user_sexo': `${select2}`,
-      'field_user_lopd_aceptacion': `${true}`,
-      'field_user_clubs': `${["password"]}`,
-
-      'field_user_via': `${values.direccion}`,
-      'field_user_codpostal': `${values.codPostal}`,
-      'field_user_poblacion': `${values.poblacion}`,
-      'field_user_provincia': `${values.provincia}`,
-      'field_user_pais': `${values.pais}`,
-
-      'field_user_via_alter': `${values.direccion2}`,
-      'field_user_codpostal_alter': `${values.codPostal2}`,
-      'field_user_poblacion_alter': `${values.poblacion2}`,
-      'field_user_provincia_alter': `${values.provincia2}`,
-      'field_user_pais_alter': `${values.pais2}`,
-
-      'field_user_tutor_nif': `${values.tutorNif}`,
-      'field_user_tutor_nombre': `${values.tutorNombre}`,
-      'field_user_tutor_observaciones': `${values.tutorObs}`,
-    }
-
-
-           <DatePicker
-              defaultDate={new Date()}
-              minimumDate={new Date(1900, 1, 1)}
-              maximumDate={new Date(2021, 12, 31)}
-              formatChosenDate={(date) => {
-                return moment(date).format('DD-MM-YYYY');
-              }}
-              //formatChosenDate={date => {return setChosenDate(date).format('YYYY-MM-DD');}}
-              locale={'es'}
-              timeZoneOffsetInMinutes={undefined}
-              modalTransparent={false}
-              animationType={'fade'}
-              androidMode={'default'}
-              placeHolderText={fechaNac}
-              textStyle={{color: 'black'}}
-              placeHolderTextStyle={{color: 'black'}}
-              onDateChange={(event) => setDate(event)}
-              disabled={false}
-            />
-*/

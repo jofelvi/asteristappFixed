@@ -37,7 +37,7 @@ export default function DetalleLicLiquidacion({route, props}) {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const {access_token, uid} = auth;
-  const licenciasLiquidaciones = useSelector((state) => auth.licenciasLiquidaciones);
+  const licenciasLiquidaciones = useSelector((state) => state.licencias.licenciasLiquidaciones);
 
 
   useEffect(() => {
@@ -57,16 +57,16 @@ export default function DetalleLicLiquidacion({route, props}) {
         console.log("respuesta api " + JSON.stringify(respuesta.data))
            dispatch(traerLicenciasLiquidaciones(respuesta.data))
       });
+      
   }, [item]);
 
 
 
-  const _renderLicenciasDetails = licencias.map((item) =>  {
+  const _renderLicenciasDetails = licenciasLiquidaciones.map((item) =>  {
     console.log(licencias.length)
-    if (licencias.length >=0 && !licencias.includes('1', 0)) {
         console.log("entro a tiene datos")
-        
-        return(
+        console.log(JSON.stringify(licenciasLiquidaciones))
+         return(
                 <ListLicencias
                   club={item.club}
                   categoria={item.categoria}
@@ -81,13 +81,6 @@ export default function DetalleLicLiquidacion({route, props}) {
                 />
             
                )
-    }else{
-        
-        return(
-            <Text style={{marginTop:20,textAlign: 'center', fontSize:15, color:'red'}}> No tiene licencias Asociadas a liquidaciones</Text>
-        )
-    }
-   
 
   }
   )

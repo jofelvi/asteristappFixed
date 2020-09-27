@@ -7,9 +7,9 @@ import {
   Dimensions,
   Alert,
   ScrollView,
-  TouchableOpacity,
-  TextInput
+  TouchableOpacity
 } from 'react-native';
+import FormInput from '../../components/ValidateForm/FormInput';
 import {useDispatch, useSelector} from 'react-redux';
 import {connect} from 'react-redux';
 import * as usuarioActions from '../../store/auth/actions';
@@ -45,7 +45,7 @@ class LicenciasVigenYear extends Component {
     super(props);
     this.state = {
       admin: false,
-      yeartInput: "",
+      yeartInput: "2020",
       clubId:""
     };
     this.GetItem = this.GetItem.bind(this);
@@ -79,11 +79,13 @@ class LicenciasVigenYear extends Component {
     
       axios.get(URLperfil, {headers}).then((respuesta) => {
         console.log('exito entro funcion  respuesta API TRAER PERFIL');
+
         const {
           field_user_clubs,
           roles,
           field_user_gestionclub,
         } = respuesta.data;
+
         if (roles.filter((e) => e.target_id === 'club').length > 0) {
           console.log(field_user_gestionclub[0].target_id);
           clubId = field_user_gestionclub[0].target_id
@@ -128,7 +130,7 @@ class LicenciasVigenYear extends Component {
     return (
       <Text style={{paddingTop: 25, paddingLeft: 5}}>
         Lo siento su usuario {this.props.auth.usuario.current_user.name} no
-        tiene licencias activas
+        tiene licencias para el año indicado
         
       </Text>
     );
@@ -145,39 +147,66 @@ class LicenciasVigenYear extends Component {
     console.log(this.state.yeartInput)
   };
 
+ getItem = (item) => {
+    //Function for click on an item
+    navigation.navigate('DetailPublicidad', {
+        item: item
+    });
+    //Alert.alert(item);
+}
   render() {
     
     const year3 = new Date().getFullYear();
-   console.log("cargando......" + this.props.licencias.cargando)
+    
+    console.log("cargando......" + this.props.licencias.cargando)
+
+    if (this.props.licencias.cargando === true) {
+      return <Loading isVisible={this.props.licencias.cargando} text={'CARGANDO...'} />;
+    }
+
     return (
+      
         
       <View style={styles.container}>
-          {this.props.licencias.cargando === true ?<Loading isVisible={this.props.licencias.cargando}text={'CARGANDO...'}/>: null }
+          {this.props.licencias.cargando === true ? <Loading isVisible={true}text={'CARGANDO...'}/> : null }
         <NavBar></NavBar>
         <Container>
           <ScrollView>
-            <Text style={styles.TxtoTituloNew}> LICENCIAS POR EJERCICIO: </Text>
+          <SafeAreaView>
+            <Text style={styles.TextEtiqutea}> LICENCIAS POR EJERCICIO: </Text>
             {this.props.licencias.licenciasYears.length <= 0
               ? this.render_text()
               : null}
+              
 
-        <Text style={styles.textButton}>Buscar Licencias por año</Text>
-            <TextInput 
-            style={{height: 30, borderColor: 'gray', borderWidth: 1, width: "30%", marginBottom:10, marginTop: 10, marginLeft:5}}
-            keyboardType='numeric'
-            onChangeText={(text)=> this.onTextChanged(text)}
-            value={this.state.yeartInput}
-            defaultValue="2020"
-            maxLength={4}  
-            placeholder="Ingresar año"
-            />
-            <Button small info onPress={() =>this.handleFilter()}>
-              <Text style={styles.textButton}>Buscar</Text>
-            </Button>
+                          <List>
+                            <ListItem>
+                              <Text style={styles.TextEtiqutea2}>Buscar Licencias por año </Text>
+                        
+                  
+                            </ListItem >
+                              <FormInput 
+                                  style={{height: 30, borderColor: 'gray', borderWidth: 1, width: "50%"}}
+                                  keyboardType='numeric'
+                                  onChangeText={(text)=> this.onTextChanged(text)}
+                                  value={this.state.yeartInput}
+                                  defaultValue="2020"
+                                  maxLength={4}  
+                                  placeholder="Ingresar año"
+                                  
+                                  />
+
+                          </List>
+        
+                          
+                          <Button style={{marginLeft:10}} small info onPress={() =>this.handleFilter()}>
+                                 <Text style={styles.textButton}>Buscar</Text>
+                            </Button>
+  
 
             {this.props.licencias.licenciasYears.map((item) => (
               <TouchableOpacity onPress={() => this.GetItem(item)}>
-                <Card style={{marginTop: 20, backgroundColor: '#f2f1ec'}}>
+                <Card style={{marginTop: 15, backgroundColor: '#f2f1ec', marginLeft:5, marginRight:5}}>
                   <View style={styles.newsListContainer}>
                     <Thumbnail source={LICENCIAICON} />
                     <View style={styles.newsInfo}>
@@ -199,6 +228,7 @@ class LicenciasVigenYear extends Component {
                 </Card>
               </TouchableOpacity>
             ))}
+            </SafeAreaView>
           </ScrollView>
         </Container>
       </View>
@@ -283,4 +313,19 @@ const styles = StyleSheet.create({
     padding: 2,
     alignSelf: 'flex-start',
   },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,  
+    marginBottom:15
+  },
+  TextEtiqutea2: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    marginTop: 15,  
+    marginLeft:10
+  }
 });

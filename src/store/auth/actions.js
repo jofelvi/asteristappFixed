@@ -19,26 +19,29 @@ import {
   UID,
   CLUB_ID_ENCARGADO,
   CLUB_ID,
-  RESET_STATUS
+  RESET_STATUS,
 } from './Constants';
 import axios from 'axios';
+import qs from 'qs';
+
 const session_url = 'https://licencias.fapd.org/user/login?_format=json';
 
 export const traerUsuario = (username, password) => async (dispatch) => {
   dispatch({
     type: CARGANDO,
   });
-const respuesta = axios({
-      method: 'post',
-      url: session_url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        name: `${username}`,
-        pass: `${password}`,
-      }
-    }).then((respuesta) => {
+  const respuesta = axios({
+    method: 'post',
+    url: session_url,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      name: `${username}`,
+      pass: `${password}`,
+    },
+  })
+    .then((respuesta) => {
       console.log('funcion login');
       const {
         current_user,
@@ -47,83 +50,86 @@ const respuesta = axios({
         logout_token,
       } = respuesta.data;
       const {roles, uid} = current_user;
-        dispatch({
-          type: TRAER_USUARIO,
-          payload: respuesta.data,
-        })
-        dispatch({
-          type: ROLES_USER,
-          payload: roles,
-        })
-        dispatch({
-          type: NO_CARGANDO,
-        })
-        dispatch({
-          type: TOKEN,
-          payload: access_token,
-        })
-        dispatch({
-          type: CSRF_TOKEN,
-          payload: csrf_token,
-        })
-        dispatch({
-          type: LOGOUT_TOKEN,
-          payload: logout_token,
-        })
-        dispatch({
-          type: UID,
-          payload: uid,
-        })
-    }).catch(function (error) {
-      console.log(error.response.status+  "status error aqui");
+      dispatch({
+        type: TRAER_USUARIO,
+        payload: respuesta.data,
+      });
+      dispatch({
+        type: ROLES_USER,
+        payload: roles,
+      });
+      dispatch({
+        type: NO_CARGANDO,
+      });
+      dispatch({
+        type: TOKEN,
+        payload: access_token,
+      });
+      dispatch({
+        type: CSRF_TOKEN,
+        payload: csrf_token,
+      });
+      dispatch({
+        type: LOGOUT_TOKEN,
+        payload: logout_token,
+      });
+      dispatch({
+        type: UID,
+        payload: uid,
+      });
+    })
+    .catch(function (error) {
+      console.log(error.response.status + 'status error aqui');
       dispatch({
         type: ERROR2,
         payload: error,
-      })
+      });
       dispatch({
         type: NO_CARGANDO,
-      })
+      });
       dispatch({
         type: STATUS,
         payload: error.response.status,
-      })
-      console.log("final" )
+      });
     });
-
-};
-export const cerrarSession = (username, password) => async (dispatch) => {
   dispatch({
-    type: CARGANDO,
+    type: NO_CARGANDO,
   });
-        dispatch({
-          type: TRAER_USUARIO,
-          payload: [],
-        })
-        dispatch({
-          type: ROLES_USER,
-          payload: [],
-        })
-        dispatch({
-          type: NO_CARGANDO,
-        })
-        dispatch({
-          type: TOKEN,
-          payload: "",
-        })
-        dispatch({
-          type: CSRF_TOKEN,
-          payload: "",
-        })
-        dispatch({
-          type: LOGOUT_TOKEN,
-          payload: "",
-        })
-        dispatch({
-          type: UID,
-          payload: "",
-        })
-
 };
+export const cerrarSession = () => async (dispatch) => {
+
+  console.log("cerrar sesion action")
+
+
+  dispatch({
+    type: TRAER_USUARIO,
+    payload: [],
+  });
+  dispatch({
+    type: ROLES_USER,
+    payload: [],
+  });
+  dispatch({
+    type: NO_CARGANDO,
+  });
+  dispatch({
+    type: TOKEN,
+    payload: '',
+  });
+  dispatch({
+    type: CSRF_TOKEN,
+    payload: '',
+  });
+  dispatch({
+    type: LOGOUT_TOKEN,
+    payload: '',
+  });
+  dispatch({
+    type: UID,
+    payload: '',
+  });
+};
+
 export const traerPerfil = (uid, token) => (dispatch) => {
   dispatch({
     type: CARGANDO,
@@ -132,10 +138,11 @@ export const traerPerfil = (uid, token) => (dispatch) => {
     type: ISLOAD,
   });
   const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
   let headers = {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token,
+      Authorization: 'Bearer ' + token,
     },
   };
   try {
@@ -147,8 +154,8 @@ export const traerPerfil = (uid, token) => (dispatch) => {
         roles,
         field_user_gestionclub,
       } = respuesta.data;
-      
-       dispatch({
+
+      dispatch({
         type: TRAER_PERFIL,
         payload: respuesta.data,
       }),
@@ -247,53 +254,33 @@ export const editarPerfil = (uid, token, data) => (dispatch) => {
   console.log(token);
   const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
 
-  try {
-    console.log('entro try');
-    axios(
-      {
-        method: 'patch',
-        url: URLperfil,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        },
-        data: data,
+    fetch(URLperfil, {
+      method: 'patch',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
       },
-      console.log('antes then'),
-    ).then((respuesta) => {
+      body: data,
+    }).then((respuesta) => {
       console.log('exito entro funcion  respuesta API editarPerfil');
       console.log(respuesta.status);
-      return (
-        dispatch({
-          type: STATUS,
-          payload: respuesta.status,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
-        })
-      );
     });
-  } catch (error) {
-    console.log('error API TRAER PERFIL' + error.message);
-    dispatch({
-      type: ERROR2,
-      payload: error.message,
-    });
-  }
+
 };
 
 export const traerDeportistas = (token) => (dispatch) => {
   console.log('entro a traer deportista');
-  const URLGETLISUSERCLUB ='https://licencias.fapd.org/json-deportistas-club?_format=json';
+  const URLGETLISUSERCLUB =
+    'https://licencias.fapd.org/json-deportistas-club?_format=json';
 
-    dispatch({
-      type: CARGANDO,
-    });
+  dispatch({
+    type: CARGANDO,
+  });
   try {
     let headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URLGETLISUSERCLUB, {headers}).then((respuesta) => {
@@ -303,20 +290,20 @@ export const traerDeportistas = (token) => (dispatch) => {
       dispatch({
         type: TRAER_DEPORTISTAS,
         payload: respuesta.data,
-      })
+      });
       dispatch({
         type: NO_CARGANDO,
-      })
+      });
     });
   } catch (error) {
     console.log('error' + error.message);
     dispatch({
       type: ERROR2,
       payload: error.message,
-    })
+    });
     dispatch({
       type: NO_CARGANDO,
-    })
+    });
   }
 };
 
@@ -329,7 +316,7 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
     axios.get(URLGETLLIQUIDACIONES, {headers}).then((respuesta) => {
@@ -351,9 +338,15 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
   }
 };
 
-
 export const resetStatus = () => async (dispatch) => {
   dispatch({
     type: RESET_STATUS,
+  });
+};
+
+export const traerPerfilSave = (perfil) => (dispatch) => {
+  dispatch({
+    type: TRAER_PERFIL,
+    payload: perfil,
   });
 };

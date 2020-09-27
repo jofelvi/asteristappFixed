@@ -47,6 +47,7 @@ const cargando = useSelector((state) => state.auth.cargando);
   const { item } = route.params;
 
   useEffect(() => {
+    
        dispatch(traerPerfil(uid, access_token));
        const timer = setTimeout(() => {
         dispatch(isload())

@@ -74,6 +74,12 @@ function CustomDrawer({...props}) {
   const cerrarSe = () => {
     //RootNavigation.openDrawer();
     RootNavigation.navigate('Home');
+    cerrarSe2()
+  };
+
+  const cerrarSe2 = () => {
+    //RootNavigation.openDrawer();
+    RootNavigation.navigate('Home');
     dispatch(cerrarSession());
   };
 
@@ -88,9 +94,8 @@ function CustomDrawer({...props}) {
           />
           {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
 
-          <Text>Bienvenido Usuario Numero {uid}</Text>
           {uid != '' ? (
-            <Button title="cerrar sesion" onPress={() => { cerrarSe() }} />
+            <Text>Bienvenido Usuario Numero {uid}</Text>
           ) : null}
         </Header>
 
@@ -171,6 +176,15 @@ function RutasGestorClub({...props}) {
         )}
         onPress={() => RootNavigation.navigate('Estadisticas', null)}
       />
+      
+      <DrawerItem
+        label="Campeonatos"
+        icon={({focused, color, size}) => (
+          <Icon name="money" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('CampeonatosScreen', null)}
+      />
+
     </Fragment>
   );
 }
@@ -217,6 +231,14 @@ function RutasDeportistas({...props}) {
           <Icon4 name="card-bulleted-off-outline" size={30} color="#0053C9" />
         )}
         onPress={() => RootNavigation.navigate('LicenciasCaducadas', null)}
+      />
+
+      <DrawerItem
+        label="Campeonatos"
+        icon={({focused, color, size}) => (
+          <Icon name="money" size={30} color="#0053C9" />
+        )}
+        onPress={() => RootNavigation.navigate('CampeonatosScreen', null)}
       />
     </Fragment>
   );

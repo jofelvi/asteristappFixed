@@ -42,9 +42,15 @@ import * as RootNavigation from '@react-navigation/native';
 import {useScrollToTop} from '@react-navigation/native';
 import {SearchBar} from 'react-native-elements';
 import { TRAER_NOTICIAS } from '../../store/noticias/Constants';
+import { Modal, Portal, Provider } from 'react-native-paper';
 
 function ListaNoticiasScreen(props) {
   //State
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+
+  const hideModal = () => setVisible(false);
   const [flatListItms, setFlatListItms] = useState([]);
   const [publicidadList, setPublicidadList] = useState([]);
   const [page, setPage] = useState(0);
@@ -110,8 +116,8 @@ function ListaNoticiasScreen(props) {
   };
 
   const handleApiNoticiasFiltrar = (categoria, etiqueta) => {
-    etiqueta === undefined || etiqueta === "undefined" ? etiqueta = "" : etiqueta
-    let URLNOTICIASFILTER = `https://fapd.org/json-noticias?categorias=${categoria}&etiquetas=${etiqueta}`
+
+      let URLNOTICIASFILTER = `https://fapd.org/json-noticias?categorias=${categoria}&etiquetas=${etiqueta}`
     console.log(URLNOTICIASFILTER)
     axios
       .get(URLNOTICIASFILTER)
@@ -128,29 +134,23 @@ function ListaNoticiasScreen(props) {
         console.log('error in request', err);
         //Alert.alert("error in request", err)
       });
+    
+    
   };
-  const FlatListItemSeparator = () => {
-    return (
-      //Item Separator
-      <View style={{height: 0.5, width: '100%', backgroundColor: '#C8C8C8'}} />
-    );
-  };
+  
   const handleFilter = () => {
-    if (
-      selectCategoria != null &&
-      selectCategoria != '' &&
-      selectEtiqueta != null &&
-      selectEtiqueta != '' &&
-      selectEtiqueta != 'Seleccione Uno'
-    ) {
-      let respuestaEtiquetas = selectEtiqueta === "0" || selectEtiqueta === ''? "" : _findEtiquetas(selectEtiqueta)
+  
+    if ( selectCategoria !== undefined || selectCategoria !== ""  ){
+      let respuestaEtiquetas = selectEtiqueta === "0" || selectEtiqueta === '' ? "" : _findEtiquetas(selectEtiqueta)
       let respuestaCategoria = _findCategorias(selectCategoria)
       console.log('dos valores' + selectCategoria + "   "+ selectEtiqueta);
       console.log('Etiqueta categoria' + respuestaCategoria);
       console.log('Etiqueta ' + respuestaEtiquetas);
 
       handleApiNoticiasFiltrar(respuestaCategoria, respuestaEtiquetas)
+      hideModal()
     }
+   
   };
   
   const handleFilterCleans = () => {
@@ -158,6 +158,7 @@ function ListaNoticiasScreen(props) {
     setSelectEtiqueta(-1)
      handleApiNoticias()
   };
+
   const getItem = (item) => {
     //RootNavigation.navigate('DetailNoticiaSlider', {item: item });
 
@@ -248,6 +249,13 @@ function ListaNoticiasScreen(props) {
               onChangeText={(text) => searchFilterFunction(text)}
               autoCorrect={false}
             /> */}
+               <Button
+                  small
+                  info
+                  onPress={() => showModal()}
+                  >
+                  <Text style={styles.textButton}>Filtrar Noticias</Text>
+                </Button>
             <FlatList
               data={noticias.noticias}
               //extraData={resJson}
@@ -330,7 +338,15 @@ function ListaNoticiasScreen(props) {
               </View>
             </View>
           </View>
-          <Item picker>
+          
+  
+        </ScrollView>
+        <Provider>
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.overlay}>
+          <View style={styles.view}>
+            <Text style={styles.text22}>Filtrar Noticias Por</Text>
+        <Item picker>
             <Picker
               mode="dropdown"
               style={{width: undefined}}
@@ -378,7 +394,12 @@ function ListaNoticiasScreen(props) {
               </Button>
             </View>
           </View>
-        </ScrollView>
+          </View>
+        </Modal>
+  
+      </Portal>
+    </Provider>
+  
       </SafeAreaView>
     </Container>
   );
@@ -551,6 +572,25 @@ const styles = StyleSheet.create({
   buttonContainer2: {
     flex: 1,
   },
+  overlay: {
+    height: "30%",
+    width: '100%',
+    backgroundColor: "#fff",
+    borderColor: '#539bef',
+    borderWidth: 2,
+    borderRadius: 10,
+},
+view: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+},
+text22: {
+    color: "#539bef",
+    textTransform: "uppercase",
+    marginTop: 10
+}
 });
 
 export default ListaNoticiasScreen;

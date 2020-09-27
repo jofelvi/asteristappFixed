@@ -54,27 +54,27 @@ class LicenciasActivas extends Component {
 
     render_text = () => {
        
-            return <Text style={{ paddingTop: 25, paddingLeft: 5 }}>
-                Lo siento su usuario {this.props.auth.usuario.current_user.name} no tiene licencias activas
-                 </Text>
+            return  <Text style={{ paddingTop: 25, paddingLeft: 5 }}>
+            el usuario {this.props.auth.usuario.current_user.name} No tiene licencias caducadas
+        </Text>
         
     }
     render() {
-        if (this.props.auth.cargando === true) {
-            return <Loading isVisible={this.props.auth.cargando} text={'CARGANDO...'} />;
+        if (this.props.licencias.cargando === true) {
+            return <Loading isVisible={this.props.licencias.cargando} text={'CARGANDO...'} />;
         }
         if (!this.state.admin) {
             return (
 
                 <View style={styles.container}>
                     <NavBar></NavBar>
-                    <Text style={styles.TxtoTituloNew} > LICENCIAS EN VIGOR: </Text>
-                    {this.props.licencias.licenciasVig.length <= 0 ? this.render_text() : null }
+                    <Text style={styles.TextEtiqutea} > LISTADO LICENCIAS EN VIGOR: </Text>
+                    {this.props.licencias.licenciasVig.length <= 0 &&  this.props.licencias.cargando != true ? this.render_text() : null }
                     {
 
                         this.props.licencias.licenciasVig.map((item) => (
                             <TouchableOpacity onPress={()=>this.GetItem(item)}>
-                                    <Card style={{marginTop: 20}}>
+                                    <Card style={{marginLeft:5, marginRight:5}}>
                                     <View style={styles.newsListContainer}>
                                     <Thumbnail source={LICENCIAICON} />
                                     <View style={styles.newsInfo}>                                               
@@ -214,6 +214,22 @@ const styles = StyleSheet.create({
         padding: 2,
         alignSelf: "flex-start"
     },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,  
+    marginBottom:15
+  },
+  TextEtiqutea2: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    marginTop: 15,  
+    marginBottom:15,
+    marginLeft:10
+  }
 
 
 })

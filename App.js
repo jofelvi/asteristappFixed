@@ -55,6 +55,9 @@ import { Header, Body } from 'native-base'
 import SplashScreen from 'react-native-splash-screen';
 import LicenciasVigenYear from './src/pages/LicenciasVigenYear/LicenciasVigenYear';
 import DetalleLicenciasYear from './src/pages/DetalleLicenciasYear/DetalleLicenciasYear';
+import CampeonatosScreen from './src/pages/CampeonatosScreen/CampeonatosScreen';
+import FormPerfilByClubScreen from './src/pages/FormPerfilByClubScreen/FormPerfilByClubScreen';
+import SesionScreen from './src/pages/SesionScreen/SesionScreen';
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -85,6 +88,8 @@ function App() {
 export default App;
 
 function StackPescadorFun() {
+
+
   return (
     <StackPescador.Navigator initialRouteName="Home">
 
@@ -136,6 +141,12 @@ function StackPescadorFun() {
       <StackPescador.Screen
         name="FormPerfilScreen"
         component={FormPerfilScreen}
+        options={{headerShown: false}}
+      />
+      
+      <StackPescador.Screen
+        name="FormPerfilByClubScreen"
+        component={FormPerfilByClubScreen}
         options={{headerShown: false}}
       />
 
@@ -195,7 +206,12 @@ function StackPescadorFun() {
         options={{headerShown: false}}
       />
 
-  
+      <StackPescador.Screen
+        name="CampeonatosScreen"
+        component={CampeonatosScreen}
+        options={{headerShown: false}}
+      />
+
 
     </StackPescador.Navigator>
   );
@@ -203,6 +219,9 @@ function StackPescadorFun() {
 
 
 function AppDrawer() {
+  
+  const auth = useSelector((state) => state.auth.usuario);
+  const {current_user, access_token} = auth;
   return (
     <Container>
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
@@ -221,11 +240,11 @@ function AppDrawer() {
 
       <Drawer.Screen
         name="LoginScreen"
-        component={LoginScreen}
+        component={SesionScreen}
         onPress={() => props.navigation.navigate('LoginScreen')}
         options={{
           headerShown: false,
-          drawerLabel: 'Login',
+          drawerLabel: access_token == null ? "Login" : "Cerrar cesion" ,
           drawerIcon: () => (
             <Icon name="sign-in" size={30} color="#0053C9" />
           ),

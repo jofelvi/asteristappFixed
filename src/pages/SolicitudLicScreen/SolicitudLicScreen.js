@@ -59,6 +59,8 @@ function SolicitudLicScreen() {
 
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
+    console.log("entro cl")
+    console.log(access_token)
     dispatch(solicitarModalidades(access_token));
   }, [status]);
 
@@ -72,7 +74,6 @@ function SolicitudLicScreen() {
     //setBandera(true);
     const {uid} = currenUser;
     console.log('entro handle');
-
     await dispatch(
       SolicitarLicencias(
         access_token,
@@ -100,9 +101,6 @@ function SolicitudLicScreen() {
     
   };
 
-  if (cargando){
-
-  }
   return (
     <Container>
     {status === 200 || status === '200' ? handleAlerta() : null}
@@ -110,7 +108,8 @@ function SolicitudLicScreen() {
       <NavBar></NavBar>
       <ScrollView
         keyboardShouldPersistTaps="always"
-        style={{alignContent: 'center', paddingTop: 1}}>
+        style={{alignContent: 'center', paddingTop: 1}}
+        >
         <SafeAreaView style={styles.container}>
           <Formik
             initialValues={{observaciones: ''}}
@@ -132,53 +131,46 @@ function SolicitudLicScreen() {
               <View style={{flex: 1, alignContent: 'center'}}>
                 <View>
                   <Text
-                    style={{
-                      marginTop: 25,
-                      fontSize: 17,
-                      textAlign: 'center',
-                      marginBottom: 15,
-                      fontWeight: 'bold',
-                    }}>
+                    style={styles.TextEtiqutea}>
                     SOLICITUD LICENCIA NUEVA
                   </Text>
                 </View>
-             <View style={{marginBottom:50,marginTop:50}}>
+             <View style={{marginBottom:20,marginTop:20}}>
              <Text
-                  style={{
-                    fontSize: 18,
-                    textAlign: 'left',
-                    marginLeft: 20,
-                    fontWeight: 'bold',
-                    marginBottom: 20
-                  }}>
+                  style={styles.TextEtiqutea2}>
                   Seleccione Modalidad de Licencia:
                 </Text>
+
                 <Item picker >
+
                   <Picker
                     mode="dropdown"
-                    style={{width: '100%',marginLeft:5}}
+                    style={{width: '100%'}}
                     placeholder="Seleccionar Modalidad"
-                    placeholderStyle={{color: '#bfc6ea'}}
+                    placeholderStyle={{marginLeft:0,
+                      fontWeight: 'bold',
+                      color: '#00183A',
+                      fontSize: 15,
+                      marginTop: 15,  
+                      marginBottom:15,
+                      marginLeft:10}}
                     iosHeader={'Modalidad'}
                     selectedValue={SelecModalidadLic}
                     headerBackButtonText="Volver"
                     onValueChange={(itemValue, itemIndex) =>
                       setSelecModalidadLic(itemValue)
                     }>
+                      
                     <Picker.Item label="Seleccione Modalidad Licencia" value="" />
+
                     {_renderCategorias}
+
                   </Picker>
                 </Item>
                 </View>
 
                 <Text
-                  style={{
-                    fontSize: 18,
-                    textAlign: 'left',
-                    marginLeft: 20,
-                    fontWeight: 'bold',
-                    marginBottom: 20
-                  }}>
+                  style={styles.TextEtiqutea2}>
                   Observaciones:
                 </Text>
                 <FormInput
@@ -223,8 +215,6 @@ const validationSchema = Yup.object().shape({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
   },
   buttonContainer: {
     margin: 5,
@@ -242,72 +232,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,  
+    marginBottom:15
+  },
+  TextEtiqutea2: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    marginTop: 15,  
+    marginBottom:15,
+    marginLeft:10
+  }
 });
 
-/*
-
-setIsLoading(true)
-
-        axios({
-                        method: 'post',
-            url: session_url,
-            headers: {
-                        'Content-Type': 'application/json',
-            },
-            data: {
-                        name: username,
-                pass: password
-            }
-        }).then(res => {
-                        console.log("###################### AQUI RESPUESTA API #######################");
-            //datasplit = res.data.splice(0, 10);
-            //console.log(res.data);
-            setResApi(res.data)
-            const {access_token, current_user, logout_token} = res.data;
-            setIsLoading(false)
-            navigation.navigate('Home', {
-                        token: access_token,
-                name: current_user.name,
-                uid: current_user.uid,
-                tokenLogout: logout_token
-
-            })
-        }).catch(err => {
-                        console.log("Error", err);
-            handleCleanCookies();
-
-            setIsLoading(false)
-            Alert("usuario y/o contraseña equivocado")
-        });
-
-
-
-        axios({
-                        method: 'post',
-            url: session_url,
-            headers: {
-                        'Content-Type': 'application/json',
-            },
-            data: {
-                        name: '51080866M',
-                pass: '5108$$$'
-            }
-        }).then(res => {
-                        console.log("funcion login")
-            const {access_token, current_user, logout_token} = res.data;
-            const usuariologueado = {
-                        token: access_token,
-                name: current_user.name,
-                uid: current_user.uid,
-                tokenLogout: logout_token
-            }
-            dispatch(signIn())
-        }).catch((err) => {
-                        console.log(user)
-            console.log(pass)
-            Alert.alert('Error en el servidor volver a intentar');
-            console.log(err);
-        })
-
-
-        */

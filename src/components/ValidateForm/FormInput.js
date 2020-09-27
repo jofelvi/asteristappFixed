@@ -15,6 +15,7 @@ const FormInput = ({
   labelStyle,
   inputStyle,
   errorMessage,
+  defaultValue,
   ...rest
 }) => (
     <View style={styles.inputContainer}>
@@ -24,6 +25,8 @@ const FormInput = ({
         leftIcon={<Icon2 name={iconName} size={28} color={iconColor} />}
         placeholderTextColor='grey'
         name={name}
+        keyboardType={keyboardType}
+        defaultValue={defaultValue}
         label={label}
         labelStyle={styles.TextLabel}
         inputStyle={inputStyle}
@@ -43,7 +46,8 @@ const styles = StyleSheet.create({
   },
   TextLabel: {
     //fontWeight: 'bold',
-    color: '#00183A'
+    color: '#00183A',
+    fontSize: 15
   }
 })
 

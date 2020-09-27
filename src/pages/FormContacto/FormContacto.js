@@ -36,16 +36,16 @@ import {
 } from 'native-base';
 import {enviarCorreo, resetStatus} from '../../store/licencias/actions';
 import CheckBox from '@react-native-community/checkbox';
-import { Modal, Portal, Provider } from 'react-native-paper';
 
 const {width: screenWidth} = Dimensions.get('window');
 
 function FormContacto({route}) {
+
   const cargando = useSelector((state) => state.auth.cargando);
   const status = useSelector((state) => state.licencias.status);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [checkAvisoLegal, setCheckAvisoLegal] = useState(false);
+  const [checkAvisoLegal, setCheckAvisoLegal] = useState(true);
   const [checkPromociones, setCheckPromociones] = useState(false);
   const [checkPersonalizado, setCheckPersonalizado] = useState(false);
   const [bandera, setBandera] = useState(false);
@@ -131,13 +131,7 @@ function FormContacto({route}) {
                 <View style={{flex: 1, alignContent: 'center'}}>
                   <View>
                     <Text
-                      style={{
-                        marginTop: 25,
-                        fontSize: 17,
-                        textAlign: 'center',
-                        marginBottom: 15,
-                        fontWeight: 'bold',
-                      }}>
+                      style={styles.TextEtiqutea}>
                       FORMULARIO DE CONTACTO
                     </Text>
                   </View>
@@ -188,7 +182,7 @@ function FormContacto({route}) {
                           : setCheckAvisoLegal(true)
                       }
                     />
-                    <Text style={styles.textalign}>Acepta condiciones</Text>
+                    <Text style={styles.TextEtiqutea2}>Acepta condiciones</Text>
                   </ListItem>
 
                   <ListItem>
@@ -201,7 +195,7 @@ function FormContacto({route}) {
                           : setCheckPromociones(true)
                       }
                     />
-                    <Text style={styles.textalign}>Acepto comunicaciones</Text>
+                    <Text style={styles.TextEtiqutea2}>Acepto comunicaciones</Text>
                   </ListItem>
 
                   <ListItem>
@@ -214,7 +208,7 @@ function FormContacto({route}) {
                           : setCheckPersonalizado(true)
                       }
                     />
-                    <Text style={styles.textalign}>
+                    <Text style={styles.TextEtiqutea2}>
                       Acepto comunicaciones Personalizadas
                     </Text>
                   </ListItem>
@@ -276,6 +270,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 40,
   },
+  TextEtiqutea: {
+    marginLeft: Platform.OS === 'ios' ? 10 : 0,
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,  
+    marginBottom:15
+  },
+  TextEtiqutea2: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    marginTop: 15,  
+    marginBottom:15,
+    marginLeft:10
+  }
 });
 
 export default connect()(FormContacto);

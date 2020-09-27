@@ -29,7 +29,7 @@ class LicenciasCaducadas extends Component {
     }
 
     render_text = () => {
-            return <Text style={{ paddingTop: 25, paddingLeft: 5 }}>
+            return <Text style={{ paddingTop: 25, paddingLeft: 5, textAlign: "center" }}>
                 el usuario {this.props.auth.usuario.current_user.name} No tiene licencias caducadas
             </Text>
         
@@ -43,8 +43,9 @@ class LicenciasCaducadas extends Component {
                             <ScrollView keyboardShouldPersistTaps='always'>
                                 <SafeAreaView style={styles.container}>
             <View style={styles.container}>
-            <Text style={styles.TxtoTituloNew} > LICENCIAS CADUCADAS: </Text>
-                {this.props.licencias.solicitarLicCadu.length <= 1 || this.props.licencias.solicitarLicCadu === []? this.render_text(): null}
+            <Text style={styles.TextEtiqutea} > LICENCIAS CADUCADAS: </Text>
+                {this.props.licencias.solicitarLicCadu.length <= 0 &&  this.props.licencias.cargando != true ? this.render_text() : null }
+
                 {
                     this.props.licencias.solicitarLicCadu.map((item) => (
 
@@ -132,6 +133,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         fontSize: 14
     },
+    TextEtiqutea: {
+        fontWeight: 'bold',
+        color: '#00183A',
+        fontSize: 15,
+        textAlign: 'center',
+        marginTop: 15,  
+        marginBottom:15
+      },
+      TextEtiqutea2: {
+        fontWeight: 'bold',
+        color: '#00183A',
+        fontSize: 15,
+        marginTop: 15,  
+        marginBottom:15,
+        marginLeft:10
+      }
 
 })
 

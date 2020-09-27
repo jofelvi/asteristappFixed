@@ -38,8 +38,13 @@ function GestiónDeportistas() {
     dispatch(traerDeportistas(access_token));
   }, []);
 
-  const goHome = () => navigation.navigate('ListaNoticias');
-
+  const getItem = (item) => {
+    console.log("parametro ruta item", item)
+    navigation.navigate('FormPerfilByClubScreen', {
+        item: item
+    });
+    //Alert.alert(item);
+}
   const alertDelete = (item) => {
     Alert.alert(
       'Advertencia',
@@ -49,7 +54,7 @@ function GestiónDeportistas() {
         item.uid +
         ' sera eliminado permanentemente',
       [
-        {text: 'Aceptar', onPress: () => 'resetValues'},
+        {text: 'Aceptar', onPress: () => getItem(item.uid)},
         {text: 'Cancelar', onPress: () => 'resetValues'},
       ],
 
@@ -145,11 +150,6 @@ function GestiónDeportistas() {
     }
   });
 
-  const getItem = (item) => {
-    navigation.navigate('EditDeportista', {
-      item: item,
-    });
-  };
 
   if (cargando === true) {
     return <Loading isVisible={cargando} text={'CARGANDO...'} />;

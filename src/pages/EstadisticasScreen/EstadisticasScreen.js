@@ -42,7 +42,7 @@ function EstadisticasScreen() {
   const URLperfil = 'https://licencias.fapd.org/json-estadisticas-club';
   const [firstRowDatos, setfirstRowDatos] = useState([]);
   const [tablaCuotas, settablaCuotas] = useState([]);
-
+const [tablaPorLicencias, settablaPorLicencias] = useState();
   useEffect(() => {
     handleApi();
   }, [auth]);
@@ -51,18 +51,20 @@ function EstadisticasScreen() {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        'Authorization': 'Bearer ' + access_token,
       },
     };
     axios.get(URLperfil, {headers}).then((respuesta) => {
       console.log('exito entro funcion  respuesta API traerEstadisticas');
-      const {firstRowDatos, tablaCuotas} = respuesta.data;
+      console.log(JSON.stringify(respuesta.data))
+      const {firstRowDatos, tablaCuotas, tablaPorLicencias,totalCategorias} = respuesta.data;
       dispatch({
         type: TRAER_ESTADISTICAS,
         payload: respuesta.data,
       });
       setfirstRowDatos(firstRowDatos);
       settablaCuotas(tablaCuotas);
+      settablaPorLicencias(tablaPorLicencias)
     });
   };
 
@@ -76,24 +78,51 @@ function EstadisticasScreen() {
   };
 
   const _renderRows = () => {
-    const {Anual} = tablaCuotas;
-    const anual = typeof Anual !== 'undefined' ? Anual : [];
-    console.log(anual);
-    let rows = Object.values(anual).map((value) => {
-      console.log(value)
-      return <DataTable.Cell>{value}</DataTable.Cell>;
-    });
-    return rows;
+    if (tablaCuotas !== []){
+      const {Anual} = tablaCuotas;
+      const anual = typeof Anual !== 'undefined' ? Anual : [];
+      console.log(anual);
+      let rows = Object.values(anual).map((value) => {
+        
+        return <DataTable.Cell>{ value}</DataTable.Cell>;
+      });
+      return rows;
+    }else{
+null
+    }
+
   };
 
   const _renderTotalesRow = () => {
-    const {Totales} = tablaCuotas;
-    let totalesRow = Object.values(Totales).map((value) => {
-      return <DataTable.Cell>{value}</DataTable.Cell>
-    });
-    return totalesRow;
+    if (tablaCuotas !== []){
+      const {Totales} = tablaCuotas;
+      const totales = typeof Totales !== 'undefined' ? Totales : [];
+
+      let totalesRow = Object.values(totales).map((value) => {
+        //console.log(totales.Periodo)
+        return <DataTable.Cell>{value}</DataTable.Cell>
+      });
+      return totalesRow;
+    }else{
+      null
+    }
+
   };
 
+  const _renderLicenciasHeader= () => {
+    if (tablaPorLicencias !== undefined){
+      const {Totales} = tablaPorLicencias;
+      const totales = typeof Totales !== 'undefined' ? Totales : [];
+
+      let totalesRow = Object.values(totales).map((value) => {
+        return <DataTable.Cell>{value}</DataTable.Cell>
+      });
+      return totalesRow;
+    }else{
+      null
+    }
+
+  };
   return (
     <Container>
       <NavBar></NavBar>
@@ -104,16 +133,16 @@ function EstadisticasScreen() {
           <Text style={{textAlign:'center', fontWeight: '600', fontSize: 18, marginTop: 20}}>Tabla de Cuotas</Text>
           <DataTable>
             <DataTable.Header>
-              {firstRowDatos != null && _renderEncabezado()}
+              {firstRowDatos != [] && _renderEncabezado()}
             </DataTable.Header>
 
             <DataTable.Row>
-              {firstRowDatos != null ? _renderRows() : null}
+              {firstRowDatos != [] ? _renderRows() : null}
             </DataTable.Row>
 
             <DataTable.Row>
               {
-                firstRowDatos != null && _renderTotalesRow()
+                firstRowDatos != []  && _renderTotalesRow()
               }
             </DataTable.Row>
           </DataTable>
@@ -122,7 +151,8 @@ function EstadisticasScreen() {
           <DataTable>
             <DataTable.Header>
               <DataTable.Title>Modalidad</DataTable.Title>
-              <DataTable.Title>Absoluta/Infantil</DataTable.Title>
+              <DataTable.Title>Absoluta</DataTable.Title>
+              <DataTable.Title>Infantil</DataTable.Title>
               <DataTable.Title>Totales</DataTable.Title>
             </DataTable.Header>
 

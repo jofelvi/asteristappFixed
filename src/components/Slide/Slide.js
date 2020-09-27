@@ -36,6 +36,9 @@ function Slide({ route }) {
     const getItem = (item) => {
         //Function for click on an item
         console.log("idParam" + item)
+        if (item === "" || item === null){
+           return null
+        }
         navigation.navigate('DetailNoticiaSlider', {
             item: item
         });
