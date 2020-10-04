@@ -56,7 +56,7 @@ import SplashScreen from 'react-native-splash-screen';
 import LicenciasVigenYear from './src/pages/LicenciasVigenYear/LicenciasVigenYear';
 import DetalleLicenciasYear from './src/pages/DetalleLicenciasYear/DetalleLicenciasYear';
 import CampeonatosScreen from './src/pages/CampeonatosScreen/CampeonatosScreen';
-import FormPerfilByClubScreen from './src/pages/FormPerfilByClubScreen/FormPerfilByClubScreen';
+import FormPerfilByClubScreen2 from './src/pages/FormPerfilByClubScreen/FormPerfilByClubScreen';
 import SesionScreen from './src/pages/SesionScreen/SesionScreen';
 
 Icon.loadFont();
@@ -146,7 +146,7 @@ function StackPescadorFun() {
       
       <StackPescador.Screen
         name="FormPerfilByClubScreen"
-        component={FormPerfilByClubScreen}
+        component={FormPerfilByClubScreen2}
         options={{headerShown: false}}
       />
 

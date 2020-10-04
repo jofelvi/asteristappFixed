@@ -19,7 +19,9 @@ import {
   UID,
   CLUB_ID_ENCARGADO,
   CLUB_ID,
-  RESET_STATUS
+  RESET_STATUS,
+  RESET_PERFIL_BYCLUB,
+  PERFIL_BYCLUB,
 } from './Constants';
 
 export const INITIAL_STATE = {
@@ -40,6 +42,8 @@ export const INITIAL_STATE = {
   uid: '',
   clubId: ['0'],
   clubIdEncargado: '',
+  perfilbyClub: [],
+  resetPerfilbyClub: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -58,6 +62,7 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, usuario: action.payload};
     case TRAER_PERFIL:
       return {...state, perfil: action.payload};
+
     case ERROR2:
       return {...state, error2: action.payload};
     case ROLES_USER:
@@ -76,8 +81,8 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, usuario: []};
     case STATUS:
       return {...state, status: action.payload};
-      case RESET_STATUS:
-        return {...state, status: "1"};
+    case RESET_STATUS:
+      return {...state, status: '1'};
     case TRAER_LIQUIDACIONES:
       return {...state, listLiquidaciones: action.payload};
     case CSRF_TOKEN:
@@ -92,6 +97,10 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, clubIdEncargado: action.payload};
     case CLUB_ID:
       return {...state, clubId: action.payload};
+    case PERFIL_BYCLUB:
+      return {...state, perfilbyClub: action.payload};
+    case RESET_PERFIL_BYCLUB:
+      return {...state, resetPerfilbyClub: []};
     default:
       return state;
   }

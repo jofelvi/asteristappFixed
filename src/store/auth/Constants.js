@@ -19,6 +19,7 @@ export const CLUB_ID_ENCARGADO = "CLUB_ID_ENCARGADO"
 export const CLUB_ID = "CLUB_ID"
 export const STATUS = "STATUS"
 export const RESET_STATUS = "RESET_STATUS"
-
+export const RESET_PERFIL_BYCLUB = "RESET_PERFIL_BYCLUB"
+export const PERFIL_BYCLUB = "PERFIL_BYCLUB"
 
 

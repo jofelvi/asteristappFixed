@@ -93,7 +93,10 @@ function SesionScreen() {
         <NavBar></NavBar>
         <ScrollView keyboardShouldPersistTaps="always">
           <SafeAreaView style={styles.container}>
-          <Text>Bienvenido Usuario Numero {uid}</Text>
+            {
+              uid !== ""  || uid !== null ?  <Text>Hola usuario Numero </Text> : null
+            }
+         
           
             <FormButton title="cerrar sesion" onPress={() => createTwoButtonAlert() } />
      

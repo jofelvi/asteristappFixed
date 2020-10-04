@@ -42,7 +42,6 @@ function Slide({ route }) {
         navigation.navigate('DetailNoticiaSlider', {
             item: item
         });
-        //Alert.alert(item);
     }
 
     const goDetailsNews = (item) => {

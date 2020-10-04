@@ -45,6 +45,15 @@ function GestiónDeportistas() {
     });
     //Alert.alert(item);
 }
+
+const getItem2 = (item) => {
+  console.log("parametro ruta LicenciasActivas", item)
+
+  navigation.navigate('LicenciasActivas', {
+      item: item
+  });
+  //Alert.alert(item);
+}
   const alertDelete = (item) => {
     Alert.alert(
       'Advertencia',
@@ -61,6 +70,24 @@ function GestiónDeportistas() {
       {cancelable: false},
     );
   };
+
+  const alertGetLicencias = (item) => {
+    Alert.alert(
+      'Informacion',
+      'Desea obtener las licencias asociadas al Usuario ' +
+        item.nombre_completo +
+        ' uid ' +
+        item.uid,
+        
+      [
+        {text: 'Aceptar', onPress: () => getItem2(item.uid)},
+        {text: 'Cancelar', onPress: () => 'resetValues'},
+      ],
+
+      {cancelable: false},
+    );
+  };
+  
   
   const _renderList = listaDeportistas.map((item, index) => {
     if (listaDeportistas.length >= 1) {
@@ -136,7 +163,7 @@ function GestiónDeportistas() {
                 <TouchableOpacity onPress={() => alertDelete(item)}>
                   <Icon name="edit" style={{fontSize: 40, color: '#0053C9'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => alertDelete(item)}>
+                <TouchableOpacity onPress={() => alertGetLicencias(item)}>
                   <Icon2
                     name="delete"
                     style={{fontSize: 40, color: '#0053C9'}}

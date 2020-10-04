@@ -20,6 +20,8 @@ import {
   CLUB_ID_ENCARGADO,
   CLUB_ID,
   RESET_STATUS,
+  RESET_PERFIL_BYCLUB,
+  PERFIL_BYCLUB,
 } from './Constants';
 import axios from 'axios';
 import qs from 'qs';
@@ -131,6 +133,7 @@ export const cerrarSession = () => async (dispatch) => {
 };
 
 export const traerPerfil = (uid, token) => (dispatch) => {
+  console.log(uid , " id en el action")
   dispatch({
     type: CARGANDO,
   });
@@ -157,6 +160,70 @@ export const traerPerfil = (uid, token) => (dispatch) => {
 
       dispatch({
         type: TRAER_PERFIL,
+        payload: respuesta.data,
+      }),
+        dispatch({
+          type: APELLIDO1,
+          payload: String(field_user_apellido1[0].value),
+        }),
+        dispatch({
+          type: CLUB_ID,
+          payload: field_user_clubs[0].target_id,
+        }),
+        dispatch({
+          type: NO_CARGANDO,
+        });
+      if (roles.filter((e) => e.target_id === 'club').length > 0) {
+        console.log('rol club');
+        console.log(field_user_gestionclub[0].target_id);
+        dispatch({
+          type: CLUB_ID_ENCARGADO,
+          payload: field_user_gestionclub[0].target_id,
+        });
+      }
+    });
+  } catch (error) {
+    console.log('error API TRAER PERFIL' + error.message);
+    dispatch({
+      type: ERROR2,
+      payload: error.message,
+    }),
+      dispatch({
+        type: NO_CARGANDO,
+      });
+  }
+  dispatch({
+    type: NOISLOAD,
+  });
+};
+
+export const traerPerfilByclub = (uid, token) => (dispatch) => {
+  dispatch({
+    type: CARGANDO,
+  });
+  dispatch({
+    type: ISLOAD,
+  });
+  const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
+  let headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  };
+  try {
+    axios.get(URLperfil, {headers}).then((respuesta) => {
+      console.log('exito entro funcion  respuesta API TRAER PERFIL');
+      const {
+        field_user_apellido1,
+        field_user_clubs,
+        roles,
+        field_user_gestionclub,
+      } = respuesta.data;
+
+      dispatch({
+        type: RESET_PERFIL_BYCLUB,
         payload: respuesta.data,
       }),
         dispatch({
@@ -252,13 +319,14 @@ export const isload = () => (dispatch) => {
 
 export const editarPerfil = (uid, token, data) => (dispatch) => {
   console.log(token);
+  console.log(token.trim())
   const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
 
     fetch(URLperfil, {
-      method: 'patch',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        'Authorization': `Bearer ${token.trim()}`,
       },
       body: data,
     }).then((respuesta) => {
@@ -341,6 +409,12 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
 export const resetStatus = () => async (dispatch) => {
   dispatch({
     type: RESET_STATUS,
+  });
+};
+
+export const resetPerfilByclub = () => async (dispatch) => {
+  dispatch({
+    type: RESET_PERFIL_BYCLUB,
   });
 };
 

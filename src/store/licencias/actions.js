@@ -62,8 +62,9 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
 
 export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
   const URLicenciasVgRoles = `https://licencias.fapd.org/json-licencias-vigentes-deportista/${uid}?_format=json`;
+  
   dispatch({
-    type: CARGANDO,
+    type: CARGANDO
   });
   try {
     let headers = {
@@ -74,18 +75,19 @@ export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
     };
     axios.get(URLicenciasVgRoles, {headers}).then((respuesta) => {
       console.log(
-        '###################### ACTION AQUI RESPUESTA API traerLicenciasVigRoles #######################',
+        '###################### ACTION AQUI RESPUESTA API traerLicenciasVigRoles NUEVO #######################',
       );
-      return (
+      
         dispatch({
           type: TRAER_LICENCIAS_VIGENTES_ROLES,
           payload: respuesta.data,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
         })
-      );
-    });
+
+        dispatch({
+          type: NO_CARGANDO
+        })
+      
+    })
   } catch (error) {
     console.log('error' + error.message);
     dispatch({

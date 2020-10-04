@@ -19,6 +19,7 @@ export const traerEstadisticas = (token) =>  (dispatch) => {
     }
   }
   try {
+    
    axios.get(URLperfil, { headers })
       .then(respuesta => {
         console.log("exito entro funcion  respuesta API traerEstadisticas")
