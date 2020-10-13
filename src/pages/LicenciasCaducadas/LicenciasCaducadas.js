@@ -7,6 +7,8 @@ import * as licenciasActions from '../../store/licencias/actions'
 import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button } from 'native-base';
 import ListLicencias from '../../components/ListLicencias/ListLicencias';
 import NavBar from '../../components/navbar/Navbar';
+import axios from 'axios'
+import Loading from '../../components/Loading/Loading';
 
 
 const URL = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
@@ -16,18 +18,46 @@ const { width: screenWidth } = Dimensions.get('window');
 class LicenciasCaducadas extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            licenciasCad:[],
+            isloading: true
+      
+          };
 
     };
+
     componentDidMount() {
         const { roles } = this.props.auth.usuario.current_user
         if (this.props.auth.usuario.access_token !== null) {
             var token = this.props.auth.usuario.access_token;
-            this.props.traerLicenciasCadu(token);
-            console.log("test aqui")
-            console.log(this.props.auth.usuario.current_user.uid); // de esta misma forma .roles traemos los roles y con la linea de abajo sabes si incluye el rol
+            //this.props.traerLicenciasCadu(token);
+            this.getData(token)
+           // console.log("test aqui")
+            //console.log(this.props.auth.usuario.current_user.uid); // de esta misma forma .roles traemos los roles y con la linea de abajo sabes si incluye el rol
         }
     }
 
+
+ getData =(token) =>{
+     try {
+        axios.get(URL, { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,}
+          ).then((respuesta) => {
+
+            console.log('###################### ACTION AQUI RESPUESTA API traerLicenciasCaducadas #######################');
+            console.log(respuesta.data)
+            this.setState({licenciasCad: respuesta.data, isloading: false})
+            //this.setState({isloadin: false})
+          });
+     } catch (error) {
+        console.log(error)
+        this.setState({isloading: false})
+     }
+   
+    
+      
+    }
     render_text = () => {
             return <Text style={{ paddingTop: 25, paddingLeft: 5, textAlign: "center" }}>
                 el usuario {this.props.auth.usuario.current_user.name} No tiene licencias caducadas
@@ -35,6 +65,18 @@ class LicenciasCaducadas extends Component {
         
     }
     render() {
+
+        const {isloading} = this.state
+    
+        if (isloading === true) {
+    
+          return (
+            <Loading
+              isVisible={isloading}
+              text={'CARGANDO...'}
+            />
+          );
+        }
         //const auth = useSelector((state) => state.auth);
 
         return (
@@ -44,10 +86,10 @@ class LicenciasCaducadas extends Component {
                                 <SafeAreaView style={styles.container}>
             <View style={styles.container}>
             <Text style={styles.TextEtiqutea} > LICENCIAS CADUCADAS: </Text>
-                {this.props.licencias.solicitarLicCadu.length <= 0 &&  this.props.licencias.cargando != true ? this.render_text() : null }
+                {this.state.licenciasCad === [] &&  this.state.isloading === false ? this.render_text() : null }
 
                 {
-                    this.props.licencias.solicitarLicCadu.map((item) => (
+                    this.state.licenciasCad.map((item) => (
 
                         <ListLicencias
                             club={item.club}

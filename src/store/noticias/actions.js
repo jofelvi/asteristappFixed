@@ -18,73 +18,82 @@ const URL_ETIQUETAS = 'https://fapd.org/json-etiquetas?_format=json'
 
 export const traerNoticias = (page) => async (dispatch) => {
   dispatch({
-    type: CARGANDO
+    type: CARGANDO,
+    payload: true
   });
+
   try {
     axios.get(`https://fapd.org/json-noticias?page=` + page)
       .then(respuesta => {
         console.log("###################### ENtro funtion  action traerNoticias #######################")
-        return (
+        
           dispatch({
             type: TRAER_NOTICIAS,
             payload: respuesta.data,
-          }),
-          dispatch({
-            type: NO_CARGANDO
           })
-        )
+
+          dispatch({
+            type: CARGANDO,
+            payload: false
+          });
+        
       });
   } catch (error) {
     console.log("error" + error.message)
-    return (
+   
       dispatch({
         type: ERROR2,
         payload: error.message,
-      }),
-      dispatch({
-        type: NO_CARGANDO
       })
-    )
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      })
   }
 }
 export const traerDetalleNoticia = (item) => async (dispatch) => {
+  
   dispatch({
-    type: NO_CARGANDO
-  })
-  dispatch({
-    type: CARGANDO
+    type: CARGANDO,
+    payload: true
   });
+
   try {
     axios.get(urlDetalleNoticias + item)
       .then(respuesta => {
         console.log("###################### ENtro respuesta ok #######################")
-        return (
+        
           dispatch({
             type: TRAER_DETALLE_NOTICIAS,
             payload: respuesta.data,
-          }),
-          dispatch({
-            type: NO_CARGANDO
           })
-        )
+          dispatch({
+            type: CARGANDO,
+            payload: false
+          });
+        
       })
   } catch (error) {
-    return (
+   
       dispatch({
         type: ERROR2,
         payload: error.message,
-      }),
-      dispatch({
-        type: NO_CARGANDO
       })
-    )
+
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      });
+    
   }
 }
 
 export const resetDetalleNoticia = () => async (dispatch) => {
   dispatch({
-    type: NO_CARGANDO
-  }),
+    type: CARGANDO,
+    payload: false
+  })
+
     dispatch({
       type: RESET_DETALLE_NOTICIA
     })
@@ -93,9 +102,11 @@ export const resetDetalleNoticia = () => async (dispatch) => {
 }
 
 export const traerCategorias = () => async (dispatch) => {
+
   dispatch({
-    type: CARGANDO
-  })
+    type: CARGANDO,
+    payload: true
+  });
 
   try {
     axios.get(URL_CATEGORIAS)
@@ -104,35 +115,42 @@ export const traerCategorias = () => async (dispatch) => {
           respuesta.data[i].id = i;
           return respuesta.data[i];
         })
-        return (
+        
           dispatch({
             type: TRAER_CATEGORIAS,
             payload: arr,
-          }),
-          dispatch({
-            type: NO_CARGANDO
           })
-        )
+
+          dispatch({
+            type: CARGANDO,
+            payload: false
+          })
+        
       })
   } catch (error) {
     console.log(JSON.stringify(error) + "###################### ENtro Traer categorias  error #######################")
-    return (
+   
       dispatch({
         type: ERROR2,
         payload: error.message,
-      }),
-      dispatch({
-        type: NO_CARGANDO
       })
-    )
+
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      })
+    
   }
 }
 
 
 export const traerEtiquetas = () => async (dispatch) => {
+  
   dispatch({
-    type: CARGANDO
-  })
+    type: CARGANDO,
+    payload: true
+  });
+
   try {
     axios.get(URL_ETIQUETAS)
       .then(respuesta => {
@@ -140,27 +158,31 @@ export const traerEtiquetas = () => async (dispatch) => {
           respuesta.data[i].id = i;
           return respuesta.data[i];
         })
-        return (
+        
           dispatch({
             type: TRAER_ETIQUETAS,
             payload: arr,
-          }),
-          dispatch({
-            type: NO_CARGANDO
           })
-        )
+
+          dispatch({
+            type: CARGANDO,
+            payload: false
+          });
+        
       })
   } catch (error) {
     console.log(JSON.stringify(error) + "###################### ENtro Traer categorias  error #######################")
-    return (
+    
       dispatch({
         type: ERROR2,
         payload: error.message,
-      }),
-      dispatch({
-        type: NO_CARGANDO
       })
-    )
+
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      });
+    
   }
 }
 

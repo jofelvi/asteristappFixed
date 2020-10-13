@@ -58,6 +58,7 @@ import DetalleLicenciasYear from './src/pages/DetalleLicenciasYear/DetalleLicenc
 import CampeonatosScreen from './src/pages/CampeonatosScreen/CampeonatosScreen';
 import FormPerfilByClubScreen2 from './src/pages/FormPerfilByClubScreen/FormPerfilByClubScreen';
 import SesionScreen from './src/pages/SesionScreen/SesionScreen';
+import LicenciasActivasDeportista from './src/pages/LicenciasActivasDeportista/LicenciasActivasDeportista';
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -173,21 +174,32 @@ function StackPescadorFun() {
         component={Publicidad}
         options={{headerShown: false}}
       />
+
       <StackPescador.Screen
         name="DetailNoticiaSlider"
         component={DetailNoticiaSlider}
         options={{headerShown: false}}
       />
+
       <StackPescador.Screen
         name="DetailPublicidad"
         component={DetailPublicidad}
         options={{headerShown: false}}
       />
+
       <StackPescador.Screen
         name="LicenciasActivas"
         component={LicenciasActivas}
         options={{headerShown: false}}
       />
+
+      <StackPescador.Screen
+        name="LicenciasActivasDeportista"
+        component={LicenciasActivasDeportista}
+        options={{headerShown: false}}
+      />
+      
+      
       <StackPescador.Screen
         name="LiquidacionesScreen"
         component={LiquidacionesScreen}
@@ -276,6 +288,7 @@ function AppDrawer() {
           ),
         }}
       />
+
       <Drawer.Screen
         name="Privacidad"
         component={PoliticasPrivacidadScreen}
@@ -319,6 +332,7 @@ function AppDrawer() {
         options={{ drawerLabel: () => null }} 
         /> */}
     </Drawer.Navigator>
+
     </Container>
   );
 }

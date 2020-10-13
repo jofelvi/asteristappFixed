@@ -24,15 +24,17 @@ import {
   PERFIL_BYCLUB,
 } from './Constants';
 import axios from 'axios';
-import qs from 'qs';
 
 const session_url = 'https://licencias.fapd.org/user/login?_format=json';
 
 export const traerUsuario = (username, password) => async (dispatch) => {
+  
   dispatch({
     type: CARGANDO,
+    payload: true
   });
-  const respuesta = axios({
+
+  axios({
     method: 'post',
     url: session_url,
     headers: {
@@ -42,8 +44,7 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       name: `${username}`,
       pass: `${password}`,
     },
-  })
-    .then((respuesta) => {
+  }).then((respuesta) => {
       console.log('funcion login');
       const {
         current_user,
@@ -55,14 +56,11 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       dispatch({
         type: TRAER_USUARIO,
         payload: respuesta.data,
-      });
+      })
       dispatch({
         type: ROLES_USER,
         payload: roles,
-      });
-      dispatch({
-        type: NO_CARGANDO,
-      });
+      })
       dispatch({
         type: TOKEN,
         payload: access_token,
@@ -79,6 +77,9 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         type: UID,
         payload: uid,
       });
+
+        traerPerfil(uid,access_token)
+
     })
     .catch(function (error) {
       console.log(error.response.status + 'status error aqui');
@@ -87,7 +88,8 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         payload: error,
       });
       dispatch({
-        type: NO_CARGANDO,
+        type: CARGANDO,
+        payload: false
       });
       dispatch({
         type: STATUS,
@@ -95,9 +97,11 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       });
     });
   dispatch({
-    type: NO_CARGANDO,
+    type: CARGANDO,
+    payload: false
   });
 };
+
 export const cerrarSession = () => async (dispatch) => {
 
   console.log("cerrar sesion action")
@@ -112,7 +116,8 @@ export const cerrarSession = () => async (dispatch) => {
     payload: [],
   });
   dispatch({
-    type: NO_CARGANDO,
+    type: CARGANDO,
+    payload: false
   });
   dispatch({
     type: TOKEN,
@@ -136,6 +141,7 @@ export const traerPerfil = (uid, token) => (dispatch) => {
   console.log(uid , " id en el action")
   dispatch({
     type: CARGANDO,
+    payload: true
   });
   dispatch({
     type: ISLOAD,
@@ -171,7 +177,8 @@ export const traerPerfil = (uid, token) => (dispatch) => {
           payload: field_user_clubs[0].target_id,
         }),
         dispatch({
-          type: NO_CARGANDO,
+          type: CARGANDO,
+          payload: false
         });
       if (roles.filter((e) => e.target_id === 'club').length > 0) {
         console.log('rol club');
@@ -189,7 +196,8 @@ export const traerPerfil = (uid, token) => (dispatch) => {
       payload: error.message,
     }),
       dispatch({
-        type: NO_CARGANDO,
+        type: CARGANDO,
+        payload: false
       });
   }
   dispatch({
@@ -200,6 +208,7 @@ export const traerPerfil = (uid, token) => (dispatch) => {
 export const traerPerfilByclub = (uid, token) => (dispatch) => {
   dispatch({
     type: CARGANDO,
+    payload: true
   });
   dispatch({
     type: ISLOAD,
@@ -235,7 +244,8 @@ export const traerPerfilByclub = (uid, token) => (dispatch) => {
           payload: field_user_clubs[0].target_id,
         }),
         dispatch({
-          type: NO_CARGANDO,
+          type: CARGANDO,
+          payload: false
         });
       if (roles.filter((e) => e.target_id === 'club').length > 0) {
         console.log('rol club');
@@ -253,7 +263,8 @@ export const traerPerfilByclub = (uid, token) => (dispatch) => {
       payload: error.message,
     }),
       dispatch({
-        type: NO_CARGANDO,
+        type: CARGANDO,
+        payload: false
       });
   }
   dispatch({
@@ -318,31 +329,42 @@ export const isload = () => (dispatch) => {
 };
 
 export const editarPerfil = (uid, token, data) => (dispatch) => {
-  console.log(token);
-  console.log(token.trim())
-  const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
+  dispatch({
+    type: CARGANDO,
+    payload: true
+  });
 
     fetch(URLperfil, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token.trim()}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: data,
     }).then((respuesta) => {
       console.log('exito entro funcion  respuesta API editarPerfil');
       console.log(respuesta.status);
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      });
+    });
+
+    dispatch({
+      type: CARGANDO,
+      payload: false
     });
 
 };
 
 export const traerDeportistas = (token) => (dispatch) => {
-  console.log('entro a traer deportista');
   const URLGETLISUSERCLUB =
     'https://licencias.fapd.org/json-deportistas-club?_format=json';
 
   dispatch({
     type: CARGANDO,
+    payload: true
   });
   try {
     let headers = {
@@ -360,7 +382,8 @@ export const traerDeportistas = (token) => (dispatch) => {
         payload: respuesta.data,
       });
       dispatch({
-        type: NO_CARGANDO,
+        type: CARGANDO,
+        payload: false
       });
     });
   } catch (error) {
@@ -370,7 +393,8 @@ export const traerDeportistas = (token) => (dispatch) => {
       payload: error.message,
     });
     dispatch({
-      type: NO_CARGANDO,
+      type: CARGANDO,
+      payload: false
     });
   }
 };
@@ -379,6 +403,11 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
   console.log(token + ' token ');
   console.log('entro a traer liquidaciones');
   const URLGETLLIQUIDACIONES = `https://licencias.fapd.org/json-liquidaciones/${nidClub}/${year}?_format=json`;
+  
+  dispatch({
+          type: CARGANDO,
+          payload: true
+        });
 
   try {
     const headers = {
@@ -395,6 +424,10 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
       dispatch({
         type: TRAER_LIQUIDACIONES,
         payload: respuesta.data,
+      })
+      dispatch({
+        type: CARGANDO,
+        payload: false
       });
     });
   } catch (error) {
@@ -402,6 +435,10 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
     dispatch({
       type: ERROR2,
       payload: error.message,
+    });
+    dispatch({
+      type: CARGANDO,
+      payload: false
     });
   }
 };
@@ -424,3 +461,4 @@ export const traerPerfilSave = (perfil) => (dispatch) => {
     payload: perfil,
   });
 };
+

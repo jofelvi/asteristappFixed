@@ -20,29 +20,36 @@ const URL = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
 const urlDetalleNoticias = 'https://fapd.org/json-articulo?id=';
 
 export const traerLicenciasVig = (token) => async (dispatch) => {
-  dispatch({
-    type: CARGANDO,
-  });
+ 
+
   try {
+
+    dispatch({
+      type: CARGANDO,
+      payload: true
+    })
+
     let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
     };
+
     axios.get(URL, {headers}).then((respuesta) => {
-      console.log(
-        '###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################',
-      );
-      return (
+
+      console.log('###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################');
+    
         dispatch({
           type: TRAER_LICENCIAS_VIGENTES,
           payload: respuesta.data,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
         })
-      );
+
+        dispatch({
+          type: CARGANDO,
+          payload: false  
+        })
+      
     });
   } catch (error) {
     console.log("esta en error")
@@ -50,32 +57,39 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
     dispatch({
       type: ERROR2,
       payload: error.message,
-    }),
-      dispatch({
-        type: NO_CARGANDO,
-      });
+    })
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
   }
   dispatch({
-    type: NO_CARGANDO,
+    type: CARGANDO,
+    payload: false
   });
 };
 
 export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
+
   const URLicenciasVgRoles = `https://licencias.fapd.org/json-licencias-vigentes-deportista/${uid}?_format=json`;
-  
+
   dispatch({
-    type: CARGANDO
+    type: CARGANDO,
+    payload: true
   });
+
   try {
+
     let headers = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
     };
+
     axios.get(URLicenciasVgRoles, {headers}).then((respuesta) => {
       console.log(
-        '###################### ACTION AQUI RESPUESTA API traerLicenciasVigRoles NUEVO #######################',
+        'ACTION AQUI RESPUESTA API traerLicenciasVigRoles NUEVO',
       );
       
         dispatch({
@@ -83,9 +97,10 @@ export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
           payload: respuesta.data,
         })
 
-        dispatch({
-          type: NO_CARGANDO
-        })
+      dispatch({
+          type: CARGANDO,
+          payload: false
+        });
       
     })
   } catch (error) {
@@ -94,16 +109,20 @@ export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
       type: ERROR2,
       payload: error.message,
     }),
-      dispatch({
-        type: NO_CARGANDO,
-      });
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
   }
 };
 
 export const traerLicenciasCadu = (token) => async (dispatch) => {
+
   dispatch({
     type: CARGANDO,
+    payload: true
   });
+
   try {
     let headers = {
       headers: {
@@ -115,15 +134,17 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
       console.log(
         '###################### ACTION AQUI RESPUESTA API traerLicenciasCadu #######################',
       );
-      return (
+      
         dispatch({
           type: TRAER_LICENCIAS_CADUCADAS,
           payload: respuesta.data,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
         })
-      );
+
+        dispatch({
+        type: CARGANDO,
+        payload: false
+      })
+      
     });
   } catch (error) {
     console.log('error' + error.message);
@@ -131,9 +152,10 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
       type: ERROR2,
       payload: error.message,
     }),
-      dispatch({
-        type: NO_CARGANDO,
-      });
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
   }
 };
 
@@ -144,6 +166,11 @@ export const SolicitarLicencias = (
   uid,
 ) => async (dispatch) => {
   const URLSOLICITARLICENCIA = 'https://licencias.fapd.org/enviaremail';
+
+  dispatch({
+    type: CARGANDO,
+    payload: true
+  });
 
   try {
     axios({
@@ -159,17 +186,19 @@ export const SolicitarLicencias = (
         observaciones: `${observaciones}`,
       },
     }).then((respuesta) => {
-      console.log(JSON.stringify(respuesta.status));
-      console.log(
-        '###################### ACTION AQUI RESPUESTA API SolicitarLicencias #######################',
-      );
-      return dispatch({
+
+      console.log('###### ACTION AQUI RESPUESTA API SolicitarLicencias #########');
+
+       dispatch({
         type: STATUS,
         payload: respuesta.status,
-      }),
+      })
+
       dispatch({
-        type: NO_CARGANDO,
-      });
+        type: CARGANDO,
+        payload: false
+      })
+
     });
   } catch (error) {
     console.log('error' + error.message);
@@ -177,28 +206,45 @@ export const SolicitarLicencias = (
       type: ERROR2,
       payload: error.message,
     }),
-      dispatch({
-        type: NO_CARGANDO,
-      });
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
   }
 };
 
 export const traerDetalleNoticia = (item) => async (dispatch) => {
-  console.log('exito entro funcion detalle noticia');
-  console.log(item);
+
+  dispatch({
+    type: CARGANDO,
+    payload: true
+  });
+
   try {
     const respuesta = axios.get(urlDetalleNoticias + item).then((respuesta) => {
       console.log('exito entro funcion  respuesta detalle noticia');
-      return dispatch({
+
+       dispatch({
         type: TRAER_DETALLE_NOTICIAS,
         payload: respuesta.data,
-      });
+      })
+
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      })
+
     });
   } catch (error) {
     console.log('error' + error.message);
     dispatch({
       type: ERROR2,
       payload: error.message,
+    })
+
+    dispatch({
+      type: CARGANDO,
+      payload: false
     });
   }
 };
@@ -207,7 +253,9 @@ export const solicitarModalidades = (token) => async (dispatch) => {
   const URLGETMODALIDADES = `https://licencias.fapd.org/json-modalidades?_format=json`;
   dispatch({
     type: CARGANDO,
-  });
+    payload: true
+  })
+
   try {
     let headers = {
       headers: {
@@ -217,25 +265,27 @@ export const solicitarModalidades = (token) => async (dispatch) => {
     };
     axios.get(URLGETMODALIDADES, {headers}).then((respuesta) => {
       console.log('###################### ACTION AQUI RESPUESTA API solicitarModalidades #######################');
-      return (
+      
         dispatch({
           type: MODALIDAD_LICENCIA,
           payload: respuesta.data,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
         })
-      );
+        dispatch({
+          type: CARGANDO,
+          payload: false
+        });
+     
     });
   } catch (error) {
     console.log('error' + error.message);
     dispatch({
       type: ERROR2,
       payload: error.message,
-    }),
-      dispatch({
-        type: NO_CARGANDO,
-      });
+    })  
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
   }
 };
 
@@ -247,9 +297,12 @@ export const enviarCorreo = (
   listCheck,
 ) => async (dispatch) => {
   const URLenviarCorreo = 'https://licencias.fapd.org/enviaremail';
+
   dispatch({
     type: CARGANDO,
+    payload: true
   });
+
   axios({
     method: 'post',
     url: URLenviarCorreo,
@@ -269,24 +322,28 @@ export const enviarCorreo = (
         '###################### ACTION AQUI RESPUESTA API enviaremail ####################### ' +
           respuesta.status,
       );
-      return (
+      
         dispatch({
           type: STATUS,
           payload: respuesta.status,
-        }),
-        dispatch({
-          type: NO_CARGANDO,
         })
-      );
-    })
-    .catch((error) => {
+
+      dispatch({
+          type: CARGANDO,
+          payload: false
+        });
+    }).catch((error) => {
+
       dispatch({
         type: ERROR2,
         payload: error.message,
-      }),
-        dispatch({
-          type: NO_CARGANDO,
-        });
+      })
+
+      dispatch({
+        type: CARGANDO,
+        payload: false
+      })
+
     });
 };
 
@@ -308,8 +365,9 @@ export const traerLicenciasYears = (nidClub, year, token) => async (dispatch,) =
   const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`;
 
   dispatch({
-    type: CARGANDO
-  })
+    type: CARGANDO,
+    payload: true
+  });
 
   try {
     let headers = {
@@ -328,16 +386,19 @@ export const traerLicenciasYears = (nidClub, year, token) => async (dispatch,) =
           payload: respuesta.data,
         })
         dispatch({
-          type: NO_CARGANDO,
-        })
+          type: CARGANDO,
+          payload: false
+        });
     });
   } catch (error) {
     console.log('error' + error.message);
       dispatch({
-        type: NO_CARGANDO,
+        type: CARGANDO,
+        payload: false
       });
   }
-  dispatch({
-    type: NO_CARGANDO,
-  });
+    dispatch({
+      type: CARGANDO,
+      payload: false
+    });
 };

@@ -36,73 +36,129 @@ import {
 } from 'native-base';
 import {enviarCorreo, resetStatus} from '../../store/licencias/actions';
 import CheckBox from '@react-native-community/checkbox';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
+import axios from 'axios';
+import Loading from '../../components/Loading/Loading';
 
 const {width: screenWidth} = Dimensions.get('window');
 
 function FormContacto({route}) {
 
   const cargando = useSelector((state) => state.auth.cargando);
-  const status = useSelector((state) => state.licencias.status);
+  //const status = useSelector((state) => state.licencias.status);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [checkAvisoLegal, setCheckAvisoLegal] = useState(true);
   const [checkPromociones, setCheckPromociones] = useState(false);
   const [checkPersonalizado, setCheckPersonalizado] = useState(false);
-  const [bandera, setBandera] = useState(false);
+  const [status, setstatus] = useState('');
+  const [bandera, setbandera] = useState();
+  const [isModalVisible, setModalVisible] = useState(false);
+  const inputRef = React.createRef('');
   const [nombre, setnombre] = useState('');
-  const [asunto, setasunto] = useState('');
-  const [mensaje, setmensaje] = useState('');
   const [email, setemail] = useState('');
-  const [isModalVisible, setModalVisible] = useState(true);
-  const inputRef = React.createRef();
-
+  const [mensaje, setmensaje] = useState('');
+  const [asunto, setasunto] = useState('');
+  const [isloadin, setisloadin] = useState(false);
 
   useEffect(() => {
-    dispatch(resetStatus());
      
-  }, [status]);
+  }, []);
 
   const handleSubmit = (values) => {
     let listCheck = [checkAvisoLegal, checkPromociones, checkPersonalizado];
-    let respuesta = dispatch(
+    setisloadin(true)
       enviarCorreo(
         values.nombre,
         values.email,
         values.asunto,
         values.mensaje,
-        listCheck,
-      ),
+        listCheck    
     );
-    //inputRef.current.clear();
-    //return resetValues();
   };
 
-  const alertaFunt = () => {
-    Alert.alert(
-      'Aviso',
-      'Su correo fue enviado Satisfactoriamente',
-      [
-        {
-          text: 'Cancelar',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel'
-        },
-        { text: 'Aceptar', onPress: () => navigation.navigate('Home') }
-      ],
-      { cancelable: false }
-    );
-
-    dispatch(resetStatus());
+ const enviarCorreo = ( nombre1,email1, asunto1, mensaje1,listCheck1) => {
+    let URLenviarCorreo = 'https://licencias.fapd.org/enviaremail';
+    console.log("entro funcion")
+    axios({
+      method: 'post',
+      url: URLenviarCorreo,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        'nombre': `${nombre1}`,
+        'email': `${email1}`,
+        'asunto': `${asunto1}`,
+        'mensaje': `${mensaje1}`,
+        'checks': `${listCheck1}`,
+      },
+    }).then((respuesta) => {
+        console.log( '#### ACTION AQUI RESPUESTA API enviaremail ######## ',respuesta.status );
+        setstatus(respuesta.status)
+        setisloadin(false)
+      })
     }
+
+  // const alertaFunt = () => {
+  //   Alert.alert(
+  //     'Aviso',
+  //     'Su correo fue enviado Satisfactoriamente',
+  //     [
+  //       {
+  //         text: 'Cancelar',
+  //         onPress: () => console.log('Cancel Pressed'),
+  //         style: 'cancel'
+  //       },
+  //       { text: 'Aceptar', onPress: () => navigation.navigate('Home') }
+  //     ],
+  //     { cancelable: false }
+  //   );
+
+  //   dispatch(resetStatus());
+  //   }
   
+  const modalOpen = () =>{
+    setstatus("")
+    setModalVisible(true)
+   
+  }
+
+  const modalBtnAcep = () =>{
+    setModalVisible(false)
+    navigation.navigate('Home')
+  }
+
+  if (isloadin === true) {
+    
+    return (
+      <Loading
+        isVisible={isloadin}
+        text={'ENVIANDO...'}
+      />
+    );
+  }
   return (
     <Container>
-      {    status === 200 || status === '200' ? alertaFunt() : null
-}
+      {    status === 200 || status === '200' ? modalOpen() : null }
       <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
         <NavBar />
         <ScrollView>
-    
+        <View style={styles.TextEtiqutea2}>
+          <ConfirmDialog
+              titleStyle= {styles.TextEtiqutea2}
+              title={ `INFORMACION `}
+              visible={isModalVisible}
+              onTouchOutside={() => setModalVisible(false)}
+              positiveButton={{
+                  title: "aceptar",
+                  onPress: () => modalBtnAcep()
+              }} >
+              <View>
+                 <Text style={styles.TextEtiqutea2}>Su Peticion se envio Satisfactoriamente</Text>
+              </View>
+          </ConfirmDialog>
+          </View> 
           <Formik
             initialValues={{
               nombre: nombre,
@@ -170,7 +226,7 @@ function FormContacto({route}) {
                   placeholder="Introducir Mensaje"
                   onBlur={handleBlur('mensaje')}
                 />
-
+                    <ErrorMessage errorValue={touched.mensaje && errors.mensaje} />
                 <List>
                   <ListItem>
                     <CheckBox
@@ -231,11 +287,6 @@ function FormContacto({route}) {
           </Formik>
 
         </ScrollView>
-        {/* <Button
-          style={styles.botonAbajo}
-          title="Volver"
-          onPress={() => navigation.goBack()}
-        /> */}
       </SafeAreaView>
     </Container>
   );

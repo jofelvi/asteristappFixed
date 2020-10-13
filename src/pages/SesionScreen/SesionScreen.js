@@ -58,10 +58,10 @@ function SesionScreen() {
   }, [auth]);
 
   const cerrarse = () => {
-
+    
+  navigation.navigate('Home');
   console.log("entro a cerrar sesion")
   dispatch(cerrarSession())
-  navigation.navigate('Home');
   
   };
 

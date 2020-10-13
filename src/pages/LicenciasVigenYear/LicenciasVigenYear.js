@@ -46,7 +46,9 @@ class LicenciasVigenYear extends Component {
     this.state = {
       admin: false,
       yeartInput: "2020",
-      clubId:""
+      clubId:"",
+      isloadin: true,
+      lic: []
     };
     this.GetItem = this.GetItem.bind(this);
   }
@@ -58,7 +60,7 @@ class LicenciasVigenYear extends Component {
     const {roles} = this.props.auth.rolesUser;
     let rol = this.props.auth.usuario.current_user.roles;
     //this.props.traerPerfil(uid, access_token);
-    this.handleapiPerfil(uid, access_token)
+    this.handlePerfil(uid, access_token)
     //this.handleapiPerfil(uid,access_token)
     const year3 = new Date().getFullYear();
     if ( rol.includes('contabilidad') ||rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
@@ -67,34 +69,52 @@ class LicenciasVigenYear extends Component {
     }
   }
 
-  handleapiPerfil= (uid, token) =>{
-    const { dispatch } = this.props;   
+  handlePerfil= (uid, token) =>{
+
     const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
-    let headers = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-    };
     
-      axios.get(URLperfil, {headers}).then((respuesta) => {
+    try {
+      axios.get(URLperfil, {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }).then((respuesta) => {
         console.log('exito entro funcion  respuesta API TRAER PERFIL');
 
-        const {
-          field_user_clubs,
-          roles,
-          field_user_gestionclub,
-        } = respuesta.data;
+        const {field_user_clubs,roles,field_user_gestionclub,} = respuesta.data;
 
         if (roles.filter((e) => e.target_id === 'club').length > 0) {
           console.log(field_user_gestionclub[0].target_id);
-          clubId = field_user_gestionclub[0].target_id
-          this.setState({clubId:clubId})
+          let clubId = field_user_gestionclub[0].target_id
+          this.setState({clubId:clubId, isloadin: false})
           const year3 = new Date().getFullYear();
           this.getlicencias(year3,clubId)
         }
 
       });
+    } catch (error) {
+      this.setState({isloadin: false})
+    }
+   
+  }
+
+  handleapiLicByYear= (nidClub, year, token) =>{
+
+    const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`;
+    
+    try {
+      axios.get(URLicenciasVgYear, {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }).then((respuesta) => {
+        console.log('exito entro funcion  respuesta API TRAER PERFIL');
+
+        this.setState({isloadin: false})
+         this.setState({lic: respuesta.data})
+      });
+    } catch (error) {
+      this.setState({isloadin: false})
+    }
+   
   }
 
   getlicencias = (year, clubId) => {
@@ -105,7 +125,7 @@ class LicenciasVigenYear extends Component {
     console.log(year + 'year ------------------');
     year === undefined || year === '' ? 2020 : year;
     console.log(year + 'year ------------------');
-    this.props.traerLicenciasYears(clubId, year, access_token);
+    this.handleapiLicByYear(clubId, year, access_token);
     
   };
 
@@ -116,10 +136,12 @@ class LicenciasVigenYear extends Component {
   console.log(year + 'year ------------------');
   year === undefined || year === '' ? 2020 : year;
   console.log(year + 'year ------------------');
-  this.props.traerLicenciasYears(nidClub, year, access_token);  
+  this.setState({isloadin: true})
+  this.handleapiLicByYear(nidClub, year, access_token);  
   
 };
   
+
   GetItem(item) {
     this.props.navigation.navigate('DetalailLicencias2', {
       item: item,
@@ -160,21 +182,20 @@ class LicenciasVigenYear extends Component {
     
     console.log("cargando......" + this.props.licencias.cargando)
 
-    if (this.props.licencias.cargando === true) {
-      return <Loading isVisible={this.props.licencias.cargando} text={'CARGANDO...'} />;
+    if (this.state.isloadin === true) {
+      return <Loading isVisible={this.state.isloadin} text={'CARGANDO...'} />;
     }
 
     return (
       
         
       <View style={styles.container}>
-          {this.props.licencias.cargando === true ? <Loading isVisible={true}text={'CARGANDO...'}/> : null }
         <NavBar></NavBar>
         <Container>
           <ScrollView>
           <SafeAreaView>
             <Text style={styles.TextEtiqutea}> LICENCIAS POR EJERCICIO: </Text>
-            {this.props.licencias.licenciasYears.length <= 0
+            {this.state.lic.length <= 0
               ? this.render_text()
               : null}
               
@@ -204,7 +225,7 @@ class LicenciasVigenYear extends Component {
                             </Button>
   
 
-            {this.props.licencias.licenciasYears.map((item) => (
+            {this.state.lic.map((item) => (
               <TouchableOpacity onPress={() => this.GetItem(item)}>
                 <Card style={{marginTop: 15, backgroundColor: '#f2f1ec', marginLeft:5, marginRight:5}}>
                   <View style={styles.newsListContainer}>
@@ -260,10 +281,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  newsImage: {
-    flexBasis: '25%',
-    height: '100%',
   },
   TxtoTituloNew: {
     marginTop: 20,

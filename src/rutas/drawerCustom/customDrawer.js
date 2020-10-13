@@ -222,7 +222,7 @@ function RutasDeportistas({...props}) {
         icon={({focused, color, size}) => (
           <Icon3 name="carryout" size={30} color="#0053C9" />
         )}
-        onPress={() => RootNavigation.navigate('LicenciasActivas', null)}
+        onPress={() => RootNavigation.navigate('LicenciasActivasDeportista', null)}
       />
 
       <DrawerItem

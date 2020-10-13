@@ -84,7 +84,7 @@ const [tablaPorLicencias, settablaPorLicencias] = useState();
       console.log(anual);
       let rows = Object.values(anual).map((value) => {
         
-        return <DataTable.Cell>{ value}</DataTable.Cell>;
+        return <DataTable.Cell>{value}</DataTable.Cell>;
       });
       return rows;
     }else{

@@ -30,6 +30,7 @@ import NavBar from '../../components/navbar/Navbar';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import { traerLicenciasVig, traerLicenciasLiquidaciones } from '../../store/licencias/actions';
+import Loading from '../../components/Loading/Loading';
 
 export default function DetalleLicLiquidacion({route, props}) {
   const {item} = route.params;
@@ -38,34 +39,43 @@ export default function DetalleLicLiquidacion({route, props}) {
   const auth = useSelector((state) => state.auth);
   const {access_token, uid} = auth;
   const licenciasLiquidaciones = useSelector((state) => state.licencias.licenciasLiquidaciones);
-
+  const [licLiquid, setLicLiquid] = useState([]);
+  const [isloadin, setIsloadin] = useState(true);
 
   useEffect(() => {
+
     const {item} = route.params;
-    console.log(item + " parametro url")
     const URLLIC = `https://licencias.fapd.org/json-licencias-liquidacion/${item}?_format=json`;
-    console.log(URLLIC + " url + parametro url")
-    let headers = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + access_token,
-      },
-    };
     
-    const data = axios.get(URLLIC, {headers}).then((respuesta) => {
-        console.log('exito entro funcion  respuesta API TRAER Licencias liquidaciones');
-        console.log("respuesta api " + JSON.stringify(respuesta.data))
-           dispatch(traerLicenciasLiquidaciones(respuesta.data))
-      });
+    handleApi(URLLIC)
       
   }, [item]);
 
 
+  const handleApi = (URLLIC)=>{
 
-  const _renderLicenciasDetails = licenciasLiquidaciones.map((item) =>  {
-    console.log(licencias.length)
+    try {
+      axios.get(URLLIC, {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + access_token,}
+      ).then((respuesta) => {
+        console.log('exito entro funcion  respuesta API TRAER Licencias liquidaciones');
+        console.log("respuesta api " + JSON.stringify(respuesta.data))
+           //dispatch(traerLicenciasLiquidaciones(respuesta.data))
+           setLicLiquid(respuesta.data)
+           setIsloadin(false)
+      });
+    } catch (error) {
+      setIsloadin(false)
+    }
+
+  }
+
+  const _renderLicenciasDetails = licLiquid.map((item) =>  {
+    
+    
         console.log("entro a tiene datos")
-        console.log(JSON.stringify(licenciasLiquidaciones))
+        console.log(JSON.stringify(licLiquid))
          return(
                 <ListLicencias
                   club={item.club}
@@ -79,12 +89,19 @@ export default function DetalleLicLiquidacion({route, props}) {
                   year={item.year}
                   caducada={true}
                 />
-            
                )
-
   }
   )
 
+  if (isloadin === true) {
+
+    return (
+      <Loading
+        isVisible={isloadin}
+        text={'CARGANDO...'}
+      />
+    );
+  }
 
   return (
     <Container>
@@ -101,6 +118,7 @@ export default function DetalleLicLiquidacion({route, props}) {
     </Container>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

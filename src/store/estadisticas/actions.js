@@ -9,6 +9,7 @@ import axios from 'axios';
 export const traerEstadisticas = (token) =>  (dispatch) => {
   dispatch({
     type: CARGANDO,
+    payload: true
   });
 
   const URLperfil = 'https://licencias.fapd.org/json-estadisticas-club';
@@ -24,21 +25,25 @@ export const traerEstadisticas = (token) =>  (dispatch) => {
       .then(respuesta => {
         console.log("exito entro funcion  respuesta API traerEstadisticas")
         //console.log(respuesta.data)
-        return dispatch({
+        dispatch({
           type: TRAER_ESTADISTICAS,
           payload:  respuesta.data,
       
         })
-        
+        dispatch({
+          type: CARGANDO,
+          payload: false
+        });
       })
   } catch (error) {
     console.log("error API TRAER PERFIL" + error.message)
     dispatch({
       type: ERROR2,
       payload: error.message
-    }),
+    })
     dispatch({
-            type: NO_CARGANDO,
-          })
+      type: CARGANDO,
+      payload: false
+    });
   }
 }

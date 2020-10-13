@@ -16,12 +16,12 @@ export default (state = INITIAL_STATE, action) => {
     case CARGANDO:
       return {
         ...state,
-        cargando: true,
+        cargando: action.payload,
       };
     case NO_CARGANDO:
       return {
         ...state,
-        cargando: false,
+        cargando: action.payload,
       };
     case TRAER_ESTADISTICAS:
       return {...state, tablaEstadisticas: action.payload};

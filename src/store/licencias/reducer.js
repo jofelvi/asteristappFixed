@@ -33,13 +33,9 @@ export default (state = INITIAL_STATE, action) => {
     case CARGANDO:
       return {
         ...state,
-        cargando: true,
+        cargando: action.payload
       };
-    case NO_CARGANDO:
-      return {
-        ...state,
-        cargando: false,
-      };
+      
     case TRAER_LICENCIAS_VIGENTES:
       return {
         ...state,

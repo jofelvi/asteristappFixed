@@ -1,4 +1,3 @@
-<script src="http://192.168.1.128:8097"></script>
 import React, {Fragment, useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -32,9 +31,11 @@ import {
 } from 'native-base';
 //import { CheckBox } from 'react-native-elements'
 import CheckBox from '@react-native-community/checkbox';
-
+import axios from 'axios'
 import {SolicitarLicencias, resetStatus} from '../../store/licencias/actions';
 import NavBar from '../../components/navbar/Navbar';
+import Loading from '../../components/Loading/Loading';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -56,13 +57,14 @@ function SolicitudLicScreen() {
   const dispatch = useDispatch();
   const {access_token} = usuario;
   const status = useSelector((state) => state.licencias.status);
-
+   const [isModalVisible, setisModalVisible] = useState();
+  const [respStatus, setrespStatus] = useState('');
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
-    console.log("entro cl")
-    console.log(access_token)
+
     dispatch(solicitarModalidades(access_token));
-  }, [status]);
+
+  }, []);
 
   const goHome = () => navigation.navigate('Home');
 
@@ -72,45 +74,106 @@ function SolicitudLicScreen() {
 
   const handleSubmit = async (values) => {
     //setBandera(true);
-    const {uid} = currenUser;
+    setIsLoading(true)
     console.log('entro handle');
-    await dispatch(
-      SolicitarLicencias(
-        access_token,
-        SelecModalidadLic,
-        values.observaciones,
-        uid,
-      ),
+    //await dispatch(SolicitarLicencias( access_token, SelecModalidadLic, values.observaciones,uid));
+    handleLApiEmail(values.observaciones)
+  };
+
+  // const handleAlerta = () => {
+  //   setrespStatus('')
+  //   Alert.alert(
+  //     'Completado',
+  //    'Su solicitud se envio con exito',
+  //    [
+  //      { text: "Aceptar", onPress: () => goHome() }
+  //    ],
+  //    { cancelable: true }
+  //    );
+  //    ;
+  // };
+
+
+  const handleLApiEmail = (observaciones) => {
+    const {uid} = currenUser;
+
+    const URLPETLIC = 'https://licencias.fapd.org/enviaremail';
+
+    try {
+      axios({
+        method: 'post',
+        url: URLPETLIC,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + access_token,
+        },
+        data: {
+          uid: `${uid}`,
+          modalidad: `${SelecModalidadLic}`,
+          observaciones: `${observaciones}`,
+        },
+      }).then((respuesta) => {
+        setIsLoading(false)
+        console.log('###### ACTION AQUI RESPUESTA API SolicitarLicencias ######### Status:',respuesta.status );
+        setrespStatus(respuesta.status)
+        
+      });
+  
+    } catch (error) {
+      setIsLoading(false)
+     console.log(error)
+    }
+  };
+
+  const modalOpen = () =>{
+    setrespStatus("")
+    setisModalVisible(true)
+   
+  }
+
+  const modalBtnAcep = () =>{
+    setisModalVisible(false)
+    navigation.navigate('Home')
+  }
+
+  if (isLoading === true) {
+
+    return (
+      <Loading
+        isVisible={isLoading}
+        text={'ENVIANDO...'}
+      />
     );
-  };
-
-  const handleAlerta = () => {
-    Alert.alert(
-      'Completado',
-     'Su solicitud se envio con exito',
-     [
-       { text: "Aceptar", onPress: () => goHome() }
-     ],
-     { cancelable: true }
-     );
-     dispatch(resetStatus());
-  };
-
-
-  const handleLTokenExpired = (value) => {
-    
-  };
-
+  }
+  
   return (
     <Container>
-    {status === 200 || status === '200' ? handleAlerta() : null}
-    {status === 403 || status === '403' ? handleLTokenExpired() : null }
+      
+    {respStatus === 200 || respStatus === '200' ? modalOpen() : null}
+    {respStatus === 403 || respStatus === '403' ? handleLTokenExpired() : null }
       <NavBar></NavBar>
       <ScrollView
         keyboardShouldPersistTaps="always"
         style={{alignContent: 'center', paddingTop: 1}}
         >
+          
         <SafeAreaView style={styles.container}>
+        <View style={styles.TextEtiqutea2}>
+          <ConfirmDialog
+              //style={styles.TextEtiqutea2}
+              title={ `INFORMACION `}
+              titleStyle= {styles.TextEtiqutea2}
+              visible={isModalVisible}
+              onTouchOutside={() => setisModalVisible(false)}
+              positiveButton={{
+                  title: "Aceptar",
+                  onPress: () => modalBtnAcep()
+              }} >
+              <View>
+                 <Text style={styles.TextEtiqutea2}>Su Solicitud para una nueva licencia se envio Satisfactoriamente</Text>
+              </View>
+          </ConfirmDialog>
+          </View> 
           <Formik
             initialValues={{observaciones: ''}}
             onSubmit={async (values, { resetForm }) => {
@@ -147,7 +210,7 @@ function SolicitudLicScreen() {
                     mode="dropdown"
                     style={{width: '100%'}}
                     placeholder="Seleccionar Modalidad"
-                    placeholderStyle={{marginLeft:0,
+                    placeholderStyle={{
                       fontWeight: 'bold',
                       color: '#00183A',
                       fontSize: 15,

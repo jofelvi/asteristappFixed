@@ -34,27 +34,29 @@ function GestiónDeportistas() {
   const cargando = useSelector((state) => state.auth.cargando);
 
   useEffect(() => {
-    console.log('entro acces');
+
     dispatch(traerDeportistas(access_token));
+
   }, []);
 
   const getItem = (item) => {
-    console.log("parametro ruta item", item)
+
     navigation.navigate('FormPerfilByClubScreen', {
-        item: item
+        item: item.uid,
+        nombre: item.nombre_completo
     });
-    //Alert.alert(item);
-}
+  }
 
 const getItem2 = (item) => {
-  console.log("parametro ruta LicenciasActivas", item)
 
   navigation.navigate('LicenciasActivas', {
-      item: item
+      item: item.uid,
+      nombre: item.nombre_completo
   });
-  //Alert.alert(item);
+  
 }
-  const alertDelete = (item) => {
+  const alertDelete = (item) => {  
+
     Alert.alert(
       'Advertencia',
       'El Usuario ' +
@@ -63,12 +65,12 @@ const getItem2 = (item) => {
         item.uid +
         ' sera eliminado permanentemente',
       [
-        {text: 'Aceptar', onPress: () => getItem(item.uid)},
-        {text: 'Cancelar', onPress: () => 'resetValues'},
+        {text: 'Aceptar', onPress: () => getItem(item)},
+        {text: 'Cancelar', onPress: () => 'resetValues'}
       ],
-
       {cancelable: false},
     );
+
   };
 
   const alertGetLicencias = (item) => {
@@ -80,7 +82,7 @@ const getItem2 = (item) => {
         item.uid,
         
       [
-        {text: 'Aceptar', onPress: () => getItem2(item.uid)},
+        {text: 'Aceptar', onPress: () => getItem2(item)},
         {text: 'Cancelar', onPress: () => 'resetValues'},
       ],
 
@@ -185,7 +187,6 @@ const getItem2 = (item) => {
     <Container>
       <SafeAreaView style={styles.container}>
         <NavBar></NavBar>
-        {console.log(listaDeportistas + 'Lista deportistas')}
         <ScrollView keyboardShouldPersistTaps="always">
           <Text style={styles.TxtoTituloNew}> Gestion Deportistas: </Text>
           <View style={{marginLeft:5, marginRight:5}}>
