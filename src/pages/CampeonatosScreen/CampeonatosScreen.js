@@ -52,7 +52,7 @@ function CampeonatosScreen() {
   const usuario = useSelector((state) => state.auth.usuario);
   const currenUser = useSelector((state) => state.auth.usuario.current_user);
   //const auth = useSelector((state) => state.auth);
-const [ambitoSelect, setAmbitoSelect] = useState("");
+  const [ambitoSelect, setAmbitoSelect] = useState("");
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {access_token} = usuario;
@@ -63,7 +63,7 @@ const [ambitoSelect, setAmbitoSelect] = useState("");
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
     handleApiCategoria()
-    handleApiProvinciaByClub("CC")
+    handleApiProvinciaByClub("CA")
     console.log(access_token)
   }, [status]);
 
@@ -98,6 +98,7 @@ const [ambitoSelect, setAmbitoSelect] = useState("");
 
     let respuesta = axios.get(URL, {headers}).then((respuesta) => {
       console.log('exito entro funcion  respuesta API handleApiProvinciaByClub');
+      console.log('exito entro funcion  respuesta API handleApiProvinciaByClub',respuesta.data);
       setprovinciaByClub(respuesta.data);
     });
 

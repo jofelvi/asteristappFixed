@@ -22,6 +22,7 @@ import {
   RESET_STATUS,
   RESET_PERFIL_BYCLUB,
   PERFIL_BYCLUB,
+  NOMBRE
 } from './Constants';
 import axios from 'axios';
 
@@ -45,7 +46,9 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       pass: `${password}`,
     },
   }).then((respuesta) => {
-      console.log('funcion login');
+    traerNombre(username,password)
+
+    console.log('funcion login');
       const {
         current_user,
         csrf_token,
@@ -78,7 +81,6 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         payload: uid,
       });
 
-        traerPerfil(uid,access_token)
 
     })
     .catch(function (error) {
@@ -139,13 +141,7 @@ export const cerrarSession = () => async (dispatch) => {
 
 export const traerPerfil = (uid, token) => (dispatch) => {
   console.log(uid , " id en el action")
-  dispatch({
-    type: CARGANDO,
-    payload: true
-  });
-  dispatch({
-    type: ISLOAD,
-  });
+
   const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
 
   let headers = {
@@ -203,6 +199,36 @@ export const traerPerfil = (uid, token) => (dispatch) => {
   dispatch({
     type: NOISLOAD,
   });
+};
+
+export const traerNombre = (uid, token) => {
+  return (dispatch) => {
+    const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    try {
+      axios.get(URLperfil, {headers}).then((respuesta) => {
+        const {
+          field_user_nombre
+        } = respuesta.data;
+            dispatch({
+              type: NOMBRE,
+              payload: String(field_user_nombre[0].value),
+            })
+      });
+    } catch (error) {
+      console.log('error API TRAER PERFIL' + error.message);
+      dispatch({
+        type: ERROR2,
+        payload: error.message,
+      })
+    }
+  };
 };
 
 export const traerPerfilByclub = (uid, token) => (dispatch) => {

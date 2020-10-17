@@ -71,6 +71,9 @@ function ListaNoticiasScreen(props) {
     let arrayholder = [];
     const ref = React.useRef(null);
     const [isloading, setisloading] = useState(false);
+    const usuario = useSelector((state) => state.auth.usuario);
+    const auth = useSelector((state) => state.auth);
+    const rolesUser = useSelector((state) => state.auth.rolesUser);
 
     useEffect(() => {
         setisloading(true)
@@ -79,7 +82,7 @@ function ListaNoticiasScreen(props) {
         dispatch(traerCategorias());
         dispatch(traerEtiquetas());
         hanndleApiPublicidad();
-        console.log("------------------------------------ ruta home aqui --------", route.name);
+        console.log("------------------------------------ AUTH --------", JSON.stringify( rolesUser));
 
     }, [page]);
 

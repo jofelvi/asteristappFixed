@@ -50,20 +50,39 @@ const height = width * 0.5;
 
 function CustomDrawer({...props}) {
   const auth = useSelector((state) => state.auth);
+  const perfil = useSelector((state) => state.auth.perfil );
+  const nombres = useSelector((state) => state.auth.nombre );
+
   const [isDeportista, setIsDeportista] = useState(true);
   const [isAdmin, setisAdmin] = useState(true);
   const [isGestor, setisGestor] = useState(true);
+  const [isCampeonato, setisCampeonato] = useState(true);
   const rolesUser = useSelector((state) => state.auth.rolesUser);
   const uid = useSelector((state) => state.auth.uid);
   const dispatch = useDispatch();
+  let nombre
+    console.log(JSON.stringify(nombres))
+    console.log(perfil !== [])
+    console.log(perfil.length >= 1)
+  //const {field_user_nombre} = perfil
+    if (perfil !== [] || perfil.length >= 1){
+        console.log("entro if", nombres)
+       // nombre =  typeof perfil.field_user_nombre[0] === 'undefined' ? "" : String(perfil.field_user_nombre[0].value)
+    }else{
+        console.log("entro else")
+        nombre =  ""
+    }
+
 
   useEffect(() => {
+
     if (!rolesUser.includes('invitado')) {
       rolesUser.includes('deportista')
         ? setIsDeportista(true)
         : setIsDeportista(false);
       rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
       rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
+      rolesUser.includes('campeonato') ? setisCampeonato(true) : setisCampeonato(false);
     } else {
       setisGestor(false);
       setisAdmin(false);
@@ -95,8 +114,9 @@ function CustomDrawer({...props}) {
           {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
 
           {uid != '' ? (
-            <Text>Bienvenido Usuario Numero {uid}</Text>
+            <Text style={{marginTop:2, }}> Bienvenido {nombre}</Text>
           ) : null}
+
         </Header>
 
         <DrawerItemList {...props} />
@@ -104,6 +124,8 @@ function CustomDrawer({...props}) {
         {isGestor && <RutasGestorClub />}
         {isAdmin && <RutasAdminClub />}
         {isDeportista && <RutasDeportistas />}
+        {isCampeonato &&<RutasCampeonato/>}
+
       </DrawerContentScrollView>
     </Container>
   );
@@ -132,6 +154,33 @@ function RutasAdminClub({...props}) {
       />
     </Fragment>
   );
+}
+
+function RutasCampeonato({...props}) {
+    return (
+        <Fragment>
+            <DrawerItem
+                labelStyle={{
+                    color: 'black',
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                }}
+                label="Menu Campeontao"
+                icon={({color, size}) => (
+                    <Icon4 name="fish" size={30} color="#0053C9" />
+                )}
+            />
+
+            <DrawerItem
+                label="Campeonatos"
+                icon={({focused, color, size}) => (
+                    <Icon name="money" size={30} color="#0053C9" />
+                )}
+                onPress={() => RootNavigation.navigate('CampeonatosScreen', null)}
+            />
+
+        </Fragment>
+    );
 }
 
 function RutasGestorClub({...props}) {

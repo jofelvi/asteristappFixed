@@ -29,12 +29,12 @@ import {TRAER_ESTADISTICAS} from '../../store/estadisticas/Constants';
 import axios from 'axios';
 
 function EstadisticasScreen() {
+
   const auth = useSelector((state) => state.auth);
   //const estadisticas = useSelector((state) => state.estadisticas);
   const tablaEstadisticas = useSelector(
-    (state) => state.estadisticas.tablaEstadisticas,
+      (state) => state.estadisticas.tablaEstadisticas,
   );
-
   const usuario = useSelector((state) => state.auth.usuario);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -42,29 +42,51 @@ function EstadisticasScreen() {
   const URLperfil = 'https://licencias.fapd.org/json-estadisticas-club';
   const [firstRowDatos, setfirstRowDatos] = useState([]);
   const [tablaCuotas, settablaCuotas] = useState([]);
-const [tablaPorLicencias, settablaPorLicencias] = useState();
+
+  const [tablaPorLicencias, settablaPorLicencias] = useState({
+    'Agua Dulce Masculino': {Absoluta: {cuenta: '22', importe: '704.00'}},
+    'Agua Dulce U15': {Juvenil: {cuenta: '1', importe: '1.00'}},
+    morald: {Infantil: {cuenta: '1', importe: '2.00'}},
+    U15: {
+      Bonificado: {cuenta: '1', importe: '3.00'},
+      Infantil: {cuenta: '1', importe: '2.00'},
+    },
+    Dulce: {Infantil: {cuenta: '1', importe: '4.00'}},
+    Water: {Dep: {cuenta: '1', importe: '5.00'}},
+  });
+  const [newTableLicencias, setnewTableLicencias] = useState([]);
+  const [categoryHeaderLicencias, setcategoryHeaderLicencias] = useState([]);
+  const [totalCategorias, setTotalCategorias] = useState([]);
   useEffect(() => {
     handleApi();
-  }, [auth]);
+    _renderLicenciasHeader();
+    _newStructToJson();
+  }, []);
 
   const handleApi = () => {
     const headers = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + access_token,
+        Authorization: 'Bearer ' + access_token,
       },
     };
     axios.get(URLperfil, {headers}).then((respuesta) => {
-      console.log('exito entro funcion  respuesta API traerEstadisticas');
-      console.log(JSON.stringify(respuesta.data))
-      const {firstRowDatos, tablaCuotas, tablaPorLicencias,totalCategorias} = respuesta.data;
+      // console.log('exito entro funcion  respuesta API traerEstadisticas');
+      // console.log(JSON.stringify(respuesta.data));
+      const {
+        firstRowDatos,
+        tablaCuotas,
+        tablaPorLicencias,
+        totalCategorias,
+      } = respuesta.data;
       dispatch({
         type: TRAER_ESTADISTICAS,
         payload: respuesta.data,
       });
       setfirstRowDatos(firstRowDatos);
       settablaCuotas(tablaCuotas);
-      settablaPorLicencias(tablaPorLicencias)
+      // settablaPorLicencias(tablaPorLicencias);
+      setTotalCategorias(totalCategorias);
     });
   };
 
@@ -78,100 +100,168 @@ const [tablaPorLicencias, settablaPorLicencias] = useState();
   };
 
   const _renderRows = () => {
-    if (tablaCuotas !== []){
+    if (tablaCuotas !== []) {
       const {Anual} = tablaCuotas;
       const anual = typeof Anual !== 'undefined' ? Anual : [];
-      console.log(anual);
+      // console.log(anual);
       let rows = Object.values(anual).map((value) => {
-        
         return <DataTable.Cell>{value}</DataTable.Cell>;
       });
       return rows;
-    }else{
-null
+    } else {
+      null;
     }
-
   };
 
   const _renderTotalesRow = () => {
-    if (tablaCuotas !== []){
+    if (tablaCuotas !== []) {
       const {Totales} = tablaCuotas;
       const totales = typeof Totales !== 'undefined' ? Totales : [];
 
       let totalesRow = Object.values(totales).map((value) => {
         //console.log(totales.Periodo)
-        return <DataTable.Cell>{value}</DataTable.Cell>
+        return <DataTable.Cell>{value}</DataTable.Cell>;
       });
       return totalesRow;
-    }else{
-      null
+    } else {
+      null;
     }
-
   };
 
-  const _renderLicenciasHeader= () => {
-    if (tablaPorLicencias !== undefined){
-      const {Totales} = tablaPorLicencias;
-      const totales = typeof Totales !== 'undefined' ? Totales : [];
-
-      let totalesRow = Object.values(totales).map((value) => {
-        return <DataTable.Cell>{value}</DataTable.Cell>
-      });
-      return totalesRow;
-    }else{
-      null
-    }
-
+  const _renderLicenciasHeader = () => {
+    let listItemsColumns = ['modalidad'];
+    Object.keys(tablaPorLicencias).map((firstKey) =>
+        Object.keys(tablaPorLicencias[firstKey]).map((secondKey) => {
+          if (listItemsColumns.indexOf(secondKey) < 1)
+            listItemsColumns.push(secondKey);
+        }),
+    );
+    setcategoryHeaderLicencias(listItemsColumns);
   };
+
+  const _newStructToJson = () => {
+    let listItemsToJson = [];
+
+    Object.keys(tablaPorLicencias).map((firstKey) =>
+        Object.keys(tablaPorLicencias[firstKey]).map((secondKey) => {
+          const {cuenta, importe} = tablaPorLicencias[firstKey][secondKey];
+
+          listItemsToJson = [
+            ...listItemsToJson,
+            {
+              modalidad: firstKey,
+              category: secondKey,
+              costoCategory: `${cuenta}/${importe}`,
+            },
+          ];
+        }),
+    );
+    setnewTableLicencias(listItemsToJson);
+  };
+
   return (
-    <Container>
-      <NavBar></NavBar>
-      <ScrollView
-        keyboardShouldPersistTaps="always"
-        style={{alignContent: 'center', paddingTop: 1}}>
-        <SafeAreaView style={styles.container}>
-          <Text style={{textAlign:'center', fontWeight: '600', fontSize: 18, marginTop: 20}}>Tabla de Cuotas</Text>
-          <DataTable>
-            <DataTable.Header>
-              {firstRowDatos != [] && _renderEncabezado()}
-            </DataTable.Header>
+      <Container>
+        <NavBar></NavBar>
+        <ScrollView
+            keyboardShouldPersistTaps="always"
+            style={{alignContent: 'center', paddingTop: 1}}>
+          <SafeAreaView style={styles.container}>
+            <Text
+                style={{
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  fontSize: 18,
+                  marginTop: 20,
+                }}>
+              Tabla de Cuotas
+            </Text>
+            <DataTable>
+              <DataTable.Header>
+                {firstRowDatos != [] && _renderEncabezado()}
+              </DataTable.Header>
 
-            <DataTable.Row>
-              {firstRowDatos != [] ? _renderRows() : null}
-            </DataTable.Row>
+              <DataTable.Row>
+                {firstRowDatos != [] ? _renderRows() : null}
+              </DataTable.Row>
 
-            <DataTable.Row>
-              {
-                firstRowDatos != []  && _renderTotalesRow()
-              }
-            </DataTable.Row>
-          </DataTable>
+              <DataTable.Row>
+                {firstRowDatos != [] && _renderTotalesRow()}
+              </DataTable.Row>
+            </DataTable>
 
-          <Text style={{textAlign:'center', fontWeight: '600', fontSize: 18, marginTop: 20}}>Tabla de Licencias</Text>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>Modalidad</DataTable.Title>
-              <DataTable.Title>Absoluta</DataTable.Title>
-              <DataTable.Title>Infantil</DataTable.Title>
-              <DataTable.Title>Totales</DataTable.Title>
-            </DataTable.Header>
+            <Text
+                style={{
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  fontSize: 18,
+                  marginTop: 20,
+                }}>
+              Tabla de Licencias
+            </Text>
+            <ScrollView horizontal>
+              <DataTable>
+                <DataTable.Header>
+                  {categoryHeaderLicencias.map((category) => (
+                      <DataTable.Title style={styles.widthCell}>
+                        {category}
+                      </DataTable.Title>
+                  ))}
+                </DataTable.Header>
 
-            <DataTable.Row>
-              <DataTable.Cell>Agua dulce</DataTable.Cell>
-              <DataTable.Cell>1 / 32.00</DataTable.Cell>
-              <DataTable.Cell>198.00</DataTable.Cell>
-              <DataTable.Cell>0</DataTable.Cell>
-            </DataTable.Row>
+                {newTableLicencias.map((item) => {
+                  return (
+                      <DataTable.Row>
+                        {categoryHeaderLicencias.map((headerItem, index) => {
+                          if (index === 0) {
+                            return (
+                                <DataTable.Cell style={styles.widthCell}>
+                                  {item.modalidad}
+                                </DataTable.Cell>
+                            );
+                          }
 
-            <DataTable.Row>
-              <DataTable.Cell>Totales</DataTable.Cell>
-              <DataTable.Cell>total 1</DataTable.Cell>
-              <DataTable.Cell>total 2</DataTable.Cell>
-            </DataTable.Row>
-          </DataTable>
-        </SafeAreaView>
-      </ScrollView>
-    </Container>
+                          if (headerItem === item.category) {
+                            return (
+                                <DataTable.Cell style={styles.widthCell}>
+                                  {item.costoCategory}
+                                </DataTable.Cell>
+                            );
+                          }
+                          return <DataTable.Cell style={styles.widthCell} />;
+                        })}
+                      </DataTable.Row>
+                  );
+                })}
+
+                <DataTable.Row>
+                  {categoryHeaderLicencias.map((firstKey, index) => {
+                    if (index === 0) {
+                      return (
+                          <DataTable.Cell style={styles.widthCell}>
+                            Totales
+                          </DataTable.Cell>
+                      );
+                    }
+                    return Object.keys(totalCategorias).map((secondKey) => {
+                      const {cuenta, importe} = totalCategorias[secondKey];
+
+                      if (firstKey === secondKey) {
+                        return (
+                            <DataTable.Cell
+                                style={
+                                  styles.widthCell
+                                }>{`${cuenta}/${importe}`}</DataTable.Cell>
+                        );
+                      }
+                      return <DataTable.Cell style={styles.widthCell} />;
+                    });
+                  })}
+                </DataTable.Row>
+              </DataTable>
+            </ScrollView>
+          </SafeAreaView>
+        </ScrollView>
+      </Container>
   );
 }
 
@@ -195,5 +285,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  widthCell: {
+    width: 50,
+    justifyContent: 'center',
+  },
 });
-

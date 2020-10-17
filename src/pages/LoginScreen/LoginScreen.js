@@ -97,12 +97,12 @@ function LoginScreen() {
   if (cargando === true) {
     return <Loading isVisible={cargando} text={'CARGANDO...'} />;
   }
+
   return (
       <Container>
         <NavBar></NavBar>
         <ScrollView keyboardShouldPersistTaps="always">
           <SafeAreaView style={styles.container}>
-            {console.log(status + " status en login")}
             <Formik
                 initialValues={{username: '', password: ''}}
                 onSubmit={(values) => {

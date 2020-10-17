@@ -17,16 +17,12 @@ import FormPerfilScreen from './src/pages/FormPerfilScreen/FormPerfilScreen';
 import LoginScreen from './src/pages/LoginScreen/LoginScreen';
 import DetailsScreen from './src/pages/DetailNoticia/DetalleNoticia';
 import ListaNoticiasScreen from './src/pages/ListaNoticiasScreen/ListaNoticiasScreen';
-import PerfilScreen from './src/pages/PerfilScreen/PerfilScreen';
-import {ICONMENU, LOGOHERE, LOGINIMG} from './src/assets/image';
-import {ICONMENU2} from './src/assets/image';
 import Publicidad from './src/components/Publicidad/Publicidad';
 import PoliticasCookiesScreen from './src/pages/PoliticasCookiesScreen/PoliticaCookiesScreen';
 import PoliticasPrivacidadScreen from './src/pages/PoliticasPrivacidadScreen/PoliciticasPrivacidadScreen';
 import AvisoLegalScreen from './src/pages/AvisoLegalScreen/AvisoLegalScreen';
 import DetailNoticiaSlider from './src/pages/DetailNoticiaSlider/DetailNoticiaSlider';
 import LicenciasActivas from './src/pages/LicenciasActivas/LicenciasActivas';
-//import SplashScreen from 'react-native-splash-screen';
 import {Provider} from 'react-redux';
 import {store} from './src/store';
 import DetailPublicidad from './src/pages/DetailPublicidad/DetailPublicidad';
@@ -34,8 +30,6 @@ import SolicitudLicScreen from './src/pages/SolicitudLicScreen/SolicitudLicScree
 import LicenciasCaducadas from './src/pages/LicenciasCaducadas/LicenciasCaducadas';
 import {useDispatch, useSelector} from 'react-redux';
 import {traerUsuario} from './src/store/auth/actions';
-import CookieManager from '@react-native-community/cookies';
-import ListLicencias from './src/components/ListLicencias/ListLicencias';
 import GestiónDeportistas from './src/pages/GestiónDeportistas/GestiónDeportistas';
 import EditDeportista from './src/pages/EditDeportista/EditDeportista';
 import FormContacto from './src/pages/FormContacto/FormContacto';
@@ -239,7 +233,7 @@ function AppDrawer() {
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
       
       <Drawer.Screen
-        name="Home"
+        name="Home22"
         component={StackPescadorFun}
         options={{
           headerShown: false,

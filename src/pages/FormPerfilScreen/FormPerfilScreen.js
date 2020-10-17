@@ -92,6 +92,7 @@ class FormPerfilScreen extends Component {
       
      // setApiperfil(respuesta.data)
      let fechaFormat = field_user_fechanac[0].value
+        console.log("FOMRATO ORIGINAL fecha",fechaFormat)
      var pattern = /(\d{4})\-(\d{2})\-(\d{2})/;
      let fechaParse = fechaFormat.replace(pattern, '$3-$2-$1');
      console.log("FECHA AQUI nuevo formato",fechaParse )

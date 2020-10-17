@@ -22,6 +22,7 @@ import {
   RESET_STATUS,
   RESET_PERFIL_BYCLUB,
   PERFIL_BYCLUB,
+  NOMBRE
 } from './Constants';
 
 export const INITIAL_STATE = {
@@ -44,6 +45,7 @@ export const INITIAL_STATE = {
   clubIdEncargado: '',
   perfilbyClub: [],
   resetPerfilbyClub: [],
+  nombre: ""
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -101,6 +103,8 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, perfilbyClub: action.payload};
     case RESET_PERFIL_BYCLUB:
       return {...state, resetPerfilbyClub: []};
+    case NOMBRE:
+      return {...state, nombre:action.payload};
     default:
       return state;
   }
