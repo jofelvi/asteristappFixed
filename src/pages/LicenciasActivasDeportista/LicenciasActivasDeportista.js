@@ -81,7 +81,7 @@ class LicenciasActivasDeportista extends Component {
     console.log('###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################');
     console.log(respuesta.data)
     this.setState({clubsDeportista: respuesta.data, isloadin: false})
-    //this.setState({isloadin: false})
+
   });
     
   }
@@ -171,7 +171,7 @@ class LicenciasActivasDeportista extends Component {
                   : null}
                 {this.state.clubsDeportista.map((item) => (
                   <TouchableOpacity onPress={() => this.GetItem(item)}>
-                    
+                    {console.log(item)}
                     <Card style={{marginLeft: 5, marginRight: 5}}>
                       <View style={styles.newsListContainer}>
                         <Thumbnail source={LICENCIAICON} />

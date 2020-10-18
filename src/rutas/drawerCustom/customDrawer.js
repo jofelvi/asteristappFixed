@@ -37,6 +37,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Header, Body, Container} from 'native-base';
 import {LOGONORMAL, LOGINIMG, LOGO} from '../../assets/image';
 import {Avatar} from 'react-native-paper';
+import axios from "axios";
+import {ERROR2, NOMBRE} from "../../store/auth/Constants";
 
 Icon2.loadFont();
 Icon3.loadFont();
@@ -59,19 +61,14 @@ function CustomDrawer({...props}) {
   const [isCampeonato, setisCampeonato] = useState(true);
   const rolesUser = useSelector((state) => state.auth.rolesUser);
   const uid = useSelector((state) => state.auth.uid);
+  const usuario = useSelector((state) => state.auth.usuario);
+  const {access_token} = usuario;
+  const [isload, setisload] = useState(true);
   const dispatch = useDispatch();
   let nombre
     console.log(JSON.stringify(nombres))
     console.log(perfil !== [])
     console.log(perfil.length >= 1)
-  //const {field_user_nombre} = perfil
-    if (perfil !== [] || perfil.length >= 1){
-        console.log("entro if", nombres)
-       // nombre =  typeof perfil.field_user_nombre[0] === 'undefined' ? "" : String(perfil.field_user_nombre[0].value)
-    }else{
-        console.log("entro else")
-        nombre =  ""
-    }
 
 
   useEffect(() => {
@@ -90,11 +87,46 @@ function CustomDrawer({...props}) {
     }
   }, [auth]);
 
+  const traernombre = ()=>{
+
+      if (uid !== '' &&  isload === true ){
+          console.log("........--------------")
+          traerNombre(uid, access_token)
+
+      }
+     return setisload(true)
+  }
   const cerrarSe = () => {
     //RootNavigation.openDrawer();
     RootNavigation.navigate('Home');
     cerrarSe2()
   };
+
+  const traerNombre = (uid, token) => {
+
+      setisload(false)
+      const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+        console.log("--------------------traerNombre---------------". uid, token)
+        let headers = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+        };
+
+        axios.get(URLperfil, {headers}).then((respuesta) => {
+                const {
+                    field_user_nombre
+                } = respuesta.data;
+                console.log("-----------",String(field_user_nombre[0].value))
+                dispatch({
+                    type: NOMBRE,
+                    payload: field_user_nombre[0].value
+                })
+            });
+        }
+
+
 
   const cerrarSe2 = () => {
     //RootNavigation.openDrawer();
@@ -114,7 +146,7 @@ function CustomDrawer({...props}) {
           {/* <Image source={LOGONORMAL} style={styles.drawerImage} resizeMode="contain"/> */}
 
           {uid != '' ? (
-            <Text style={{marginTop:2, }}> Bienvenido {nombre}</Text>
+            <Text style={{marginTop:2, }}> Bienvenido {nombres}</Text>
           ) : null}
 
         </Header>
@@ -275,7 +307,7 @@ function RutasDeportistas({...props}) {
       />
 
       <DrawerItem
-        label="Licencias en Caducadas"
+        label="Licencias Caducadas"
         icon={({focused, color, size}) => (
           <Icon4 name="card-bulleted-off-outline" size={30} color="#0053C9" />
         )}

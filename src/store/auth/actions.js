@@ -25,6 +25,7 @@ import {
   NOMBRE
 } from './Constants';
 import axios from 'axios';
+import awaitAsyncGenerator from "@babel/runtime/helpers/esm/awaitAsyncGenerator";
 
 const session_url = 'https://licencias.fapd.org/user/login?_format=json';
 
@@ -46,9 +47,8 @@ export const traerUsuario = (username, password) => async (dispatch) => {
       pass: `${password}`,
     },
   }).then((respuesta) => {
-    traerNombre(username,password)
-
     console.log('funcion login');
+
       const {
         current_user,
         csrf_token,
@@ -56,6 +56,9 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         logout_token,
       } = respuesta.data;
       const {roles, uid} = current_user;
+
+      traerNombre(uid,access_token)
+
       dispatch({
         type: TRAER_USUARIO,
         payload: respuesta.data,
@@ -81,6 +84,7 @@ export const traerUsuario = (username, password) => async (dispatch) => {
         payload: uid,
       });
 
+    traerNombre(uid,access_token,dispatch)
 
     })
     .catch(function (error) {
@@ -108,7 +112,6 @@ export const cerrarSession = () => async (dispatch) => {
 
   console.log("cerrar sesion action")
 
-
   dispatch({
     type: TRAER_USUARIO,
     payload: [],
@@ -135,6 +138,10 @@ export const cerrarSession = () => async (dispatch) => {
   });
   dispatch({
     type: UID,
+    payload: '',
+  });
+  dispatch({
+    type: NOMBRE,
     payload: '',
   });
 };
@@ -200,11 +207,10 @@ export const traerPerfil = (uid, token) => (dispatch) => {
     type: NOISLOAD,
   });
 };
+const traerNombre = (uid, token,dispatch) => {
 
-export const traerNombre = (uid, token) => {
-  return (dispatch) => {
     const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
-
+console.log("--------------------traerNombre---------------". uid, token)
     let headers = {
       headers: {
         'Content-Type': 'application/json',
@@ -218,17 +224,17 @@ export const traerNombre = (uid, token) => {
         } = respuesta.data;
             dispatch({
               type: NOMBRE,
-              payload: String(field_user_nombre[0].value),
+              payload: field_user_nombre[0].value
             })
       });
     } catch (error) {
-      console.log('error API TRAER PERFIL' + error.message);
+      console.log('error API traerNombre' + error.message);
       dispatch({
         type: ERROR2,
         payload: error.message,
       })
     }
-  };
+
 };
 
 export const traerPerfilByclub = (uid, token) => (dispatch) => {

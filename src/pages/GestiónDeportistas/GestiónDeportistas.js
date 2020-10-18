@@ -163,11 +163,11 @@ const getItem2 = (item) => {
             <List style={{alignSelf: 'flex-end'}}>
               <ListItem>
                 <TouchableOpacity onPress={() => alertDelete(item)}>
-                  <Icon name="edit" style={{fontSize: 40, color: '#0053C9'}} />
+                  <Icon2 name="delete" style={{fontSize: 40, color: '#0053C9'}} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => alertGetLicencias(item)}>
-                  <Icon2
-                    name="delete"
+                  <Icon
+                    name="edit"
                     style={{fontSize: 40, color: '#0053C9'}}
                   />
                 </TouchableOpacity>

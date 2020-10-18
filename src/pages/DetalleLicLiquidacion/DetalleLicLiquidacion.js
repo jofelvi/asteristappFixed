@@ -70,25 +70,35 @@ export default function DetalleLicLiquidacion({route, props}) {
     }
 
   }
+const _renderTextVacio = ()=>{
+    return(
+        <Text style={{textAlign:"center",marginTop:20, color:"red"}}>Disculpe, No posee Licencias Asociadas con esta liquidacion</Text>
+    )
+}
 
   const _renderLicenciasDetails = licLiquid.map((item) =>  {
-    
-    
-        console.log("entro a tiene datos")
-        console.log(JSON.stringify(licLiquid))
-         return(
-                <ListLicencias
-                  club={item.club}
-                  categoria={item.categoria}
-                  esPrimera={item.es_primera}
-                  fechaEmision={item.fecha_emision}
-                  importe={item.importe}
-                  modalidad={item.modalidad}
-                  nid={item.nid}
-                  numeroLicencia={item.numero_licencia}
-                  year={item.year}
-                  caducada={true}
-                />
+           return(
+
+             <Content>
+               <List style={{marginTop:25}}>
+                 <ListItem avatar>
+                   <Left>
+                     <Thumbnail source={LICENCIAICON} />
+                   </Left>
+                   <Body>
+                     <Text style={styles.textBodyFont}>Deportista: {item.deportista}</Text>
+                     <Text note>Categoria: {item.categoria}</Text>
+                     <Text note>Es Primer vez: {item.esPrimera}</Text>
+                     <Text note>Fecha Emision: {item.fechaEmision}</Text>
+                     <Text note>Importe: {item.importe}</Text>
+                     <Text note>Modalidad: {item.modalidad}</Text>
+                     <Text note>Numero de Licencia: {item.numeroLicencia}</Text>
+                     <Text note>Año: {item.year}</Text>
+                     <Text note>Importe: {item.importe}</Text>
+                   </Body>
+                 </ListItem>
+               </List>
+             </Content>
                )
   }
   )
@@ -111,7 +121,7 @@ export default function DetalleLicLiquidacion({route, props}) {
           <Text style={styles.TxtoTituloNew}>
               Licencias Asociadas a Liquidacion
           </Text>
-         {_renderLicenciasDetails}
+         {licLiquid.length >= 1? _renderLicenciasDetails : _renderTextVacio() }
         </View>
 
       </Content>

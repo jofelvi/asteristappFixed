@@ -50,12 +50,13 @@ function CampeonatosScreen() {
   const [SelecModalidadLic, setSelecModalidadLic] = useState('');
   const [provinciaSelect, setProvinciaSelect] = useState("");
   const usuario = useSelector((state) => state.auth.usuario);
+  const {access_token} = usuario;
   const currenUser = useSelector((state) => state.auth.usuario.current_user);
   //const auth = useSelector((state) => state.auth);
   const [ambitoSelect, setAmbitoSelect] = useState("");
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {access_token} = usuario;
+
   const status = useSelector((state) => state.licencias.status);
   const [chosenDate, setChosenDate] = useState(new Date());
   const [chosenDateFrom, setChosenDateFrom] = useState(new Date());

@@ -139,12 +139,14 @@ function LiquidacionesScreen() {
                 </List>
 
                 <List>
+
                   <ListItem>
                     <Text style={styles.TextItem} note>
                     Confirmada: 
                     </Text>
-                    <Text> {item.confirmada}</Text>
+                    <Text> {item.confirmada ? "Si": "No"} {item.confirmada}</Text>
                   </ListItem>
+
                 </List>
 
 
