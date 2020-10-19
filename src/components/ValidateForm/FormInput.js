@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   TextLabel: {
     //fontWeight: 'bold',
     color: '#00183A',
-    fontSize: 15
+    fontSize: 14
   }
 })
 

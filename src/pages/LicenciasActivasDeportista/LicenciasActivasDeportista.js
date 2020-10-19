@@ -162,7 +162,7 @@ class LicenciasActivasDeportista extends Component {
             <SafeAreaView style={styles.container}>
               <View>
                 <Text style={styles.TextEtiqutea}>
-                  LISTADO LICENCIAS EN VIGOR deportista:
+                  LISTADO LICENCIAS EN VIGOR DEPORTISTA:
                   
                 </Text>
                 {this.state.clubsDeportista.length <= 0 &&

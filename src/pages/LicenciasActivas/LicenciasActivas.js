@@ -101,7 +101,8 @@ class LicenciasActivas extends Component {
     }).then((respuesta) => {
       console.log('exito entro funcion  respuesta API editarPerfil');
       console.log(respuesta.status);
-      //respuesta.status !== 403 ??
+
+      respuesta.status !== 403 ?? this.GetItem()
     }).catch((err) =>{
       console.log(err)
     } );
@@ -230,6 +231,10 @@ class LicenciasActivas extends Component {
 
   }
 
+  renderTextVacio = ()=>{
+
+  }
+
   render_button_delete = () => {
 
     //console.log(clubsAdmin.map((e) => typeof e))
@@ -237,17 +242,19 @@ class LicenciasActivas extends Component {
     console.log("this.props.licencias.cargando  " , this.props.licencias.cargando)
     if (this.props.licencias.licenciasVigRoles <=0 && this.props.licencias.cargando !== true){
       return(
-          <List style={{alignSelf: 'flex-end'}}>
+          <View>
+          <Text style={{color:"red",textAlign:"center"}}>Este usuario no tiene licencias vigentes en este club desea eliminarlo?</Text>
+           <List style={{alignSelf: 'flex-end'}}>
             <ListItem>
               <TouchableOpacity onPress={() => //
                   this.showModal()
                 //this.alertDelete()
-
               }>
                 <Icon2 name="delete" style={{fontSize: 40, color: '#0053C9'}} />
               </TouchableOpacity>
             </ListItem>
           </List>
+          </View>
       )
     }
   }
@@ -280,14 +287,14 @@ class LicenciasActivas extends Component {
                 <View style={styles.container}>
                   <ConfirmDialog
                       title={ `Desea Eliminar usuario ${nombre} `}
+                      titleStyle={styles.TextEtiqutea}
                       visible={this.state.dialogVisible}
                       onTouchOutside={() => this.setState({dialogVisible: false})}
                       positiveButton={{
                         title: "Eliminar",
                         onPress: () => this.eliminarUser(item)
                       }} >
-                    <View>
-
+                    <View style={{alignContent:"center", alignSelf:"center"}}>
 
                       <DatePicker
                           style={{width: 200}}
@@ -317,7 +324,7 @@ class LicenciasActivas extends Component {
 
                     </View>
                   </ConfirmDialog>
-                  <Text style={styles.TxtoTituloNew}> LICENCIAS VIGENTES ADMINISTRADORES: </Text>
+                  <Text style={styles.TextEtiqutea}> LICENCIAS VIGENTES ADMINISTRADORES: </Text>
                   {
                     this.render_button_delete()
                   }

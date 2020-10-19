@@ -188,9 +188,8 @@ const getItem2 = (item) => {
       <SafeAreaView style={styles.container}>
         <NavBar></NavBar>
         <ScrollView keyboardShouldPersistTaps="always">
-          <Text style={styles.TxtoTituloNew}> Gestion Deportistas: </Text>
+          <Text style={styles.TextEtiqutea}>GESTION DEPORTISTAS:</Text>
           <View style={{marginLeft:5, marginRight:5}}>
-
           {_renderList}
           </View>
 
@@ -237,5 +236,13 @@ const styles = StyleSheet.create({
   TextItem: {
     fontWeight: 'bold',
     marginBottom: 3,
+  } ,
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 15,
   },
 });

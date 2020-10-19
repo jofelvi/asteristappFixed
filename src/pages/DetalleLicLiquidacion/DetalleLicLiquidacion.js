@@ -118,8 +118,8 @@ const _renderTextVacio = ()=>{
       <NavBar></NavBar>
       <Content>
         <View style={styles.container}>
-          <Text style={styles.TxtoTituloNew}>
-              Licencias Asociadas a Liquidacion
+          <Text style={styles.TextEtiqutea}>
+              LICENCIAS ASOCIADAS A LIQUIDACION
           </Text>
          {licLiquid.length >= 1? _renderLicenciasDetails : _renderTextVacio() }
         </View>
@@ -149,9 +149,16 @@ const styles = StyleSheet.create({
   TxtoTituloNew: {
     marginTop: 20,
     fontWeight: 'bold',
-    fontSize: 18,
     textAlign:'center',
 
+  },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 15,
   },
   textTitle: {
     marginTop: 10,

@@ -53,6 +53,7 @@ import CampeonatosScreen from './src/pages/CampeonatosScreen/CampeonatosScreen';
 import FormPerfilByClubScreen2 from './src/pages/FormPerfilByClubScreen/FormPerfilByClubScreen';
 import SesionScreen from './src/pages/SesionScreen/SesionScreen';
 import LicenciasActivasDeportista from './src/pages/LicenciasActivasDeportista/LicenciasActivasDeportista';
+import DetalleCampeonato from "./src/pages/DetalleCampeonato/DetalleCampeonato";
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -217,7 +218,11 @@ function StackPescadorFun() {
         component={CampeonatosScreen}
         options={{headerShown: false}}
       />
-
+        <StackPescador.Screen
+            name="DetalleCampeonato"
+            component={DetalleCampeonato}
+            options={{headerShown: false}}
+        />
 
     </StackPescador.Navigator>
   );

@@ -208,7 +208,7 @@ function LiquidacionesScreen() {
       <SafeAreaView style={styles.container}>
         <NavBar></NavBar>
         <ScrollView keyboardShouldPersistTaps="always">
-          <Text style={styles.TxtoTituloNew}> Lista de Liquidaciones : </Text>
+          <Text style={styles.TextEtiqutea}> LISTA DE LIQUIDACIONES : </Text>
           <View style={{marginLeft:5, marginRight:5}}>
        
           {_renderList}
@@ -253,6 +253,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  TextEtiqutea: {
+    fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 15,
   },
   TextItem: {
     fontWeight: 'bold',
