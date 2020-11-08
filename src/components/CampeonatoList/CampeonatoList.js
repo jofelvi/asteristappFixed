@@ -93,6 +93,18 @@ const ListViewItem = ({data}) => {
                 </Text>
 
             </View>
+            <View>
+                <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+
+                    <Text style={{fontSize: 14,fontWeight:"normal",paddingLeft:10, color: "red"}}>
+                        {finalizado.toString() === "No" ? "Campeonato en curso": "Campeonato finalizado"}
+
+                    </Text>
+                </Text>
+
+            </View>
+
+
 
         </TouchableOpacity>
     );

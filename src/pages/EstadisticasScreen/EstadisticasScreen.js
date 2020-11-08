@@ -57,6 +57,7 @@ function EstadisticasScreen() {
   const [newTableLicencias, setnewTableLicencias] = useState([]);
   const [categoryHeaderLicencias, setcategoryHeaderLicencias] = useState([]);
   const [totalCategorias, setTotalCategorias] = useState([]);
+
   useEffect(() => {
     handleApi();
     _renderLicenciasHeader();
@@ -114,6 +115,7 @@ function EstadisticasScreen() {
   };
 
   const _renderTotalesRow = () => {
+
     if (tablaCuotas !== []) {
       const {Totales} = tablaCuotas;
       const totales = typeof Totales !== 'undefined' ? Totales : [];
@@ -126,6 +128,7 @@ function EstadisticasScreen() {
     } else {
       null;
     }
+    
   };
 
   const _renderLicenciasHeader = () => {

@@ -1,5 +1,5 @@
 import React, {Fragment, useEffect, useState} from 'react';
-import {View, Text, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Dimensions, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {Card, Container, List, ListItem} from 'native-base';
 
 import NavBar from '../../components/navbar/Navbar';
@@ -139,9 +139,16 @@ const DetalleCampeonato = ({route}) => {
 
     return (
         <Container>
-            <NavBar />
+            <NavBar/>
+            <ScrollView
+                keyboardShouldPersistTaps="always"
+                style={{alignContent: 'center', paddingTop: 1}}>
+                <SafeAreaView style={styles.container}>
+
 
             <View style={[styles.listView]}>
+                <Text style={styles.TextEtiqutea}> DETALLE CAMPEONATO </Text>
+
                 <View>
                     <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                         Titulo:
@@ -200,6 +207,8 @@ const DetalleCampeonato = ({route}) => {
                 </View>
                 {_renderList}
             </View>
+                </SafeAreaView>
+            </ScrollView>
         </Container>
     );
 };
@@ -211,5 +220,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 10,
     },
+    TextEtiqutea: {
+        fontWeight: 'bold',
+        color: '#00183A',
+        fontSize: 15,
+        textAlign: 'center',
+        marginTop: 15,
+        marginBottom: 15
+    },
 });
+
 export default DetalleCampeonato;

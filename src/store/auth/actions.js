@@ -27,10 +27,9 @@ import {
 import axios from 'axios';
 import awaitAsyncGenerator from "@babel/runtime/helpers/esm/awaitAsyncGenerator";
 
-const session_url = 'https://licencias.fapd.org/user/login?_format=json';
 
 export const traerUsuario = (username, password) => async (dispatch) => {
-  
+
   dispatch({
     type: CARGANDO,
     payload: true
@@ -435,7 +434,7 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
   console.log(token + ' token ');
   console.log('entro a traer liquidaciones');
   const URLGETLLIQUIDACIONES = `https://licencias.fapd.org/json-liquidaciones/${nidClub}/${year}?_format=json`;
-  
+
   dispatch({
           type: CARGANDO,
           payload: true

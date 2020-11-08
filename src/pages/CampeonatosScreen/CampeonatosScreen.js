@@ -159,7 +159,15 @@ function CampeonatosScreen() {
     console.log("----- cartegoria  ----",categoriasClon)
     console.log("----- fecha desde  ----",chosenDate)
     console.log("----- fecha hasta  ----",chosenDateFrom)
-    const URL= `https://licencias.fapd.org/json-campeonatos/${ambitoSelect}/${categoriasClon}/?fecha_desde=${chosenDate}&fecha_hasta=${chosenDateFrom}&_format=json`;
+    console.log("----- club seleccionado  ----",clubSelect)
+    console.log("----- provincia seleccionada ----",provinciaSelect)
+    let URL
+    if(clubSelect === ""){
+       URL= `https://licencias.fapd.org/json-campeonatos/${ambitoSelect}/${categoriasClon}/?fecha_desde=${chosenDate}&fecha_hasta=${chosenDateFrom}&_format=json`;
+    }else{
+      URL= `https://licencias.fapd.org/json-campeonatos/${ambitoSelect}/${categoriasClon}/${clubSelect}?fecha_desde=${chosenDate}&fecha_hasta=${chosenDateFrom}&_format=json`;
+    }
+
    console.log(URL)
     let headers = {
       headers: {
@@ -499,6 +507,8 @@ function CampeonatosScreen() {
                   </View>
 
             <View>
+              <Text style={{color:"red", textAlign:"center", marginTop: 15, marginBottom:20}}> {apiCampeonatos.length <=0  ? "No hay campeonatos con esos parametros" : "LISTADO DE CAMPEONATOS" } </Text>
+
             <CampeonatoList
              campeonatos={apiCampeonatos}
             />

@@ -74,9 +74,7 @@ function CustomDrawer({...props}) {
   useEffect(() => {
 
     if (!rolesUser.includes('invitado')) {
-      rolesUser.includes('deportista')
-        ? setIsDeportista(true)
-        : setIsDeportista(false);
+      rolesUser.includes('deportista') ? setIsDeportista(true) : setIsDeportista(false);
       rolesUser.includes('club') ? setisGestor(true) : setisGestor(false);
       rolesUser.includes('directiva') ? setisAdmin(true) : setisAdmin(false);
       rolesUser.includes('campeonato') ? setisCampeonato(true) : setisCampeonato(false);
@@ -84,55 +82,9 @@ function CustomDrawer({...props}) {
       setisGestor(false);
       setisAdmin(false);
       setIsDeportista(false);
+      rolesUser.includes('campeonato') ? setisCampeonato(true) : setisCampeonato(false);
     }
   }, [auth]);
-
-  const traernombre = ()=>{
-
-      if (uid !== '' &&  isload === true ){
-          console.log("........--------------")
-          traerNombre(uid, access_token)
-
-      }
-     return setisload(true)
-  }
-  const cerrarSe = () => {
-    //RootNavigation.openDrawer();
-    RootNavigation.navigate('Home');
-    cerrarSe2()
-  };
-
-  const traerNombre = (uid, token) => {
-
-      setisload(false)
-      const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
-        console.log("--------------------traerNombre---------------". uid, token)
-        let headers = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + token,
-            },
-        };
-
-        axios.get(URLperfil, {headers}).then((respuesta) => {
-                const {
-                    field_user_nombre
-                } = respuesta.data;
-                console.log("-----------",String(field_user_nombre[0].value))
-                dispatch({
-                    type: NOMBRE,
-                    payload: field_user_nombre[0].value
-                })
-            });
-        }
-
-
-
-  const cerrarSe2 = () => {
-    //RootNavigation.openDrawer();
-    RootNavigation.navigate('Home');
-    dispatch(cerrarSession());
-  };
 
   return (
     <Container style={{flex: 1}}>

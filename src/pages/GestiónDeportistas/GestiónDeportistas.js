@@ -53,9 +53,9 @@ const getItem2 = (item) => {
       item: item.uid,
       nombre: item.nombre_completo
   });
-  
+
 }
-  const alertDelete = (item) => {  
+  const alertDelete = (item) => {
 
     Alert.alert(
       'Advertencia',
@@ -80,7 +80,7 @@ const getItem2 = (item) => {
         item.nombre_completo +
         ' uid ' +
         item.uid,
-        
+
       [
         {text: 'Aceptar', onPress: () => getItem2(item)},
         {text: 'Cancelar', onPress: () => 'resetValues'},
@@ -89,9 +89,11 @@ const getItem2 = (item) => {
       {cancelable: false},
     );
   };
-  
-  
+
+
   const _renderList = listaDeportistas.map((item, index) => {
+    console.log("-----")
+    console.log(item)
     if (listaDeportistas.length >= 1) {
       return (
         <Card style={{marginTop: 5}}>
@@ -193,7 +195,7 @@ const getItem2 = (item) => {
           {_renderList}
           </View>
 
-          
+
         </ScrollView>
         <Button
           style={styles.botonAbajo}

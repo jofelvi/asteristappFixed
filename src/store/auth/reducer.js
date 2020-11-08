@@ -22,7 +22,8 @@ import {
   RESET_STATUS,
   RESET_PERFIL_BYCLUB,
   PERFIL_BYCLUB,
-  NOMBRE
+  NOMBRE,
+  INFO
 } from './Constants';
 
 export const INITIAL_STATE = {
@@ -45,7 +46,15 @@ export const INITIAL_STATE = {
   clubIdEncargado: '',
   perfilbyClub: [],
   resetPerfilbyClub: [],
-  nombre: ""
+  nombre: "",
+  info: {
+    csrf_token: "",
+    access_token:"",
+    logout_token:"",
+    uid:"",
+    nombre:"",
+    roles:[]
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -105,6 +114,10 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, resetPerfilbyClub: []};
     case NOMBRE:
       return {...state, nombre:action.payload};
+    case "INFO":
+      return Object.assign({}, state, {
+        contacts: [...state.info, action.payload]
+      });
     default:
       return state;
   }

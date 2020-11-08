@@ -16,10 +16,12 @@ import FormInput from '../../components/ValidateForm/FormInput';
 import FormButton from '../../components/ValidateForm/FormButton';
 import ErrorMessage from '../../components/ValidateForm/ErrorMessage';
 import {LOGO, LOGINIMG} from '../../assets/image';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {traerUsuario, resetStatus} from '../../store/auth/actions';
 import Loading from '../../components/Loading/Loading';
+import CookieManager from '@react-native-community/cookies';
 import NavBar from '../../components/navbar/Navbar';
 
 const screenWidth = Dimensions.get('window').width;
@@ -37,6 +39,7 @@ const validationSchema = Yup.object().shape({
 
 
 function LoginScreen() {
+  const [errors, setErrors] = useState({});
   const auth = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const cargando = useSelector((state) => auth.cargando);
@@ -45,12 +48,14 @@ function LoginScreen() {
   const [banderaError, setBanderaError] = useState(false);
   const {width: screenWidth} = Dimensions.get('window');
   const status = useSelector((state) => auth.status);
+  const [counter, setcounter] = useState("0");
 
 
   useEffect(() => {
+    //status === 400 || status === '400'? dispatch(resetStatus()) : null
     {status === 400 || status === '400' ? createTwoButtonAlert(): null}
     if (auth.usuario.access_token === null || auth.usuario.length <= 0){
-      //CookieManager.clearAll();
+      CookieManager.clearAll();
     }
     else {
       goHome();

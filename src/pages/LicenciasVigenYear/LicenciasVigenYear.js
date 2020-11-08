@@ -166,6 +166,7 @@ class LicenciasVigenYear extends Component {
           {console.log(this.state.lic === [], "araay aqui")}
           {console.log(this.state.lic.length <1, "AQUIII")}
           {console.log(this.state.isloadin, "loadind")}
+          {console.log(this.state.lic)}
           <Container>
             <ScrollView>
               <SafeAreaView>

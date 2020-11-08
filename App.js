@@ -65,12 +65,10 @@ const StackPescador = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function App() {
-
   useEffect(() => {
     SplashScreen.hide();
 
 }, [SplashScreen]);
-
 
   return (
     <Provider store={store}>
@@ -139,7 +137,7 @@ function StackPescadorFun() {
         component={FormPerfilScreen}
         options={{headerShown: false}}
       />
-      
+
       <StackPescador.Screen
         name="FormPerfilByClubScreen"
         component={FormPerfilByClubScreen2}
@@ -193,8 +191,8 @@ function StackPescadorFun() {
         component={LicenciasActivasDeportista}
         options={{headerShown: false}}
       />
-      
-      
+
+
       <StackPescador.Screen
         name="LiquidacionesScreen"
         component={LiquidacionesScreen}
@@ -230,13 +228,13 @@ function StackPescadorFun() {
 
 
 function AppDrawer() {
-  
+
   const auth = useSelector((state) => state.auth.usuario);
   const {current_user, access_token} = auth;
   return (
     <Container>
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
-      
+
       <Drawer.Screen
         name="Home22"
         component={StackPescadorFun}
@@ -324,11 +322,11 @@ function AppDrawer() {
           drawerLabel: () => null,
         }}
       />
-      {/* <Drawer.Screen 
-        name="PantallaOculta" 
-        component={PantallaOculta} 
+      {/* <Drawer.Screen
+        name="PantallaOculta"
+        component={PantallaOculta}
         onPress={()=> props.navigation.navigate('RutasAdmin', {screen: 'PantallaOculta'})}
-        options={{ drawerLabel: () => null }} 
+        options={{ drawerLabel: () => null }}
         /> */}
     </Drawer.Navigator>
 
