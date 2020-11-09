@@ -22,11 +22,12 @@ import {
   RESET_STATUS,
   RESET_PERFIL_BYCLUB,
   PERFIL_BYCLUB,
-  NOMBRE
+  NOMBRE, INFO
 } from './Constants';
 import axios from 'axios';
 import awaitAsyncGenerator from "@babel/runtime/helpers/esm/awaitAsyncGenerator";
 
+const LoginUrl = 'https://licencias.fapd.org/user/login?_format=json';
 
 export const traerUsuario = (username, password) => async (dispatch) => {
 
@@ -37,7 +38,7 @@ export const traerUsuario = (username, password) => async (dispatch) => {
 
   axios({
     method: 'post',
-    url: session_url,
+    url: LoginUrl,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -106,6 +107,55 @@ export const traerUsuario = (username, password) => async (dispatch) => {
     payload: false
   });
 };
+
+export const loginRedux = (username, password) => async (dispatch) => {
+  console.log(username,password)
+  const respuesta = await axios({
+    method: 'post',
+    url: LoginUrl,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      name: `${username}`,
+      pass: `${password}`,
+    },
+  }).then((respuesta) => {
+    console.log('Redux login');
+    const {
+      current_user,
+      csrf_token,
+      access_token,
+      logout_token,
+    } = respuesta.data;
+    const {roles, uid} = current_user;
+    console.log("entro aqui")
+    dispatch({
+      type: INFO,
+      payload: {
+        "csrf_token": csrf_token ,
+        "access_token": access_token ,
+        "logout_token": logout_token,
+        "uid": uid,
+        "nombre": current_user.name,
+        "roles": roles
+      },
+    })
+  }).catch(function (error) {
+    console.log(error, 'status error aqui')
+    //console.log(error.response.status + 'status error aqui');
+    dispatch({
+      type: ERROR2,
+      payload: error,
+    });
+    dispatch({
+      type: STATUS,
+      payload: error
+    });
+  });
+  console.log(respuesta)
+};
+
 
 export const cerrarSession = () => async (dispatch) => {
 

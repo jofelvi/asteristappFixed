@@ -1,20 +1,21 @@
 import React, { useEffect, useState, Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, Button, TouchableWithoutFeedback, Dimensions, Image, ScrollView, Keyboard, SafeAreaView, RefreshControl, wait } from 'react-native';
-import axios from 'axios'
-import Spinner from 'react-native-loading-spinner-overlay';
 import { Container, Header, Content, Card, CardItem, Body } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from "react-redux";
-import * as usuarioActions from '../../store/auth/actions'
-import { traerDetalleNoticia, traerNoticias, resetDetalleNoticia } from '../../store/noticias/actions'
+import {
+    traerDetalleNoticia,
+    traerNoticias,
+    resetDetalleNoticia,
+    traerCategorias,
+    traerEtiquetas
+} from '../../store/noticias/actions'
 import { connect } from 'react-redux';
 import NavBar from '../../components/navbar/Navbar';
 import Loading from '../../components/Loading/Loading';
+import {getNoticias} from "../../HttpRequest/Api";
 
 const { width: screenWidth } = Dimensions.get('window');
-const screenHeight = Dimensions.get('window').height
-
-const urlDetalleNoticias = 'https://fapd.org/json-articulo?id=';
 
 const URL = "https://fapd.org/";
 
@@ -26,6 +27,8 @@ function DetailNoticiaSlider({ route, dispatch }) {
     const { otherParam } = route.params;
     const regex = /(<([^>]+)>)/ig;
     const [refreshing, setRefreshing] = React.useState(null);
+    const [detalleNoticia, setDetalleNoticia] = React.useState([]);
+
     //const dispatch = useDispatch();
     const { imagen, titulo, contenido } = noticiasDetalle;
     //const [paramItem, setParamItem] = useState(false);
@@ -37,13 +40,17 @@ function DetailNoticiaSlider({ route, dispatch }) {
         const unsubscribe = navigation.addListener('blur', () => {
             console.log("entro useEffect blur")
             dispatch(resetDetalleNoticia())
-            
         });
-        console.log("entro useEffect detalle noticia")
+
         dispatch(traerDetalleNoticia(item));
+        (async function cargandoApis() {
+            let api = await getDetalleNoticia(item)
+            setDetalleNoticia(api)
+        })();
         unsubscribe;
         // onRefresh()
     }, [item]);
+
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);

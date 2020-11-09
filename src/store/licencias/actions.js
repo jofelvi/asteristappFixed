@@ -20,8 +20,6 @@ const URL = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
 const urlDetalleNoticias = 'https://fapd.org/json-articulo?id=';
 
 export const traerLicenciasVig = (token) => async (dispatch) => {
- 
-
   try {
 
     dispatch({
@@ -39,7 +37,7 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
     axios.get(URL, {headers}).then((respuesta) => {
 
       console.log('###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################');
-    
+
         dispatch({
           type: TRAER_LICENCIAS_VIGENTES,
           payload: respuesta.data,
@@ -47,9 +45,9 @@ export const traerLicenciasVig = (token) => async (dispatch) => {
 
         dispatch({
           type: CARGANDO,
-          payload: false  
+          payload: false
         })
-      
+
     });
   } catch (error) {
     console.log("esta en error")
@@ -91,7 +89,7 @@ export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
       console.log(
         'ACTION AQUI RESPUESTA API traerLicenciasVigRoles NUEVO',
       );
-      
+
         dispatch({
           type: TRAER_LICENCIAS_VIGENTES_ROLES,
           payload: respuesta.data,
@@ -101,7 +99,7 @@ export const traerLicenciasVigRoles = (uid, token) => async (dispatch) => {
           type: CARGANDO,
           payload: false
         });
-      
+
     })
   } catch (error) {
     console.log('error' + error.message);
@@ -134,7 +132,7 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
       console.log(
         '###################### ACTION AQUI RESPUESTA API traerLicenciasCadu #######################',
       );
-      
+
         dispatch({
           type: TRAER_LICENCIAS_CADUCADAS,
           payload: respuesta.data,
@@ -144,7 +142,7 @@ export const traerLicenciasCadu = (token) => async (dispatch) => {
         type: CARGANDO,
         payload: false
       })
-      
+
     });
   } catch (error) {
     console.log('error' + error.message);
@@ -265,7 +263,7 @@ export const solicitarModalidades = (token) => async (dispatch) => {
     };
     axios.get(URLGETMODALIDADES, {headers}).then((respuesta) => {
       console.log('###################### ACTION AQUI RESPUESTA API solicitarModalidades #######################');
-      
+
         dispatch({
           type: MODALIDAD_LICENCIA,
           payload: respuesta.data,
@@ -274,14 +272,14 @@ export const solicitarModalidades = (token) => async (dispatch) => {
           type: CARGANDO,
           payload: false
         });
-     
+
     });
   } catch (error) {
     console.log('error' + error.message);
     dispatch({
       type: ERROR2,
       payload: error.message,
-    })  
+    })
     dispatch({
       type: CARGANDO,
       payload: false
@@ -322,7 +320,7 @@ export const enviarCorreo = (
         '###################### ACTION AQUI RESPUESTA API enviaremail ####################### ' +
           respuesta.status,
       );
-      
+
         dispatch({
           type: STATUS,
           payload: respuesta.status,

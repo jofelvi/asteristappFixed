@@ -1,7 +1,6 @@
 import React from 'react'
 import { Input } from 'react-native-elements'
 import { StyleSheet, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
 const FormInput = ({
@@ -33,6 +32,7 @@ const FormInput = ({
         placeholder={placeholder}
         style={styles.inputContainer}
         errorMessage={errorMessage}
+        autoCapitalize = 'none'
       />
     </View>
   )
@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
   },
   TextLabel: {
     //fontWeight: 'bold',
+    color: '#00183A',
+    fontSize: 14
+  },
+  inputStyle:{
     color: '#00183A',
     fontSize: 14
   }

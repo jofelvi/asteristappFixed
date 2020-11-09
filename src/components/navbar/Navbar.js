@@ -1,30 +1,18 @@
-import React, { Component, useState,useEffect } from 'react';
-import { StyleSheet, Dimensions, TouchableOpacity, Image, View, Text, Platform } from 'react-native';
-import { LOGONORMAL, ICONMENU2, ICONMENU3, ICONMENU4, MENUICON7, VOLVERICON, VOLVERICON2, VOLVERICON7 } from '../../assets/image';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, Image, View, Platform } from 'react-native';
+import { LOGONORMAL } from '../../assets/image';
 import { useNavigation } from '@react-navigation/native';
-import { Container, Header, Left, Body, Right, Button, Title, Content } from 'native-base';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Header, Left, Body, Right, Button } from 'native-base';
 import Icon2 from 'react-native-vector-icons/Ionicons';
-import {useDispatch, useSelector} from 'react-redux';
+import {useRoute} from '@react-navigation/native';
 
-const myIcon = <Icon name="rocket" size={30} color="#0053C9" />;
 const myIcon2 = <Icon2 name="reorder-four-outline" size={40} color="#0053C9" />;
 const myIcon3 = <Icon2 name="chevron-back-outline" size={40} color="#0053C9" />;
 
 function NavBar( props ) {
     //const { navigation } = useNavigation();
     const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const auth = useSelector((state) => state.auth);
-    const [btnvolver, setbtnvolver] = useState();
 
-   
-    // if (props.flat === false || typeof props.flat == "undefined" && props.ruta === 'home') {
-    //     console.log( "esta entrando en indefinido")
-    //     setbtnvolver(false)
-    // }else{
-    //     setbtnvolver(true)
-    // }
     const _renderIconback = () =>{
         return <TouchableOpacity
          onPress={() => navigation.goBack()}
@@ -32,8 +20,9 @@ function NavBar( props ) {
        {myIcon3}
     </TouchableOpacity>
     }
-
-    console.log("vivible navbar",props.flat)
+    const route = useRoute();
+    console.log(route.name," ruta aqui");
+    console.log(route.name.toString() !== "Home","----validacion aqui aqui-----");
     return (
         <Header style={styles.backColorNavbar}>
             <Left style={{ flex: 1 }}>
@@ -42,14 +31,7 @@ function NavBar( props ) {
                     transparent
                     style={Platform.OS === 'androird' ??{marginLeft:0 }}
                 >
-                    
                     {myIcon2}
-                    {/* <Image
-                        source={Platform.OS === 'ios' ? myIcon : myIcon}
-                        style={{ width: 30, height: 40, color: "black" }}
-                    >
-                    </Image> */}
-
                 </Button>
             </Left>
             <Body style={styles.LogoAndIos}>
@@ -66,11 +48,9 @@ function NavBar( props ) {
             </Body>
             <Right style={{ flex: 1 }}>
                 <View style={{ marginTop: 2 }}>
-                { _renderIconback()}
+                {route.name.toString() === "Home"? null: _renderIconback()}
                 </View>
-
             </Right>
-           
         </Header >
     );
 }

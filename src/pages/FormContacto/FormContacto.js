@@ -3,125 +3,67 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  Keyboard,
-  TouchableWithoutFeedback,
   Dimensions,
-  Image,
+
   ScrollView,
-  TextInput,
+
   Platform,
-  Alert,
+
 } from 'react-native';
-import {Button} from 'react-native-elements';
 import FormInput from '../../components/ValidateForm/FormInput';
 import FormButton from '../../components/ValidateForm/FormButton';
 import ErrorMessage from '../../components/ValidateForm/ErrorMessage';
 import NavBar from '../../components/navbar/Navbar';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {traerUsuario, traerPerfil, isload} from '../../store/auth/actions';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {
   Container,
-  Content,
-  Form,
-  Item,
-  Picker,
-  DatePicker,
   List,
   ListItem,
   Text,
 } from 'native-base';
-import {enviarCorreo, resetStatus} from '../../store/licencias/actions';
 import CheckBox from '@react-native-community/checkbox';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
-import axios from 'axios';
 import Loading from '../../components/Loading/Loading';
+import {enviarCorreo} from "../../HttpRequest/Api";
 
 const {width: screenWidth} = Dimensions.get('window');
 
 function FormContacto({route}) {
 
-  const cargando = useSelector((state) => state.auth.cargando);
-  //const status = useSelector((state) => state.licencias.status);
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [checkAvisoLegal, setCheckAvisoLegal] = useState(true);
   const [checkPromociones, setCheckPromociones] = useState(false);
   const [checkPersonalizado, setCheckPersonalizado] = useState(false);
   const [status, setstatus] = useState('');
-  const [bandera, setbandera] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
-  const inputRef = React.createRef('');
   const [nombre, setnombre] = useState('');
   const [email, setemail] = useState('');
   const [mensaje, setmensaje] = useState('');
   const [asunto, setasunto] = useState('');
   const [isloadin, setisloadin] = useState(false);
 
-  useEffect(() => {
-     
-  }, []);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     let listCheck = [checkAvisoLegal, checkPromociones, checkPersonalizado];
     setisloadin(true)
-      enviarCorreo(
+     let api = await enviarCorreo(
         values.nombre,
         values.email,
         values.asunto,
         values.mensaje,
-        listCheck    
+        listCheck
     );
+    setstatus(api)
+    setisloadin(false)
   };
 
- const enviarCorreo = ( nombre1,email1, asunto1, mensaje1,listCheck1) => {
-    let URLenviarCorreo = 'https://licencias.fapd.org/enviaremail';
-    console.log("entro funcion")
-    axios({
-      method: 'post',
-      url: URLenviarCorreo,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        'nombre': `${nombre1}`,
-        'email': `${email1}`,
-        'asunto': `${asunto1}`,
-        'mensaje': `${mensaje1}`,
-        'checks': `${listCheck1}`,
-      },
-    }).then((respuesta) => {
-        console.log( '#### ACTION AQUI RESPUESTA API enviaremail ######## ',respuesta.status );
-        setstatus(respuesta.status)
-        setisloadin(false)
-      })
-    }
-
-  // const alertaFunt = () => {
-  //   Alert.alert(
-  //     'Aviso',
-  //     'Su correo fue enviado Satisfactoriamente',
-  //     [
-  //       {
-  //         text: 'Cancelar',
-  //         onPress: () => console.log('Cancel Pressed'),
-  //         style: 'cancel'
-  //       },
-  //       { text: 'Aceptar', onPress: () => navigation.navigate('Home') }
-  //     ],
-  //     { cancelable: false }
-  //   );
-
-  //   dispatch(resetStatus());
-  //   }
-  
   const modalOpen = () =>{
     setstatus("")
     setModalVisible(true)
-   
+
   }
 
   const modalBtnAcep = () =>{
@@ -130,7 +72,6 @@ function FormContacto({route}) {
   }
 
   if (isloadin === true) {
-    
     return (
       <Loading
         isVisible={isloadin}
@@ -158,7 +99,7 @@ function FormContacto({route}) {
                  <Text style={styles.TextEtiqutea2}>Su Peticion se envio Satisfactoriamente</Text>
               </View>
           </ConfirmDialog>
-          </View> 
+          </View>
           <Formik
             initialValues={{
               nombre: nombre,
@@ -166,9 +107,9 @@ function FormContacto({route}) {
               asunto: mensaje,
               mensaje: asunto,
             }}
-            enableReinitialize = { true } 
-            onSubmit={ (values, { resetForm }) => {
-              handleSubmit(values)
+            enableReinitialize = { true }
+            onSubmit={async (values, { resetForm }) => {
+              await  handleSubmit(values)
               resetForm()
             }}
             validationSchema={validationSchema}>
@@ -281,7 +222,7 @@ function FormContacto({route}) {
                     //loading={isLoading}
                   />
                 </View>
-                
+
               </Fragment>
             )}
           </Formik>
@@ -327,14 +268,14 @@ const styles = StyleSheet.create({
     color: '#00183A',
     fontSize: 15,
     textAlign: 'center',
-    marginTop: 15,  
+    marginTop: 15,
     marginBottom:15
   },
   TextEtiqutea2: {
     fontWeight: 'bold',
     color: '#00183A',
     fontSize: 15,
-    marginTop: 15,  
+    marginTop: 15,
     marginBottom:15,
     marginLeft:10
   }

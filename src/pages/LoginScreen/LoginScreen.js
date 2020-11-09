@@ -18,9 +18,10 @@ import ErrorMessage from '../../components/ValidateForm/ErrorMessage';
 import {LOGO, LOGINIMG} from '../../assets/image';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {traerUsuario, resetStatus} from '../../store/auth/actions';
+import {traerUsuario, resetStatus, loginRedux} from '../../store/auth/actions';
 import Loading from '../../components/Loading/Loading';
 import NavBar from '../../components/navbar/Navbar';
+import CookieManager from '@react-native-community/cookies';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -42,7 +43,6 @@ function LoginScreen() {
   const cargando = useSelector((state) => auth.cargando);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [banderaError, setBanderaError] = useState(false);
   const {width: screenWidth} = Dimensions.get('window');
   const status = useSelector((state) => auth.status);
 
@@ -50,7 +50,7 @@ function LoginScreen() {
   useEffect(() => {
     {status === 400 || status === '400' ? createTwoButtonAlert(): null}
     if (auth.usuario.access_token === null || auth.usuario.length <= 0){
-      //CookieManager.clearAll();
+      CookieManager.clearAll();
     }
     else {
       goHome();
@@ -66,13 +66,12 @@ function LoginScreen() {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    //setPassword(values.password);
-    // setUsername(values.username);
     await dispatch(traerUsuario(values.username, values.password))
+    //const api = await dispatch(loginRedux(values.username, values.password))
+    //console.log(api)
   };
 
   const createTwoButtonAlert = () => {
-    //dispatch(resetStatus());
     Alert.alert(
         'Aviso',
         'NIF/NIE O/U contraseña Invalido',
@@ -88,14 +87,12 @@ function LoginScreen() {
     );
     resetSta()
   };
-
   if (cargando === true) {
     return <Loading isVisible={cargando} text={'CARGANDO...'} />;
   }
-
   return (
       <Container>
-        <NavBar></NavBar>
+        <NavBar/>
         <ScrollView keyboardShouldPersistTaps="always">
           <SafeAreaView style={styles.container}>
             <Formik

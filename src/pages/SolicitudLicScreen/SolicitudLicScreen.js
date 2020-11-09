@@ -1,50 +1,26 @@
-import React, {Fragment, useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Image,
-  Dimensions,
-  Alert,
-  ScrollView,
-  Text,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View,} from 'react-native';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import FormInput from '../../components/ValidateForm/FormInput';
 import FormButton from '../../components/ValidateForm/FormButton';
 import ErrorMessage from '../../components/ValidateForm/ErrorMessage';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {traerUsuario} from '../../store/auth/actions';
 import {solicitarModalidades} from '../../store/licencias/actions';
 
-import {
-  Container,
-  Header,
-  Content,
-  Form,
-  Item,
-  Picker,
-  DatePicker,
-} from 'native-base';
-//import { CheckBox } from 'react-native-elements'
-import CheckBox from '@react-native-community/checkbox';
+import {Container, Item, Picker,} from 'native-base';
 import axios from 'axios'
-import {SolicitarLicencias, resetStatus} from '../../store/licencias/actions';
 import NavBar from '../../components/navbar/Navbar';
 import Loading from '../../components/Loading/Loading';
-import { ConfirmDialog } from 'react-native-simple-dialogs';
+import {ConfirmDialog} from 'react-native-simple-dialogs';
+import {solicitudLicenciaEmail} from "../../HttpRequest/Api";
 
 const {width: screenWidth} = Dimensions.get('window');
 
 
 function SolicitudLicScreen() {
   const [isLoading, setIsLoading] = useState(false);
-  const cargando = useSelector((state) => state.auth.cargando);
-  const licencias = useSelector((state) => state.licencias);
-
   const modalidadLicSel = useSelector(
     (state) => state.licencias.modalidadesLic,
   );
@@ -57,7 +33,7 @@ function SolicitudLicScreen() {
   const dispatch = useDispatch();
   const {access_token} = usuario;
   const status = useSelector((state) => state.licencias.status);
-   const [isModalVisible, setisModalVisible] = useState();
+  const [isModalVisible, setisModalVisible] = useState();
   const [respStatus, setrespStatus] = useState('');
   //const { width: screenWidth } = Dimensions.get('window');
   useEffect(() => {
@@ -69,75 +45,31 @@ function SolicitudLicScreen() {
   const goHome = () => navigation.navigate('Home');
 
   const _renderCategorias = modalidadLicSel.map((data, index) => {
-    return <Picker.Item label={data.modalidad} value={index} />;
+    return <Picker.Item label={data.modalidad} value={index}/>;
   });
 
   const handleSubmit = async (values) => {
-    //setBandera(true);
+    const {uid} = currenUser;
+
     setIsLoading(true)
     console.log('entro handle');
     //await dispatch(SolicitarLicencias( access_token, SelecModalidadLic, values.observaciones,uid));
-    handleLApiEmail(values.observaciones)
+    let api = await solicitudLicenciaEmail(uid,SelecModalidadLic,values.observaciones, access_token)
+    setrespStatus(api)
   };
 
-  // const handleAlerta = () => {
-  //   setrespStatus('')
-  //   Alert.alert(
-  //     'Completado',
-  //    'Su solicitud se envio con exito',
-  //    [
-  //      { text: "Aceptar", onPress: () => goHome() }
-  //    ],
-  //    { cancelable: true }
-  //    );
-  //    ;
-  // };
-
-
-  const handleLApiEmail = (observaciones) => {
-    const {uid} = currenUser;
-
-    const URLPETLIC = 'https://licencias.fapd.org/enviaremail';
-
-    try {
-      axios({
-        method: 'post',
-        url: URLPETLIC,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + access_token,
-        },
-        data: {
-          uid: `${uid}`,
-          modalidad: `${SelecModalidadLic}`,
-          observaciones: `${observaciones}`,
-        },
-      }).then((respuesta) => {
-        setIsLoading(false)
-        console.log('###### ACTION AQUI RESPUESTA API SolicitarLicencias ######### Status:',respuesta.status );
-        setrespStatus(respuesta.status)
-        
-      });
-  
-    } catch (error) {
-      setIsLoading(false)
-     console.log(error)
-    }
-  };
-
-  const modalOpen = () =>{
+  const modalOpen = () => {
     setrespStatus("")
     setisModalVisible(true)
-   
+
   }
 
-  const modalBtnAcep = () =>{
+  const modalBtnAcep = () => {
     setisModalVisible(false)
     navigation.navigate('Home')
   }
 
   if (isLoading === true) {
-
     return (
       <Loading
         isVisible={isLoading}
@@ -145,52 +77,53 @@ function SolicitudLicScreen() {
       />
     );
   }
-  
+
   return (
     <Container>
-      
-    {respStatus === 200 || respStatus === '200' ? modalOpen() : null}
-    {respStatus === 403 || respStatus === '403' ? handleLTokenExpired() : null }
-      <NavBar></NavBar>
+
+      {respStatus === 200 || respStatus === '200' ? modalOpen() : null}
+      <NavBar/>
       <ScrollView
         keyboardShouldPersistTaps="always"
         style={{alignContent: 'center', paddingTop: 1}}
-        >
-          
+      >
+
         <SafeAreaView style={styles.container}>
-        <View style={styles.TextEtiqutea2}>
-          <ConfirmDialog
+          <View style={styles.TextEtiqutea2}>
+            <ConfirmDialog
               //style={styles.TextEtiqutea2}
-              title={ `INFORMACION `}
-              titleStyle= {styles.TextEtiqutea2}
+              title={`INFORMACION `}
+              titleStyle={styles.TextEtiqutea2}
               visible={isModalVisible}
               onTouchOutside={() => setisModalVisible(false)}
               positiveButton={{
-                  title: "Aceptar",
-                  onPress: () => modalBtnAcep()
-              }} >
+                title: "Aceptar",
+                onPress: () => modalBtnAcep()
+              }}>
               <View>
-                 <Text style={styles.TextEtiqutea2}>Su Solicitud para una nueva licencia se envio Satisfactoriamente</Text>
+                <Text style={styles.TextEtiqutea2}>Su Solicitud para una nueva licencia se envio
+                  Satisfactoriamente</Text>
               </View>
-          </ConfirmDialog>
-          </View> 
+            </ConfirmDialog>
+          </View>
           <Formik
             initialValues={{observaciones: ''}}
-            onSubmit={async (values, { resetForm }) => {
+            onSubmit={async (values, {resetForm}) => {
               await handleSubmit(values)
               resetForm()
+              setIsLoading(false)
             }}
             validationSchema={validationSchema}>
             {({
-              handleChange,
-              values,
-              handleSubmit,
-              errors,
-              isValid,
-              touched,
-              handleBlur,
-              isSubmitting,
-            }) => (
+                handleChange,
+                values,
+                handleSubmit,
+                errors,
+                isValid,
+                touched,
+                handleBlur,
+                isSubmitting,
+              }) => (
               <View style={{flex: 1, alignContent: 'center'}}>
                 <View>
                   <Text
@@ -198,38 +131,39 @@ function SolicitudLicScreen() {
                     SOLICITUD LICENCIA NUEVA
                   </Text>
                 </View>
-             <View style={{marginBottom:20,marginTop:20}}>
-             <Text
-                  style={styles.TextEtiqutea2}>
-                  Seleccione Modalidad de Licencia:
-                </Text>
+                <View style={{marginBottom: 20, marginTop: 20}}>
+                  <Text
+                    style={styles.TextEtiqutea2}>
+                    Seleccione Modalidad de Licencia:
+                  </Text>
 
-                <Item picker >
+                  <Item picker>
 
-                  <Picker
-                    mode="dropdown"
-                    style={{width: '100%'}}
-                    placeholder="Seleccionar Modalidad"
-                    placeholderStyle={{
-                      fontWeight: 'bold',
-                      color: '#00183A',
-                      fontSize: 15,
-                      marginTop: 15,  
-                      marginBottom:15,
-                      marginLeft:10}}
-                    iosHeader={'Modalidad'}
-                    selectedValue={SelecModalidadLic}
-                    headerBackButtonText="Volver"
-                    onValueChange={(itemValue, itemIndex) =>
-                      setSelecModalidadLic(itemValue)
-                    }>
-                      
-                    <Picker.Item label="Seleccione Modalidad Licencia" value="" />
+                    <Picker
+                      mode="dropdown"
+                      style={{width: '100%'}}
+                      placeholder="Seleccionar Modalidad"
+                      placeholderStyle={{
+                        fontWeight: 'bold',
+                        color: '#00183A',
+                        fontSize: 15,
+                        marginTop: 15,
+                        marginBottom: 15,
+                        marginLeft: 10
+                      }}
+                      iosHeader={'Modalidad'}
+                      selectedValue={SelecModalidadLic}
+                      headerBackButtonText="Volver"
+                      onValueChange={(itemValue, itemIndex) =>
+                        setSelecModalidadLic(itemValue)
+                      }>
 
-                    {_renderCategorias}
+                      <Picker.Item label="Seleccione Modalidad Licencia" value=""/>
 
-                  </Picker>
-                </Item>
+                      {_renderCategorias}
+
+                    </Picker>
+                  </Item>
                 </View>
 
                 <Text
@@ -281,7 +215,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 5,
-    marginTop:30
+    marginTop: 30
   },
   logo: {
     marginLeft: 10,
@@ -300,16 +234,16 @@ const styles = StyleSheet.create({
     color: '#00183A',
     fontSize: 15,
     textAlign: 'center',
-    marginTop: 15,  
-    marginBottom:15
+    marginTop: 15,
+    marginBottom: 15
   },
   TextEtiqutea2: {
     fontWeight: 'bold',
     color: '#00183A',
     fontSize: 15,
-    marginTop: 15,  
-    marginBottom:15,
-    marginLeft:10
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 10
   }
 });
 
