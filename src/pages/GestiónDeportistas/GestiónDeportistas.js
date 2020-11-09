@@ -20,6 +20,7 @@ import NavBar from '../../components/navbar/Navbar';
 import {Button, Menu, Divider, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import {getDeportistas} from "../../HttpRequest/Api";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -30,25 +31,32 @@ function GestiónDeportistas() {
   const access_token = useSelector((state) => auth.usuario.access_token);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [visible, setVisible] = React.useState(false);
+  const [isloading, setIsloading] = React.useState(true);
   const cargando = useSelector((state) => state.auth.cargando);
+  const [listDeportistas, setListDeportistas] = useState([]);
+
 
   useEffect(() => {
 
-    dispatch(traerDeportistas(access_token));
+    //dispatch(traerDeportistas(access_token));
+    getApi()
+  }, [isloading]);
 
-  }, []);
+  const getApi= async ()=>{
 
+  let api = await  getDeportistas(access_token)
+   await setListDeportistas(api)
+   await setIsloading(false)
+  }
   const getItem = (item) => {
-
     navigation.navigate('FormPerfilByClubScreen', {
         item: item.uid,
         nombre: item.nombre_completo
     });
   }
 
-const getItem2 = (item) => {
 
+const getItem2 = (item) => {
   navigation.navigate('LicenciasActivas', {
       item: item.uid,
       nombre: item.nombre_completo
@@ -90,10 +98,8 @@ const getItem2 = (item) => {
     );
   };
 
-
+  {console.log(listaDeportistas.length) }
   const _renderList = listaDeportistas.map((item, index) => {
-    console.log("-----")
-    console.log(item)
     if (listaDeportistas.length >= 1) {
       return (
         <Card style={{marginTop: 5}}>
@@ -165,11 +171,11 @@ const getItem2 = (item) => {
             <List style={{alignSelf: 'flex-end'}}>
               <ListItem>
                 <TouchableOpacity onPress={() => alertDelete(item)}>
-                  <Icon2 name="delete" style={{fontSize: 40, color: '#0053C9'}} />
+                  <Icon name="edit" style={{fontSize: 40, color: '#0053C9'}} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => alertGetLicencias(item)}>
-                  <Icon
-                    name="edit"
+                  <Icon2
+                    name="delete"
                     style={{fontSize: 40, color: '#0053C9'}}
                   />
                 </TouchableOpacity>
@@ -182,8 +188,8 @@ const getItem2 = (item) => {
   });
 
 
-  if (cargando === true) {
-    return <Loading isVisible={cargando} text={'CARGANDO...'} />;
+  if (isloading === true) {
+    return <Loading isVisible={isloading} text={'CARGANDO...'} />;
   }
   return (
     <Container>
@@ -192,10 +198,8 @@ const getItem2 = (item) => {
         <ScrollView keyboardShouldPersistTaps="always">
           <Text style={styles.TextEtiqutea}>GESTION DEPORTISTAS:</Text>
           <View style={{marginLeft:5, marginRight:5}}>
-          {_renderList}
+            {_renderList}
           </View>
-
-
         </ScrollView>
         <Button
           style={styles.botonAbajo}

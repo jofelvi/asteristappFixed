@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect, Component} from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -9,37 +9,21 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-
 import {connect} from 'react-redux';
 import * as usuarioActions from '../../store/auth/actions';
 import * as licenciasActions from '../../store/licencias/actions';
-import ListLicencias from '../../components/ListLicencias/ListLicencias';
 import NavBar from '../../components/navbar/Navbar';
-import {useNavigation} from '@react-navigation/native';
 import {LICENCIAICON} from '../../assets/image';
 import {
   Container,
-  Header,
-  Content,
-  List,
-  ListItem,
   Thumbnail,
   Text,
-  Left,
-  Body,
-  Right,
-  Button,
   Card,
 } from 'native-base';
-import {parseZone} from 'moment';
 import Loading from '../../components/Loading/Loading';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios'
-import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import {getLicenciasVigor} from "../../HttpRequest/Api";
 
 const {width: screenWidth} = Dimensions.get('window');
-
-const URL = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
 
 class LicenciasActivasDeportista extends Component {
 
@@ -70,31 +54,24 @@ class LicenciasActivasDeportista extends Component {
 
   }
 
- getData =(token) =>{
-   
+ getData = async (token) =>{
 
-  axios.get(URL, { 
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + token,}
-  ).then((respuesta) => {
+   let api =await getLicenciasVigor(token)
 
-    console.log('###################### ACTION AQUI RESPUESTA API traerLicenciasVig #######################');
-    console.log(respuesta.data)
-    this.setState({clubsDeportista: respuesta.data, isloadin: false})
+   this.setState({clubsDeportista: api, isloadin: false})
 
-  });
-    
+
   }
- 
+
   GetItem(item) {
     this.props.navigation.navigate('DetailsLicencias', {
       item: item,
     });
   }
 
-  
+
   goEdit() {
-    
+
     const {item} = this.props.route.params ? this.props.route.params : '';
     this.props.navigation.navigate('FormPerfilByClubScreen', {
       item: item,
@@ -120,7 +97,7 @@ class LicenciasActivasDeportista extends Component {
     );
   };
 
- 
+
 
 
   render_text = () => {
@@ -133,7 +110,7 @@ class LicenciasActivasDeportista extends Component {
   };
 
 
-  
+
   render() {
     let rol = this.props.auth.usuario.current_user.roles;
 
@@ -152,7 +129,7 @@ class LicenciasActivasDeportista extends Component {
     }
 
      if (rol.includes('deportista'))
-     { 
+     {
       return (
         <Container>
           <NavBar></NavBar>
@@ -163,7 +140,7 @@ class LicenciasActivasDeportista extends Component {
               <View>
                 <Text style={styles.TextEtiqutea}>
                   LISTADO LICENCIAS EN VIGOR DEPORTISTA:
-                  
+
                 </Text>
                 {this.state.clubsDeportista.length <= 0 &&
                 this.state.isloadin != false
@@ -200,7 +177,7 @@ class LicenciasActivasDeportista extends Component {
         </Container>
       );
     }
-  
+
   }
 }
 

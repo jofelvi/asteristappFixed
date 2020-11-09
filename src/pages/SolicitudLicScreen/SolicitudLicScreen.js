@@ -8,9 +8,7 @@ import ErrorMessage from '../../components/ValidateForm/ErrorMessage';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {solicitarModalidades} from '../../store/licencias/actions';
-
 import {Container, Item, Picker,} from 'native-base';
-import axios from 'axios'
 import NavBar from '../../components/navbar/Navbar';
 import Loading from '../../components/Loading/Loading';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
@@ -54,7 +52,7 @@ function SolicitudLicScreen() {
     setIsLoading(true)
     console.log('entro handle');
     //await dispatch(SolicitarLicencias( access_token, SelecModalidadLic, values.observaciones,uid));
-    let api = await solicitudLicenciaEmail(uid,SelecModalidadLic,values.observaciones, access_token)
+    let api = await solicitudLicenciaEmail(uid, SelecModalidadLic, values.observaciones, access_token)
     setrespStatus(api)
   };
 
@@ -80,8 +78,8 @@ function SolicitudLicScreen() {
 
   return (
     <Container>
-
       {respStatus === 200 || respStatus === '200' ? modalOpen() : null}
+
       <NavBar/>
       <ScrollView
         keyboardShouldPersistTaps="always"
@@ -110,8 +108,8 @@ function SolicitudLicScreen() {
             initialValues={{observaciones: ''}}
             onSubmit={async (values, {resetForm}) => {
               await handleSubmit(values)
-              resetForm()
-              setIsLoading(false)
+              await resetForm()
+              await setIsLoading(false)
             }}
             validationSchema={validationSchema}>
             {({

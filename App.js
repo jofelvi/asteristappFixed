@@ -253,7 +253,7 @@ function AppDrawer() {
         onPress={() => props.navigation.navigate('LoginScreen')}
         options={{
           headerShown: false,
-          drawerLabel: access_token == null ? "Login" : "Cerrar cesion" ,
+          drawerLabel: access_token == null ? "Login" : "Cerrar sesión" ,
           drawerIcon: () => (
             <Icon name="sign-in" size={30} color="#0053C9" />
           ),
@@ -312,6 +312,7 @@ function AppDrawer() {
         }}
       />
 
+      {/*
       <Drawer.Screen
         name="StackPescadorFun"
         component={StackPescadorFun}
@@ -322,7 +323,7 @@ function AppDrawer() {
           drawerLabel: () => null,
         }}
       />
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="PantallaOculta"
         component={PantallaOculta}
         onPress={()=> props.navigation.navigate('RutasAdmin', {screen: 'PantallaOculta'})}

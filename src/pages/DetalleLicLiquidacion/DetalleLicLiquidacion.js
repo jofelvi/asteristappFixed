@@ -1,7 +1,6 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import {
   Container,
-  Header,
   Content,
   List,
   ListItem,
@@ -9,65 +8,36 @@ import {
   Text,
   Left,
   Body,
-  Right,
-  Button,
 } from 'native-base';
 import {LICENCIAICON} from '../../assets/image';
 import {
   StyleSheet,
-  SafeAreaView,
   View,
-  Image,
-  Dimensions,
-  Alert,
-  ScrollView,
-  TouchableOpacity,
+
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import DisplayBarcode from '../../components/barcode/barcode';
-import ListLicencias from '../../components/ListLicencias/ListLicencias';
 import NavBar from '../../components/navbar/Navbar';
 import {useDispatch, useSelector} from 'react-redux';
-import axios from 'axios';
-import { traerLicenciasVig, traerLicenciasLiquidaciones } from '../../store/licencias/actions';
 import Loading from '../../components/Loading/Loading';
+import {getDetalleLiquidacion} from "../../HttpRequest/Api";
+
 
 export default function DetalleLicLiquidacion({route, props}) {
   const {item} = route.params;
-  const [licencias, setLicencias] = useState(["1"]);
-  const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const {access_token, uid} = auth;
-  const licenciasLiquidaciones = useSelector((state) => state.licencias.licenciasLiquidaciones);
   const [licLiquid, setLicLiquid] = useState([]);
   const [isloadin, setIsloadin] = useState(true);
 
   useEffect(() => {
-
-    const {item} = route.params;
-    const URLLIC = `https://licencias.fapd.org/json-licencias-liquidacion/${item}?_format=json`;
-    
-    handleApi(URLLIC)
-      
+    handleApi()
   }, [item]);
 
 
-  const handleApi = (URLLIC)=>{
-
-    try {
-      axios.get(URLLIC, {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + access_token,}
-      ).then((respuesta) => {
-        console.log('exito entro funcion  respuesta API TRAER Licencias liquidaciones');
-        console.log("respuesta api " + JSON.stringify(respuesta.data))
-           //dispatch(traerLicenciasLiquidaciones(respuesta.data))
-           setLicLiquid(respuesta.data)
-           setIsloadin(false)
-      });
-    } catch (error) {
-      setIsloadin(false)
-    }
+  const handleApi =async (URLLIC)=>{
+    const {item} = route.params;
+    let api = await getDetalleLiquidacion(access_token,item)
+    await setLicLiquid(api)
+    await setIsloadin(false)
 
   }
 const _renderTextVacio = ()=>{
@@ -115,7 +85,7 @@ const _renderTextVacio = ()=>{
 
   return (
     <Container>
-      <NavBar></NavBar>
+      <NavBar/>
       <Content>
         <View style={styles.container}>
           <Text style={styles.TextEtiqutea}>
@@ -123,7 +93,6 @@ const _renderTextVacio = ()=>{
           </Text>
          {licLiquid.length >= 1? _renderLicenciasDetails : _renderTextVacio() }
         </View>
-
       </Content>
     </Container>
   );

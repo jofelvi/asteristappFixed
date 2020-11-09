@@ -489,7 +489,6 @@ export const traerLiquidaciones = (token, nidClub, year) => (dispatch) => {
           type: CARGANDO,
           payload: true
         });
-
   try {
     const headers = {
       headers: {

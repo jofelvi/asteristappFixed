@@ -21,8 +21,6 @@ function NavBar( props ) {
     </TouchableOpacity>
     }
     const route = useRoute();
-    console.log(route.name," ruta aqui");
-    console.log(route.name.toString() !== "Home","----validacion aqui aqui-----");
     return (
         <Header style={styles.backColorNavbar}>
             <Left style={{ flex: 1 }}>
@@ -38,7 +36,6 @@ function NavBar( props ) {
 
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Home')}
-
                 >
                     <Image
                         source={LOGONORMAL}

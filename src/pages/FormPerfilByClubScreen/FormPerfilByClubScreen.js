@@ -28,7 +28,6 @@ class FormPerfilByClubScreen2 extends Component {
 
         };
     }
-
     async componentDidMount() {
 
         console.log("fomulario clase")

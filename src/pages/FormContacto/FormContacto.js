@@ -92,7 +92,7 @@ function FormContacto({route}) {
               visible={isModalVisible}
               onTouchOutside={() => setModalVisible(false)}
               positiveButton={{
-                  title: "aceptar",
+                  title: "Aceptar",
                   onPress: () => modalBtnAcep()
               }} >
               <View>

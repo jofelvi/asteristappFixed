@@ -9,6 +9,7 @@ import {LICENCIAICON} from '../../assets/image';
 import {Button, Card, Container, List, ListItem, Text, Thumbnail,} from 'native-base';
 import Loading from '../../components/Loading/Loading';
 import axios from 'axios';
+import {getCLubsUser, getLicByYear} from "../../HttpRequest/Api";
 
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -24,6 +25,8 @@ class LicenciasVigenYear extends Component {
       lic: []
     };
     this.GetItem = this.GetItem.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
+
   }
 
   componentDidMount() {
@@ -33,84 +36,34 @@ class LicenciasVigenYear extends Component {
     const {roles} = this.props.auth.rolesUser;
     let rol = this.props.auth.usuario.current_user.roles;
     //this.props.traerPerfil(uid, access_token);
+    this.handleApis(uid, access_token)
 
-    this.handlePerfil(uid, access_token)
-    const year3 = new Date().getFullYear();
-
-    if (rol.includes('contabilidad') || rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
+  /*  if (rol.includes('contabilidad') || rol.includes('gestión') || rol.includes('directiva') || rol.includes('club')) {
       //this.getlicencias(year3);
       console.log("entro if")
-    }
+    }*/
   }
 
-  handlePerfil = (uid, token) => {
+  handleApis = async (uid, token) => {
+    const year = new Date().getFullYear();
 
-    const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+    let clubs = await getCLubsUser(token, uid)
 
-    try {
-      axios.get(URLperfil, {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }).then((respuesta) => {
-        console.log('exito entro funcion  respuesta API TRAER PERFIL');
+    await  this.setState({clubId:clubs})
 
-        const {field_user_clubs, roles, field_user_gestionclub,} = respuesta.data;
+    let licenciasByclub = await getLicByYear(clubs,year, token)
 
-        if (roles.filter((e) => e.target_id === 'club').length > 0) {
-          console.log(field_user_gestionclub[0].target_id);
-          let clubId = field_user_gestionclub[0].target_id
-          this.setState({clubId: clubId, isloadin: false})
-          const year3 = new Date().getFullYear();
-          this.getlicencias(year3, clubId)
-        }
-      });
-    } catch (error) {
-      this.setState({isloadin: false})
-    }
+    await this.setState({isloadin:false, lic: licenciasByclub})
 
   }
 
-  handleapiLicByYear = (nidClub, year, token) => {
+  getlicenciasByDate = async (year) => {
 
-    const URLicenciasVgYear = `https://licencias.fapd.org/json-licencias-vigentes-club/${nidClub}/${year}?_format=json`;
-
-    try {
-      axios.get(URLicenciasVgYear, {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }).then((respuesta) => {
-        console.log('exito entro funcion  respuesta API TRAER PERFIL');
-
-        this.setState({isloadin: false})
-        this.setState({lic: respuesta.data})
-      });
-    } catch (error) {
-      this.setState({isloadin: false})
-    }
-
-  }
-
-  getlicencias = (year, clubId) => {
-
-    console.log("entro get licencis")
+    await this.setState({isloadin:true})
     const access_token = this.props.auth.usuario.access_token;
-    const nidClub = this.props.auth.clubIdEncargado;
-    console.log(year + 'year ------------------');
-    year === undefined || year === '' ? 2020 : year;
-    console.log(year + 'year ------------------');
-    this.handleapiLicByYear(clubId, year, access_token);
-
-  };
-
-  getlicenciasByDate = (year) => {
-    console.log("entro get licencis")
-    const access_token = this.props.auth.usuario.access_token;
-    const nidClub = this.state.clubId;
-    console.log(year + 'year ------------------');
-    year === undefined || year === '' ? 2020 : year;
-    console.log(year + 'year ------------------');
-    this.setState({isloadin: true})
-    this.handleapiLicByYear(nidClub, year, access_token);
+    const {clubs} = this.state
+    let licenciasByclub = await getLicByYear(this.state.clubId,this.state.yeartInput, access_token)
+    await this.setState({isloadin:false, lic: licenciasByclub})
 
   };
 
@@ -126,7 +79,6 @@ class LicenciasVigenYear extends Component {
         <Text style={{paddingTop: 25, paddingLeft: 5, textAlign:"center", color: "red"}}>
           Lo siento su usuariono
           tiene licencias para el año indicado
-
         </Text>
     );
   };
@@ -138,6 +90,7 @@ class LicenciasVigenYear extends Component {
   }
 
   handleFilter = () => {
+
     this.getlicenciasByDate(this.state.yeartInput)
     console.log(this.state.yeartInput)
   };
@@ -158,22 +111,41 @@ class LicenciasVigenYear extends Component {
       return <Loading isVisible={this.state.isloadin} text={'CARGANDO...'}/>;
     }
 
+    const _renderList = this.state.lic.map((item) => (
+        <TouchableOpacity onPress={() => this.GetItem(item)}>
+          <Card style={{marginTop: 15, backgroundColor: '#f2f1ec', marginLeft: 5, marginRight: 5}}>
+            <View style={styles.newsListContainer}>
+              <Thumbnail source={LICENCIAICON}/>
+              <View style={styles.newsInfo}>
+                <Text style={styles.textBodyFont}>
+                  Deportista: {item.deportista}
+                </Text>
+                <Text note numberOfLines={1}>
+                  Categoria: {item.categoria}
+                </Text>
+                <Text note>Fecha Emision: {item.fecha_emision}</Text>
+                <Text note>Importe: {item.importe}</Text>
+                <Text note>Modalidad: {item.modalidad}</Text>
+                <Text note>Nid: {item.nid}</Text>
+                <Text note>Numero Licencia: {item.numero_licencia}</Text>
+                <Text note>Año: {item.year}</Text>
+                {item.year < year3 ? <Text note style={{color: 'red'}}>LICENCIA CADUCADA </Text> : null}
+              </View>
+            </View>
+          </Card>
+        </TouchableOpacity>
+      ))
+
     return (
 
 
         <View style={styles.container}>
-          <NavBar></NavBar>
-          {console.log(this.state.lic === [], "araay aqui")}
-          {console.log(this.state.lic.length <1, "AQUIII")}
-          {console.log(this.state.isloadin, "loadind")}
-          {console.log(this.state.lic)}
+          <NavBar/>
           <Container>
             <ScrollView>
               <SafeAreaView>
                 <Text style={styles.TextEtiqutea}> LICENCIAS POR EJERCICIO: </Text>
-                {this.state.lic.length <1 && this.state.isloadin == false
-                    ? this.render_text()
-                    : null}
+
                 <List>
                   <ListItem>
                     <Text style={styles.TextEtiqutea2}>Buscar Licencias por año </Text>
@@ -193,35 +165,19 @@ class LicenciasVigenYear extends Component {
                 </List>
 
 
-                <Button style={{marginLeft: 10}} small info onPress={() => this.handleFilter()}>
+                <Button
+                  style={{marginLeft: 10}}
+                  small
+                  info
+                  onPress={() => this.handleFilter()}
+                  disabled={this.state.isloadin}
+                >
                   <Text style={styles.textButton}>Buscar</Text>
                 </Button>
 
+                {this.state.lic.length >1 && this.state.isloadin == false ? _renderList : this.render_text()}
 
-                {this.state.lic.map((item) => (
-                    <TouchableOpacity onPress={() => this.GetItem(item)}>
-                      <Card style={{marginTop: 15, backgroundColor: '#f2f1ec', marginLeft: 5, marginRight: 5}}>
-                        <View style={styles.newsListContainer}>
-                          <Thumbnail source={LICENCIAICON}/>
-                          <View style={styles.newsInfo}>
-                            <Text style={styles.textBodyFont}>
-                              Deportista: {item.deportista}
-                            </Text>
-                            <Text note numberOfLines={1}>
-                              Categoria: {item.categoria}
-                            </Text>
-                            <Text note>Fecha Emision: {item.fecha_emision}</Text>
-                            <Text note>Importe: {item.importe}</Text>
-                            <Text note>Modalidad: {item.modalidad}</Text>
-                            <Text note>Nid: {item.nid}</Text>
-                            <Text note>Numero Licencia: {item.numero_licencia}</Text>
-                            <Text note>Año: {item.year}</Text>
-                            {item.year < year3 ? <Text note style={{color: 'red'}}>LICENCIA CADUCADA </Text> : null}
-                          </View>
-                        </View>
-                      </Card>
-                    </TouchableOpacity>
-                ))}
+
               </SafeAreaView>
             </ScrollView>
           </Container>
