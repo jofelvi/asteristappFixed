@@ -81,8 +81,8 @@ function CampeonatosScreen() {
 
   const goHome = () => navigation.navigate('Home');
 
-  const handleApiCategoria = () => {
-    const URLCategoria = `https://licencias.fapd.org/json-categorias?_format=json`;
+  const handleApiCategoria = async () => {
+    const URLCatCampeoonatos = `https://licencias.fapd.org/json-categorias?_format=json`;
 
     let headers = {
       headers: {
@@ -91,8 +91,7 @@ function CampeonatosScreen() {
       },
     };
 
-    let respuesta = axios.get(URLCategoria, {headers}).then((respuesta) => {
-      console.log('exito entro funcion  respuesta API handleApiCategoria');
+    let respuesta = await axios.get(URLCatCampeoonatos, {headers}).then((respuesta) => {
       console.log('exito entro funcion  respuesta API handleApiCategoria', respuesta.data);
       setCategorias(respuesta.data);
     });
@@ -140,8 +139,8 @@ function CampeonatosScreen() {
 
   const _renderCategorias = categorias.map((data,index) => {
     // Object.keys(categorias)
-    // .forEach(function eachKey(key) { 
-    //   console.log(key); // alerts key 
+    // .forEach(function eachKey(key) {
+    //   console.log(key); // alerts key
     //   console.log(categorias[key]); // alerts value
     // });
     console.log(data, "aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", categorias)
@@ -154,13 +153,6 @@ function CampeonatosScreen() {
   });
 
   const handleApiGetCampeonatos= () => {
-
-    console.log("----- ambito  ----", ambitoSelect)
-    console.log("----- cartegoria  ----",categoriasClon)
-    console.log("----- fecha desde  ----",chosenDate)
-    console.log("----- fecha hasta  ----",chosenDateFrom)
-    console.log("----- club seleccionado  ----",clubSelect)
-    console.log("----- provincia seleccionada ----",provinciaSelect)
     let URL
     if(clubSelect === ""){
        URL= `https://licencias.fapd.org/json-campeonatos/${ambitoSelect}/${categoriasClon}/?fecha_desde=${chosenDate}&fecha_hasta=${chosenDateFrom}&_format=json`;
@@ -226,136 +218,150 @@ function CampeonatosScreen() {
                         CAMPEONATOS
                       </Text>
                     </View>
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
-                          style={{
-                            color: '#00183A',
-                            fontSize: 15,
-                            textAlign: 'left',
-                            marginLeft: 20,
-                            fontWeight: 'bold',
-                            marginBottom: 20,
-                          }}>
-                        Fecha Desde:
-                      </Text>
 
-                      <DatePicker
-                          style={{width: 200}}
-                          date={chosenDate}
-                          mode="date"
-                          locale="es"
-                          placeholder={chosenDate}
-                          format="DD-MM-YYYY"
-                          minDate="01-01-1900"
-                          maxDate="01-01-2022"
-                          confirmBtnText="Confirm"
-                          cancelBtnText="Cancel"
-                          customStyles={{
-                            dateIcon: {
-                              position: 'absolute',
-                              left: 0,
-                              top: 4,
+                      <List>
+
+                        <ListItem>
+
+                          <Text
+                            style={{
+                              color: '#00183A',
+                              fontSize: 15,
+                              textAlign: 'left',
+                              marginLeft: 20,
+                              fontWeight: 'bold',
+                              marginBottom: 20,
+                            }}>
+                            Fecha Desde:
+                          </Text>
+
+                          <Text
+                            style={{
+                              color: '#00183A',
+                              fontSize: 15,
+                              textAlign: 'left',
+                              marginLeft: 60,
+                              fontWeight: 'bold',
+                              marginBottom: 20,
+                            }}>
+                            Fecha Hasta:
+                          </Text>
+
+                        </ListItem>
+                      </List>
+
+                      <List>
+                        <ListItem>
+                          <DatePicker
+                            style={{width: 150}}
+                            date={chosenDate}
+                            mode="date"
+                            locale="es"
+                            placeholder={chosenDate}
+                            format="DD-MM-YYYY"
+                            minDate="01-01-1900"
+                            maxDate="01-01-2022"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                              dateIcon: {
+                                position: 'absolute',
+                                left: 0,
+                                top: 4,
+                                marginLeft: 0,
+                              },
+                              dateInput: {
+                                marginLeft: 36,
+                              },
+                              // ... You can check the source to find the other keys.
+                            }}
+                            onDateChange={(event) => callback(event)}
+                          />
+
+                          <DatePicker
+                            style={{width: 150}}
+                            date={chosenDateFrom}
+                            mode="date"
+                            locale="es"
+                            placeholder={chosenDateFrom}
+                            format="DD-MM-YYYY"
+                            minDate="01-01-1900"
+                            maxDate="01-01-2022"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                              dateIcon: {
+                                position: 'absolute',
+                                left: 0,
+                                top: 4,
+                                marginLeft: 0,
+                              },
+                              dateInput: {
+                                marginLeft: 36,
+                              },
+                              // ... You can check the source to find the other keys.
+                            }}
+                            onDateChange={(event) => callback2(event)}
+                          />
+                        </ListItem>
+                      </List>
+
+                      <List>
+                        <ListItem>
+                          <Text
+                            style={{
+                              color: '#00183A',
+                              fontSize: 15,
+                              textAlign: 'left',
                               marginLeft: 0,
-                            },
-                            dateInput: {
-                              marginLeft: 36,
-                            },
-                            // ... You can check the source to find the other keys.
-                          }}
-                          onDateChange={(event) => callback(event)}
-                      />
-                    </View>
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
-                          style={{
-                            color: '#00183A',
-                            fontSize: 15,
-                            textAlign: 'left',
-                            marginLeft: 20,
-                            fontWeight: 'bold',
-                            marginBottom: 20,
-                          }}>
-                        Fecha Hasta:
-                      </Text>
+                              fontWeight: 'bold',
+                              marginBottom: 20,
+                              marginRight:50
+                            }}>
+                            Ambito:
+                          </Text>
 
-                      <DatePicker
-                          style={{width: 200}}
-                          date={chosenDateFrom}
-                          mode="date"
-                          locale="es"
-                          placeholder={chosenDateFrom}
-                          format="DD-MM-YYYY"
-                          minDate="01-01-1900"
-                          maxDate="01-01-2022"
-                          confirmBtnText="Confirm"
-                          cancelBtnText="Cancel"
-                          customStyles={{
-                            dateIcon: {
-                              position: 'absolute',
-                              left: 0,
-                              top: 4,
-                              marginLeft: 0,
-                            },
-                            dateInput: {
-                              marginLeft: 36,
-                            },
-                            // ... You can check the source to find the other keys.
-                          }}
-                          onDateChange={(event) => callback2(event)}
-                      />
-                    </View>
-
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
-                          style={{
-                            color: '#00183A',
-                            fontSize: 15,
-                            textAlign: 'left',
-                            marginLeft: 20,
-                            fontWeight: 'bold',
-                            marginBottom: 20,
-                          }}>
-                        Ambito:
-                      </Text>
-
-                      <Item picker>
-                        <Picker
-                            mode="dropdown"
-                            style={{width: '100%', marginLeft: 5}}
-                            placeholder="Seleccionar Ambito"
-                            placeholderStyle={{color: '#bfc6ea'}}
-                            iosHeader={'Ambito'}
-                            selectedValue={ambitoSelect}
-                            headerBackButtonText="Volver"
-                            onValueChange={(itemValue, itemIndex) =>
+                          <Item picker>
+                            <Picker
+                              mode="dropdown"
+                              style={{width: '100%'}}
+                              placeholder="Seleccionar Ambito"
+                              placeholderStyle={{color: '#bfc6ea'}}
+                              iosHeader={'Ambito'}
+                              selectedValue={ambitoSelect}
+                              headerBackButtonText="Volver"
+                              onValueChange={(itemValue, itemIndex) =>
                                 setAmbitoSelect(itemValue)
-                            }>
-                          <Picker.Item label="Seleccione Ambito" value="" />
-                          <Picker.Item label="Autonómico" value="3" />
-                          <Picker.Item label="Provincial" value="2" />
-                          <Picker.Item label="Club" value="1" />
-                          <Picker.Item label="Otro" value="4" />
-                        </Picker>
-                      </Item>
-                    </View>
+                              }>
+                              <Picker.Item label="Seleccione Ambito" value="" />
+                              <Picker.Item label="Autonómico" value="3" />
+                              <Picker.Item label="Provincial" value="2" />
+                              <Picker.Item label="Club" value="1" />
+                              <Picker.Item label="Otro" value="4" />
+                            </Picker>
+                          </Item>
+                        </ListItem>
+                      </List>
 
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
+                    <List>
+                      <ListItem>
+                        <Text
                           style={{
                             color: '#00183A',
                             fontSize: 15,
                             textAlign: 'left',
-                            marginLeft: 20,
+                            marginLeft: 0,
                             fontWeight: 'bold',
                             marginBottom: 20,
+                            marginRight:30
                           }}>
-                        Categoria:
-                      </Text>
+                          Categoria:
+                        </Text>
 
-                      <Item picker>
-                        <Picker
+                        <Item picker>
+                          <Picker
                             mode="dropdown"
-                            style={{width: '100%', marginLeft: 5}}
+                            style={{width: '100%'}}
                             placeholder="Seleccionar Categoria"
                             placeholderStyle={{color: '#bfc6ea'}}
                             iosHeader={'Categoria'}
@@ -364,145 +370,65 @@ function CampeonatosScreen() {
                             }
                             headerBackButtonText="Volver"
                             onValueChange={(itemValue, itemIndex) =>
-                                setCategoriasClon(itemValue)
+                              setCategoriasClon(itemValue)
                             }>
-                          <Picker.Item label="Seleccione Ambito" value="0" />
-                          <Picker.Item label="Juvenil" value="125" />
-                          <Picker.Item label="Absoluta" value="126" />
-                          <Picker.Item label="Dep. Bonificado" value="127" />
-                          <Picker.Item label="Infantil" value="357" />
-                          {
-                           //_renderCategorias
-                          }
-                        </Picker>
-                      </Item>
-                    </View>
+                            <Picker.Item label="Seleccione Ambito" value="0" />
+                            <Picker.Item label="Juvenil" value="125" />
+                            <Picker.Item label="Absoluta" value="126" />
+                            <Picker.Item label="Dep. Bonificado" value="127" />
+                            <Picker.Item label="Infantil" value="357" />
+                            {
+                              //_renderCategorias
+                            }
+                          </Picker>
+                        </Item>
+                      </ListItem>
+                    </List>
 
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
+
+                    <List>
+                      <ListItem>
+                        <Text
                           style={{
                             color: '#00183A',
                             fontSize: 15,
                             textAlign: 'left',
-                            marginLeft: 20,
+                            marginLeft: 0,
                             fontWeight: 'bold',
                             marginBottom: 20,
+                            marginRight:15
                           }}>
-                        Provincia:
-                      </Text>
+                          Seleccione club:
+                        </Text>
 
-                      <Item picker>
-                        <Picker
+                        <Item picker>
+                          <Picker
                             mode="dropdown"
-                            style={{width: '100%', marginLeft: 5}}
-                            placeholder="Seleccionar Modalidad"
-                            placeholderStyle={{color: '#bfc6ea'}}
-                            iosHeader={'Modalidad'}
-                            selectedValue={provinciaSelect}
-                            headerBackButtonText="Volver"
-                            onValueChange={(itemValue, itemIndex) => handleApiProvinciaByClub(itemValue)
-                            }>
-
-                          <Picker.Item label="Seleccione" value="" />
-                          <Picker.Item label="A Coruña" value="C" />
-                          <Picker.Item label="Álava" value="VI" />
-                          <Picker.Item label="Albacete" value="AB" />
-                          <Picker.Item label="Alicante" value="A" />
-                          <Picker.Item label="Almería" value="AL" />
-                          <Picker.Item label="Asturias" value="O" />
-                          <Picker.Item label="Ávila" value="AV" />
-                          <Picker.Item label="Badajoz" value="BA" />
-                          <Picker.Item label="Barcelona" value="B" />
-                          <Picker.Item label="Burgos" value="BU" />
-                          <Picker.Item label="Cáceres" value="CC" />
-                          <Picker.Item label="Cádiz" value="CA" />
-                          <Picker.Item label="Cantabria" value="S" />
-                          <Picker.Item label="Castellón" value="CS" />
-                          <Picker.Item label="Ciudad Real" value="CR" />
-                          <Picker.Item label="Córdoba" value="CO" />
-                          <Picker.Item label="Cuenca" value="CU" />
-                          <Picker.Item label="Girona" value="GI" />
-                          <Picker.Item label="Granada" value="GR" />
-                          <Picker.Item label="Guadalajara" value="GU" />
-                          <Picker.Item label="Guipúzcoa" value="SS" />
-                          <Picker.Item label="Huelva" value="H" />
-                          <Picker.Item label="Huesca" value="HU" />
-                          <Picker.Item label="Jaén" value="J" />
-                          <Picker.Item label="La Rioja" value="LO" />
-                          <Picker.Item label="León" value="LE" />
-                          <Picker.Item label="Lleida" value="L" />
-                          <Picker.Item label="Lugo" value="LU" />
-                          <Picker.Item label="Madrid" value="M" />
-                          <Picker.Item label="Málaga" value="MA" />
-                          <Picker.Item label="Murcia" value="MU" />
-                          <Picker.Item label="Navarra" value="NA" />
-                          <Picker.Item label="Ourense" value="OR" />
-                          <Picker.Item label="Palencia" value="P" />
-                          <Picker.Item label="Pontevedra" value="PO" />
-                          <Picker.Item label="Salamanca" value="SA" />
-                          <Picker.Item label="Segovia" value="SG" />
-                          <Picker.Item label="Sevilla" value="SE" />
-                          <Picker.Item label="Soria" value="SO" />
-                          <Picker.Item label="Tarragona" value="T" />
-                          <Picker.Item label="Teruel" value="TE" />
-                          <Picker.Item label="Toledo" value="TO" />
-                          <Picker.Item label="Valencia" value="V" />
-                          <Picker.Item label="Valladolid" value="VA" />
-                          <Picker.Item label="Vizcaya" value="BI" />
-                          <Picker.Item label="Zamora" value="ZA" />
-                          <Picker.Item label="Zaragoza" value="Z" />
-                          <Picker.Item label="Ceuta" value="CE" />
-                          <Picker.Item label="Melilla" value="ML" />
-                          <Picker.Item label="Baleares" value="PM" />
-                          <Picker.Item label="Las Palmas" value="GC" />
-                          <Picker.Item label="Santa Cruz de Tenerife" value="TF" />
-
-
-                        </Picker>
-                      </Item>
-                    </View>
-
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                      <Text
-                          style={{
-                            color: '#00183A',
-                            fontSize: 15,
-                            textAlign: 'left',
-                            marginLeft: 20,
-                            fontWeight: 'bold',
-                            marginBottom: 20,
-                          }}>
-                        Seleccione club:
-                      </Text>
-
-                      <Item picker>
-                        <Picker
-                            mode="dropdown"
-                            style={{width: '100%', marginLeft: 5}}
+                            style={{width: '100%'}}
                             placeholder="Seleccionar club"
                             placeholderStyle={{color: '#bfc6ea'}}
                             iosHeader={'club'}
                             selectedValue={clubSelect}
                             headerBackButtonText="Volver"
                             onValueChange={(itemValue, itemIndex) =>
-                                setclubSelect(itemValue)
+                              setclubSelect(itemValue)
                             }>
-                          <Picker.Item label="Seleccione club" value="" />
-                          {_renderClub}
-                        </Picker>
-                      </Item>
-                    </View>
+                            <Picker.Item label="Seleccione club" value="" />
+                            {_renderClub}
+                          </Picker>
+                        </Item>
+                      </ListItem>
+                    </List>
+
+
 
                     <View style={styles.buttonContainer}>
                       <FormButton
                           buttonType="outline"
-                          //onPress={handleSubmit}
                           onPress={() => handleSubmit()}
                           title="Consultar"
                           buttonColor="#039BE5"
-                          //loading={isLoading}
                       />
-
                     </View>
                   </View>
 
@@ -558,4 +484,13 @@ const styles = StyleSheet.create({
   },
 });
 
+
+/*
+    console.log("----- ambito  ----", ambitoSelect)
+    console.log("----- cartegoria  ----",categoriasClon)
+    console.log("----- fecha desde  ----",chosenDate)
+    console.log("----- fecha hasta  ----",chosenDateFrom)
+    console.log("----- club seleccionado  ----",clubSelect)
+    console.log("----- provincia seleccionada ----",provinciaSelect)
+ */
 

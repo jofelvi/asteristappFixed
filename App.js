@@ -54,6 +54,7 @@ import FormPerfilByClubScreen2 from './src/pages/FormPerfilByClubScreen/FormPerf
 import SesionScreen from './src/pages/SesionScreen/SesionScreen';
 import LicenciasActivasDeportista from './src/pages/LicenciasActivasDeportista/LicenciasActivasDeportista';
 import DetalleCampeonato from "./src/pages/DetalleCampeonato/DetalleCampeonato";
+import FormPerfilScreenEdit from "./src/pages/FormPerfilScreen/FormPerfilScreenEdit";
 
 Icon.loadFont();
 Icon2.loadFont();
@@ -137,7 +138,11 @@ function StackPescadorFun() {
         component={FormPerfilScreen}
         options={{headerShown: false}}
       />
-
+      <StackPescador.Screen
+        name="FormPerfilScreenEdit"
+        component={FormPerfilScreenEdit}
+        options={{headerShown: false}}
+      />
       <StackPescador.Screen
         name="FormPerfilByClubScreen"
         component={FormPerfilByClubScreen2}

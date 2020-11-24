@@ -40,6 +40,8 @@ import {Switch} from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import { TRAER_PERFIL } from '../../store/auth/Constants';
 import axios from 'axios'
+import Loading from "../../components/Loading/Loading";
+import {getDataPerfil} from "../../HttpRequest/Api";
 const {width: screenWidth} = Dimensions.get('window');
 
 class FormPerfilScreen extends Component {
@@ -50,58 +52,25 @@ class FormPerfilScreen extends Component {
       fecha: '',
       selectSexo: '',
       clubs:[],
-
+      isloading: true
     };
   }
 
  async componentDidMount() {
-    
-  console.log("fomulario clase")
-      
       const access_token = this.props.auth.usuario.access_token;
       const {current_user} = this.props.auth.usuario;
       const {uid} = current_user;
-
       this.handleApi(uid, access_token)
-      //this.props.traerPerfil(uid, access_token);
-    
-     //await this.props.traerPerfilSave()
-  }
-  
-  handleApi = (uid, access_token)=>{
-
-    const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
-
-  let headers = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + access_token,
-    },
-  };
-  
-    axios.get(URLperfil, {headers}).then((respuesta) => {
-      console.log('exito entro funcion  respuesta API TRAER PERFIL');
-      const { 
-        field_user_clubs,
-        field_user_fechanac,
-        field_user_gestionclub,
-        field_user_sexo,
-      } = respuesta.data
-
-      //setcodPostal( respuesta.data.field_user_codpostal.map((item) => item.value))
-      
-     // setApiperfil(respuesta.data)
-     let fechaFormat = field_user_fechanac[0].value
-        console.log("FOMRATO ORIGINAL fecha",fechaFormat)
-     var pattern = /(\d{4})\-(\d{2})\-(\d{2})/;
-     let fechaParse = fechaFormat.replace(pattern, '$3-$2-$1');
-     console.log("FECHA AQUI nuevo formato",fechaParse )
-     this.setState({perfil: respuesta.data, fecha: fechaParse})
-
-    });
-
   }
 
+  handleApi = async (uid, access_token)=>{
+
+    let usuario =  await getDataPerfil(uid, access_token)
+
+    this.setState({perfil: usuario.perfil, fecha: usuario.fecha, isloading:false})
+
+
+  }
 
   callback = (newDate) => {
     console.log('entro callback2 ' + newDate);
@@ -111,164 +80,18 @@ class FormPerfilScreen extends Component {
   };
 
   handleSubmit = (values) => {
-    //const { item } = this.props.route.params ? this.props.route.params : "";
-    const {current_user} = this.props.auth.usuario;
-    const {uid} = current_user;
-    const access_token = this.props.auth.usuario.access_token;
-    console.log("handle submit")
-    //console.log(JSON.stringify(values))
-    const data = {
-      uid:[
-        {
-           value: uid
-        }
-     ],
-      field_user_nif: [
-        {
-          value: `${values.dni}`,
-        },
-      ],
-      field_user_nombre: [
-        {
-          value: `${values.name}`,
-        },
-      ],
-      field_user_apellido1: [
-        {
-          value: `${values.apellido}`,
-        },
-      ],
-      field_user_apellido2: [
-        {
-          value: `${values.apellido2}`,
-        },
-      ],
-      field_user_nomcompleto: [
-        {
-          value: `${values.name}  ${values.apellido}  ${values.apellido2}`,
-        },
-      ],
-      mail: [
-        {
-          value: `${values.email}`,
-        },
-      ],
-      field_user_telefono1: [
-        {
-          value: `${values.telefono1}`,
-        },
-      ],
-      field_user_telefono2: [
-        {
-          value: `${values.telefono2}`,
-        },
-      ],
-      field_user_sexo: [
-        {
-          value: `${this.state.selectSexo}`,
-        },
-      ],
-      field_user_via: [
-        {
-          value: `${values.direccion}`,
-        },
-      ],
-      field_user_codpostal: [
-        {
-          value: `${values.codPostal}`,
-        },
-      ],
-      field_user_poblacion: [
-        {
-          value: `${values.poblacion}`,
-        },
-      ],
-      field_user_provincia: [
-        {
-          value: `${values.provincia}`,
-        },
-      ],
-      field_user_pais: [
-        {
-          value: `${values.pais}`,
-        },
-      ],
-      field_user_via_alter: [
-        {
-          value: `${values.direccion2}`,
-        },
-      ],
-      field_user_codpostal_alter: [
-        {
-          value: `${values.codPostal2}`,
-        },
-      ],
-      field_user_poblacion_alter: [
-        {
-          value: `${values.poblacion2}`,
-        },
-      ],
-      field_user_provincia_alter: [
-        {
-          value: `${values.provincia2}`,
-        },
-      ],
-      field_user_pais_alter: [
-        {
-          value: `${values.pais2}`,
-        },
-      ],
-      field_user_tutor_nif: [
-        {
-          value: `${values.tutorNif}`,
-        },
-      ],
-      field_user_tutor_nombre: [
-        {
-          value: `${values.tutorNombre}`,
-        },
-      ],
-      field_user_tutor_observaciones: [
-        {
-          value: `${values.tutorObs}`,
-        },
-      ]
-    };
-    //console.log(JSON.stringify(data))
-    this.editarPerfil(uid, access_token, data);
+
+    this.props.navigation.navigate('FormPerfilScreenEdit')
+
   };
-
-   editarPerfil = (uid, token, data) =>{
-
-     console.log("entro editar")
-
-    
-    try {
-      fetch(`https://licencias.fapd.org/user/${uid}?_format=json`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: data
-    }).then((respuesta) => {
-      console.log('exito entro funcion  respuesta API editarPerfil');
-      console.log(respuesta.status);
-      
-    });
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   setFirstValue = (value) => {
       if (this.state.selectSexo === '' || this.state.selectSexo === null) {
         //let clubsIds =  JSON.stringify(perfil.field_user_clubs.map((item) => item.target_id))
         this.setState({
-          selectSexo: value, 
+          selectSexo: value,
           //clubs: clubsIds
-        }); 
+        });
       }
     }
 
@@ -277,14 +100,13 @@ class FormPerfilScreen extends Component {
     }
 
   render() {
-   
-   if (this.state.perfil.length <= 0){
-    return null
-    
-   }
-   let perfil = this.state.perfil
-   let fechaVar = this.state.fecha
+     let perfil = this.state.perfil
+    let fechaVar = this.state.fecha
     console.log(" FECHA ANTES RETURN " , fechaVar)
+
+    if (this.state.isloading === true) {
+      return <Loading isVisible={this.state.isloading} text={'CARGANDO...'} />;
+    }
     return (
       <Container>
         <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
@@ -304,7 +126,7 @@ class FormPerfilScreen extends Component {
                   fechaNac:  typeof perfil.field_user_fechanac[0]=== 'undefined' ?  "": String(perfil.field_user_fechanac[0].value),
                   direccion: typeof perfil.field_user_via[0]=== 'undefined' ?  "": String(perfil.field_user_via[0].value),
                   direccion2: typeof perfil.field_user_via_alter[0]=== 'undefined' ?  "":String(perfil.field_user_via_alter[0].value),
-                  
+
                   codPostal: typeof perfil.field_user_codpostal[0]=== 'undefined' ?  "":String(perfil.field_user_codpostal[0].value),
                   codPostal2: typeof perfil.field_user_codpostal_alter[0]=== 'undefined' ?  "":String(perfil.field_user_codpostal_alter[0].value),
                   poblacion: typeof perfil.field_user_poblacion[0]=== 'undefined' ?  "":String(perfil.field_user_poblacion[0].value),
@@ -316,7 +138,7 @@ class FormPerfilScreen extends Component {
                   tutorNif: typeof perfil.field_user_tutor_nif[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_nif[0].value),
                   tutorNombre: typeof perfil.field_user_tutor_nombre[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_nombre[0].value),
                   tutorObs: typeof perfil.field_user_tutor_observaciones[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_observaciones[0].value),
-                  
+
                 }}
                 onSubmit={(values) => {
                   this.handleSubmit(values);
@@ -345,6 +167,7 @@ class FormPerfilScreen extends Component {
                       placeholder="Introducir DNI"
                       autoCapitalize="none"
                       onBlur={handleBlur('dni')}
+                      disabled={true}
                     />
 
                     <ErrorMessage errorValue={touched.dni && errors.dni} />
@@ -356,6 +179,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('usuario')}
                       placeholder="usuario"
                       onBlur={handleBlur('usuario')}
+                      disabled={true}
                     />
                     <ErrorMessage
                       style={styles.TextLError}
@@ -370,6 +194,7 @@ class FormPerfilScreen extends Component {
                       placeholder="Introducir Nombre"
                       autoCapitalize="none"
                       onBlur={handleBlur('name')}
+                      disabled={true}
                     />
                     <ErrorMessage errorValue={touched.name && errors.name} />
 
@@ -381,6 +206,7 @@ class FormPerfilScreen extends Component {
                       placeholder="Introducir Primer Apellido"
                       autoCapitalize="none"
                       onBlur={handleBlur('apellido')}
+                      disabled={true}
                     />
                     <ErrorMessage
                       errorValue={touched.apellido && errors.apellido}
@@ -394,6 +220,7 @@ class FormPerfilScreen extends Component {
                       placeholder="Introducir Segundo Apellido"
                       autoCapitalize="none"
                       onBlur={handleBlur('apellido2')}
+                      disabled={true}
                     />
                     <ErrorMessage
                       errorValue={touched.apellido2 && errors.apellido2}
@@ -406,6 +233,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('email')}
                       placeholder="Introducir Correo Electronico"
                       onBlur={handleBlur('email')}
+                      disabled={true}
                     />
                     <ErrorMessage errorValue={touched.email && errors.email} />
 
@@ -416,6 +244,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('telefono1')}
                       placeholder="Introducir Numero de telefono"
                       onBlur={handleBlur('telefono1')}
+                      disabled={true}
                     />
                     <ErrorMessage
                       errorValue={touched.telefono1 && errors.telefono1}
@@ -427,6 +256,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('telefono2')}
                       placeholder="Introducir Numero de telefono alternativo"
                       onBlur={handleBlur('telefono2')}
+                      disabled={true}
                     />
 
                     <ErrorMessage
@@ -458,6 +288,7 @@ class FormPerfilScreen extends Component {
                         // ... You can check the source to find the other keys.
                       }}
                       onDateChange={(event) => this.callback(event)}
+                      disabled={true}
                     />
 
                     <ErrorMessage />
@@ -476,7 +307,9 @@ class FormPerfilScreen extends Component {
                         selectedValue={this.state.selectSexo}
                         onValueChange={(itemValue) =>
                           this.setState({selectSexo: itemValue})
-                        }>
+                        }
+                        enabled={true}
+                      >
                         <Picker.Item label="Hombre" value="1" />
                         <Picker.Item label="Mujer" value="2" />
                       </Picker>
@@ -488,7 +321,7 @@ class FormPerfilScreen extends Component {
                         <Switch
                           value={
                             !perfil.field_user_baja[0].value
- 
+
                           }
                           //onValueChange={onToggleSwitch}
                           disabled={true}
@@ -509,11 +342,10 @@ class FormPerfilScreen extends Component {
                         placeholder="clubs"
                         placeholderStyle={{color: '#bfc6ea'}}
                         placeholderIconColor="#007aff"
-                        //selectedValue={this.setState.clubs}
-                        //onValueChange={(event) => this.setState({clubs: event})}
+                        //disabled={true}
                       >
                         <Picker.Item label="w" value="key0" />
-                       
+
                       </Picker>
                     </Item>
 
@@ -526,6 +358,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('direccion')}
                       placeholder="direccion"
                       onBlur={handleBlur('direccion')}
+                      disabled={true}
                     />
                     <ErrorMessage />
 
@@ -536,6 +369,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('codPostal')}
                       placeholder="Codigo postal direccion principal"
                       onBlur={handleBlur('codPostal')}
+                      disabled={true}
                     />
 
                     <FormInput
@@ -545,6 +379,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('poblacion')}
                       placeholder="poblacion"
                       onBlur={handleBlur('poblacion')}
+                      disabled={true}
                     />
 
                     <FormInput
@@ -554,6 +389,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('provincia')}
                       placeholder="Provincia"
                       onBlur={handleBlur('provincia')}
+                      disabled={true}
                     />
 
                     <FormInput
@@ -563,6 +399,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('pais')}
                       placeholder="pais"
                       onBlur={handleBlur('pais')}
+                      disabled={true}
                     />
 
                     <Text style={styles.TextEtiqutea}> DIRECCION ALTERNATIVA </Text>
@@ -574,6 +411,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('direccion2')}
                       placeholder="calle"
                       onBlur={handleBlur('direccion2')}
+                      disabled={true}
                     />
                     <FormInput
                       label="CODIGO POSTAL ALTERNATIVO"
@@ -582,6 +420,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('codPostal2')}
                       placeholder="codigo postal direcion alternativa"
                       onBlur={handleBlur('codPostal2')}
+                      disabled={true}
                     />
                     <FormInput
                       label="POBLACION"
@@ -590,6 +429,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('poblacion2')}
                       placeholder="Poblacion direccion alternativa"
                       onBlur={handleBlur('poblacion2')}
+                      disabled={true}
                     />
 
                     <FormInput
@@ -599,6 +439,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('provincia2')}
                       placeholder="provincia direccion alternativa"
                       onBlur={handleBlur('provincia2')}
+                      disabled={true}
                     />
                     <FormInput
                       label="PAIS"
@@ -607,6 +448,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('pais2')}
                       placeholder="Pais"
                       onBlur={handleBlur('pais2')}
+                      disabled={true}
                     />
                     <Text style={styles.TextEtiqutea}>DATOS DEL TUTOR</Text>
 
@@ -617,6 +459,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('tutorNif')}
                       placeholder="Usuario tutor"
                       onBlur={handleBlur('tutorNif')}
+                      disabled={true}
                     />
                     <FormInput
                       label="TUTOR NOMBRE"
@@ -625,6 +468,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('tutorNombre')}
                       placeholder="Nombre Tutor"
                       onBlur={handleBlur('tutorNombre')}
+                      disabled={true}
                     />
                     <FormInput
                       label="OBSERVACIONES DEL TUTOR"
@@ -633,6 +477,7 @@ class FormPerfilScreen extends Component {
                       onChangeText={handleChange('tutorObs')}
                       placeholder="Tutor Observaciones"
                       onBlur={handleBlur('tutorObs')}
+                      disabled={true}
                     />
 
                     <View style={styles.buttonContainer}>
@@ -643,10 +488,8 @@ class FormPerfilScreen extends Component {
                           console.log('click function');
                           handleSubmit();
                         }}
-                        title="Guardar cambios"
+                        title="Editar"
                         buttonColor="#039BE5"
-                        //disabled={!isValid}
-                        //loading={isLoading}
                       />
                     </View>
                   </Fragment>
@@ -657,7 +500,7 @@ class FormPerfilScreen extends Component {
           <Button
             style={styles.botonAbajo}
             title="Volver"
-            onPress={() => this.props.navigation.goBack()}          
+            onPress={() => this.props.navigation.goBack()}
             />
         </SafeAreaView>
       </Container>
@@ -743,14 +586,14 @@ const styles = StyleSheet.create({
     color: '#00183A',
     fontSize: 15,
     textAlign: 'center',
-    marginTop: 15,  
+    marginTop: 15,
     marginBottom:15
   },
   TextEtiqutea2: {
     fontWeight: 'bold',
     color: '#00183A',
     fontSize: 15,
-    marginTop: 15,  
+    marginTop: 15,
     marginBottom:15,
     marginLeft:10
   }

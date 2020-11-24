@@ -1,26 +1,14 @@
 import React, {Component} from 'react';
 import {
   StyleSheet,
-  FlatList,
   View,
   Alert,
-  Button,
-  TouchableWithoutFeedback,
-  Dimensions,
-  Image,
   ScrollView,
-  Keyboard,
 } from 'react-native';
 import axios from 'axios';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
   Text,
-  Body,
 } from 'native-base';
 import NavBar from '../../components/navbar/Navbar';
 
@@ -67,6 +55,7 @@ class AvisoLegalScreen extends Component {
       });
     });
   };
+
   render() {
     console.log(this.state.titulo);
     const contenido = this.state.contenido;

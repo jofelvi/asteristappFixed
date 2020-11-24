@@ -14,6 +14,7 @@ import {Container, Item, List, ListItem, Picker,} from 'native-base';
 import {Switch} from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import axios from 'axios'
+import {getDataPerfil} from "../../HttpRequest/Api";
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -30,7 +31,7 @@ class FormPerfilByClubScreen2 extends Component {
     }
     async componentDidMount() {
 
-        console.log("fomulario clase")
+        console.log("fomulario clase aqui test")
 
         const access_token = this.props.auth.usuario.access_token;
         const {current_user} = this.props.auth.usuario;
@@ -38,42 +39,13 @@ class FormPerfilByClubScreen2 extends Component {
         const {item} = this.props.route.params ? this.props.route.params : "";
 
         this.handleApi(item, access_token)
-        //this.props.traerPerfil(uid, access_token);
-
-        //await this.props.traerPerfilSave()
     }
 
-    handleApi = (itemNuevo, access_token) => {
+    handleApi = async (itemNuevo, access_token) => {
 
-        const URLperfil = `https://licencias.fapd.org/user/${itemNuevo}?_format=json`;
+        let respuesta = await getDataPerfil(itemNuevo,access_token)
 
-        let headers = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + access_token,
-            },
-        };
-
-        axios.get(URLperfil, {headers}).then((respuesta) => {
-            console.log('exito entro funcion  respuesta API TRAER PERFIL');
-            const {
-                field_user_clubs,
-                field_user_fechanac,
-                field_user_gestionclub,
-                field_user_sexo,
-
-            } = respuesta.data
-
-            //setcodPostal( respuesta.data.field_user_codpostal.map((item) => item.value))
-
-            // setApiperfil(respuesta.data)
-            let fechaFormat = field_user_fechanac[0].value
-            var pattern = /(\d{4})\-(\d{2})\-(\d{2})/;
-            let fechaParse = fechaFormat.replace(pattern, '$3-$2-$1');
-            console.log("FECHA AQUI nuevo formato", fechaParse)
-            this.setState({perfil: respuesta.data, fecha: fechaParse})
-
-        });
+        this.setState({perfil: respuesta.perfil, fecha: respuesta.fecha })
 
     }
 

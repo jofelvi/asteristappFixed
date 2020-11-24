@@ -15,6 +15,7 @@ const FormInput = ({
   inputStyle,
   errorMessage,
   defaultValue,
+  disabled,
   ...rest
 }) => (
     <View style={styles.inputContainer}>
@@ -33,6 +34,7 @@ const FormInput = ({
         style={styles.inputContainer}
         errorMessage={errorMessage}
         autoCapitalize = 'none'
+        disabled={disabled}
       />
     </View>
   )

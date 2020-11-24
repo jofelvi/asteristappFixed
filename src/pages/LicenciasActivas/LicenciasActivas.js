@@ -61,7 +61,6 @@ class LicenciasActivas extends Component {
           'clubs' +
           JSON.stringify(respuesta.data.field_user_gestionclub.map((item) => item.target_id)),
       );
-
     });
   }
 
@@ -361,8 +360,6 @@ class LicenciasActivas extends Component {
                       </TouchableOpacity>
                   ))}
                 </View>
-
-
               </SafeAreaView>
             </ScrollView>
           </Container>

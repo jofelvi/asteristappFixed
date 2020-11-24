@@ -1,20 +1,11 @@
-//This is an example code for FlatList// 
-import React, { useEffect, useState, Component } from 'react';
-//import react in our code. 
-import { StyleSheet, FlatList, Text, View, Alert, Button, TouchableWithoutFeedback, Dimensions, Image, ScrollView, Keyboard } from 'react-native';
-//import all the components we are going to use. 
-import axios from 'axios'
-import Spinner from 'react-native-loading-spinner-overlay';
-import { Container, Header, Content, Card, CardItem, Body } from 'native-base';
-import * as noticiasAction from '../../store/noticias/actions'
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Button, Dimensions, Image, ScrollView } from 'react-native';
+import {  Card, CardItem, } from 'native-base';
 import { connect } from 'react-redux';
 import * as usuarioActions from '../../store/auth/actions'
-import * as licenciasActions from '../../store/licencias/actions'
 import * as noticiasActions from '../../store/noticias/actions'
 
-const urlDetalleNoticias = 'https://fapd.org/json-articulo?id=';
 const { width: screenWidth } = Dimensions.get('window');
-
 
 const styles = StyleSheet.create({
     container: {
@@ -84,25 +75,16 @@ class DetailsScreen extends Component {
     }
 
     componentDidMount() {
-        //this.forceUpdate();
-
-        //console.log(item + "parametro id")
         const { item } = this.props.route.params ? this.props.route.params : "";
-
         this.props.traerDetalleNoticia(item)
-
     };
+
     render() {
         const regex = /(<([^>]+)>)/ig;
         const URL = "https://fapd.org";
         const { navigation } = this.props;
         const detalle = this.props.noticias.detalleNoticia
         const { item } = this.props.route.params ? this.props.route.params : "";
-
-        /* const data = Array.from(this.props.noticias.detalleNoticia);
-         const contenido = data.map(item => item.contenido)
-         const categorias = data.map(item => item.categorias)
-         const id = data.map(item => item.id)*/
 
         const detalleNoticia = detalle.map((data) => {
             return (

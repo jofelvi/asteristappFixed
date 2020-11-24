@@ -39,12 +39,22 @@ function LiquidacionesScreen() {
   }
 
   const _renderList = liquidaciones.map((item, index) => {
-
       let importeIngresado = item.importe_ingresado
       let totalLiquidacion = parseFloat(item.importe_cuotas) + parseFloat(item.importe_licencias) - parseFloat(item.bonificacion)
       let totalNegativo = totalLiquidacion < importeIngresado ? false : true
+      let totalDiferencia = parseFloat(totalLiquidacion - item.importe_ingresado)
 
     console.log(totalNegativo + " totalNegativo")
+     let difPositivo = (
+       <Text> €
+         {totalDiferencia}
+       </Text>
+     )
+    let difNegativo =(
+       <Text style={{color: 'red', marginLeft: 5}}>
+        $ -{totalNegativo === false && totalLiquidacion}
+       </Text>
+    )
 
       return (
         <Card style={{marginTop: 5}}>
@@ -138,12 +148,7 @@ function LiquidacionesScreen() {
                     <Text style={styles.TextItem} note>
                       Diferencia:
                     </Text>
-                    <Text> €
-                      {totalNegativo === true && totalLiquidacion}
-                      <Text style={{color: 'red', marginLeft: 5}}>
-                        {totalNegativo === false && totalLiquidacion}
-                      </Text>
-                    </Text>
+                    {totalDiferencia< 0 ? difNegativo: difPositivo}
                   </ListItem>
                 </List>
               </View>
@@ -256,4 +261,6 @@ const styles = StyleSheet.create({
         dispatch(traerLiquidaciones(access_token, field_user_gestionclub[0].target_id ,"2020"));
       }
     });
+
+
  */

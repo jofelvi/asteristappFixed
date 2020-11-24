@@ -1,37 +1,37 @@
-import React, { useEffect, useState, Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, Button, TouchableWithoutFeedback, Dimensions, Image, ScrollView, Keyboard, SafeAreaView, RefreshControl, wait } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect} from 'react';
 import {
-    traerDetalleNoticia,
-    traerNoticias,
-    resetDetalleNoticia,
-    traerCategorias,
-    traerEtiquetas
-} from '../../store/noticias/actions'
-import { connect } from 'react-redux';
+    Button,
+    Dimensions,
+    Image,
+    RefreshControl,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
+import {Card, CardItem, Container, Content} from 'native-base';
+import {useNavigation} from '@react-navigation/native';
+import {connect, useSelector} from "react-redux";
+import {resetDetalleNoticia, traerDetalleNoticia,} from '../../store/noticias/actions'
 import NavBar from '../../components/navbar/Navbar';
 import Loading from '../../components/Loading/Loading';
-import {getNoticias} from "../../HttpRequest/Api";
 
-const { width: screenWidth } = Dimensions.get('window');
+const {width: screenWidth} = Dimensions.get('window');
 
 const URL = "https://fapd.org/";
 
-function DetailNoticiaSlider({ route, dispatch }) {
+function DetailNoticiaSlider({route, dispatch}) {
     const auth = useSelector((state) => state.auth);
     const noticiasDetalle = useSelector((state) => state.noticias.detalleNoticia);
     const noticias = useSelector((state) => state.noticias.cargando);
-    const { item } = route.params;
-    const { otherParam } = route.params;
+    const {item} = route.params;
+    const {otherParam} = route.params;
     const regex = /(<([^>]+)>)/ig;
     const [refreshing, setRefreshing] = React.useState(null);
     const [detalleNoticia, setDetalleNoticia] = React.useState([]);
 
-    //const dispatch = useDispatch();
-    const { imagen, titulo, contenido } = noticiasDetalle;
-    //const [paramItem, setParamItem] = useState(false);
+    const {imagen, titulo, contenido} = noticiasDetalle;
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -48,7 +48,6 @@ function DetailNoticiaSlider({ route, dispatch }) {
             setDetalleNoticia(api)
         })();
         unsubscribe;
-        // onRefresh()
     }, [item]);
 
 
@@ -63,19 +62,16 @@ function DetailNoticiaSlider({ route, dispatch }) {
     const scroll = React.createRef()
 
 
-
-
     const renderImagen = noticiasDetalle.map((data) => {
         return (
-
-            <View style={styles.imagenContainer}>
-                <Image
-                    style={styles.newsImage}
-                    source={{
-                        uri:
-                            URL + data.imagen
-                    }} />
-            </View>
+          <View style={styles.imagenContainer}>
+              <Image
+                style={styles.newsImage}
+                source={{
+                    uri:
+                      URL + data.imagen
+                }}/>
+          </View>
 
         )
     })
@@ -83,75 +79,56 @@ function DetailNoticiaSlider({ route, dispatch }) {
     const renderDetalle = noticiasDetalle.map((data) => {
 
         return (
-            <View style={styles.MainContainer}>
-                {console.log(URL + data.imagen + " imagen")}
-                <Content>
-                    <Image
-                        style={styles.newsImage}
-                        source={{
-                            uri:
-                                'https://fapd.org//sites/default/files/2020-07/Elecciones-federativas-2020_4.jpg'
-                        }} />
-
-
-                    <Card>
-                        <CardItem >
-                            <Text style={styles.textTitleFont}>{data.titulo}</Text>
-                        </CardItem>
-                        <CardItem >
-                            <Text style={styles.textBodyFont}>{data.contenido.replace(regex, '').trim()}</Text>
-                        </CardItem>
-                        <View style={styles.textCategoria}>
-                            <Text style={{ fontWeight: '700' }}>Categorias:  </Text>
-                            <Text style={styles.textCategoria}>{data.categorias} </Text>
-                            <Text style={{ fontWeight: '700' }}>Etiquetas:  </Text>
-                            <Text style={styles.textCategoria}> {data.etiquetas}</Text>
-
-                        </View>
-
-                    </Card>
-                </Content>
-            </View>
-
+          <View style={styles.MainContainer}>
+              <Content>
+                  <Image
+                    style={styles.newsImage}
+                    source={{
+                        uri:
+                          'https://fapd.org//sites/default/files/2020-07/Elecciones-federativas-2020_4.jpg'
+                    }}/>
+                  <Card>
+                      <CardItem>
+                          <Text style={styles.textTitleFont}>{data.titulo}</Text>
+                      </CardItem>
+                      <CardItem>
+                          <Text style={styles.textBodyFont}>{data.contenido.replace(regex, '').trim()}</Text>
+                      </CardItem>
+                      <View style={styles.textCategoria}>
+                          <Text style={{fontWeight: '700'}}>Categorias: </Text>
+                          <Text style={styles.textCategoria}>{data.categorias} </Text>
+                          <Text style={{fontWeight: '700'}}>Etiquetas: </Text>
+                          <Text style={styles.textCategoria}> {data.etiquetas}</Text>
+                      </View>
+                  </Card>
+              </Content>
+          </View>
         )
     })
 
     if (noticias === true) {
-        return <Loading isLoading={noticias} text={"cargando..."} />
-
+        return <Loading isLoading={noticias} text={"cargando..."}/>
     } else {
-
-
-
         return (
-
-            <Container>
-
-                <NavBar />
-                <SafeAreaView style={{ flex: 1, paddingTop: 0, marginTop: 0 }}>
-
-
-                    {renderImagen}
-                    <ScrollView
-                        ref={scroll}
-                        style={styles.scrollView}
-                        refreshControl={
-                            <RefreshControl refreshing={noticias} onRefresh={onRefresh} />
-                        }
-                    >
-
-                        {renderDetalle}
-
-                    </ScrollView>
-                    <Button style={styles.botonAbajo} title="Volver" onPress={() => navigation.goBack()} />
-
-                </SafeAreaView>
-
-            </Container>
+          <Container>
+              <NavBar/>
+              <SafeAreaView style={{flex: 1, paddingTop: 0, marginTop: 0}}>
+                  {renderImagen}
+                  <ScrollView
+                    ref={scroll}
+                    style={styles.scrollView}
+                    refreshControl={
+                        <RefreshControl refreshing={noticias} onRefresh={onRefresh}/>
+                    }
+                  >
+                      {renderDetalle}
+                  </ScrollView>
+                  <Button style={styles.botonAbajo} title="Volver" onPress={() => navigation.goBack()}/>
+              </SafeAreaView>
+          </Container>
         );
     }
 };
-
 
 
 const styles = StyleSheet.create({
@@ -175,8 +152,6 @@ const styles = StyleSheet.create({
     textTitle: {
         marginTop: 5,
         marginLeft: 0,
-
-
     },
     textTitleFont: {
         justifyContent: 'center',
@@ -184,7 +159,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18
     },
-
     textBodyFont: {
         justifyContent: 'center',
         alignItems: 'center',

@@ -8,6 +8,7 @@ const URLLICEMAIL = 'https://licencias.fapd.org/enviaremail';
 const URLgetLicenciasVigor = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
 const URLLicenciascaducadas = 'https://licencias.fapd.org/json-licencias-vigentes?_format=json';
 const URLGETLISUSERCLUB = 'https://licencias.fapd.org/json-deportistas-club?_format=json';
+const URLCatCampeoonatos = `https://licencias.fapd.org/json-categorias?_format=json`;
 
 //LOGIN
 
@@ -176,7 +177,7 @@ export const getLicCaducadas = async (token) => {
 
 //Gestion deportista
 export const getDeportistas = async (token) => {
-  let api
+  let api = []
   let headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -296,3 +297,54 @@ export const getLicByYear = async (nidClub, year, token) => {
   }
   return api
 }
+
+//editar usuarios
+export const editarPerfil = async (uid, token, data) =>{
+  try {
+   await fetch(`https://licencias.fapd.org/user/${uid}?_format=json`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: data
+    }).then((respuesta) => {
+      console.log('exito entro funcion  respuesta API editarPerfil');
+    });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getDataPerfil = async (uid, access_token)=>{
+
+  const URLperfil = `https://licencias.fapd.org/user/${uid}?_format=json`;
+
+  let headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + access_token,
+    },
+  };
+
+  let respuesta = await axios.get(URLperfil, {headers}).then((respuesta) => {
+    console.log('exito entro funcion  respuesta API TRAER PERFIL');
+    const { field_user_fechanac} = respuesta.data
+    let fechaFormat = field_user_fechanac[0].value
+    console.log("FOMRATO ORIGINAL fecha",fechaFormat)
+    let pattern = /(\d{4})\-(\d{2})\-(\d{2})/;
+    let fechaParse = fechaFormat.replace(pattern, '$3-$2-$1');
+    console.log("FECHA AQUI nuevo formato",fechaParse )
+    const res ={
+      "perfil": respuesta.data,
+      "fecha": fechaParse,
+      "isloading": false
+    }
+    return res
+  });
+  return respuesta
+}
+
+
+
+

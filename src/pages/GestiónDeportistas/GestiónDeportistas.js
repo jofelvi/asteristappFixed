@@ -40,7 +40,7 @@ function GestiónDeportistas() {
 
     //dispatch(traerDeportistas(access_token));
     getApi()
-  }, [isloading]);
+  }, []);
 
   const getApi= async ()=>{
 
@@ -97,10 +97,9 @@ const getItem2 = (item) => {
       {cancelable: false},
     );
   };
-
-  {console.log(listaDeportistas.length) }
-  const _renderList = listaDeportistas.map((item, index) => {
-    if (listaDeportistas.length >= 1) {
+  console.log(listDeportistas.length)
+  const _renderList = listDeportistas.map((item, index) => {
+    if (listDeportistas.length >= 1) {
       return (
         <Card style={{marginTop: 5}}>
           <View>
@@ -198,6 +197,7 @@ const getItem2 = (item) => {
         <ScrollView keyboardShouldPersistTaps="always">
           <Text style={styles.TextEtiqutea}>GESTION DEPORTISTAS:</Text>
           <View style={{marginLeft:5, marginRight:5}}>
+            {console.log( typeof _renderList, "----------")}
             {_renderList}
           </View>
         </ScrollView>
