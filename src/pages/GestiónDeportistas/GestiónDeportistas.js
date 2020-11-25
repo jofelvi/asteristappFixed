@@ -26,28 +26,27 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 function GestiónDeportistas() {
+
   const auth = useSelector((state) => state.auth);
   const listaDeportistas = useSelector((state) => auth.listDeportistas);
   const access_token = useSelector((state) => auth.usuario.access_token);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const [isloading, setIsloading] = React.useState(true);
   const cargando = useSelector((state) => state.auth.cargando);
   const [listDeportistas, setListDeportistas] = useState([]);
 
+//TODO: Paginacion  como noticias....
 
   useEffect(() => {
-
-    //dispatch(traerDeportistas(access_token));
     getApi()
   }, []);
 
   const getApi= async ()=>{
-
-  let api = await  getDeportistas(access_token)
-   await setListDeportistas(api)
-   await setIsloading(false)
+     let api = await  getDeportistas(access_token)
+     await setListDeportistas(api)
+     await setIsloading(false)
   }
+
   const getItem = (item) => {
     navigation.navigate('FormPerfilByClubScreen', {
         item: item.uid,
@@ -55,16 +54,14 @@ function GestiónDeportistas() {
     });
   }
 
-
-const getItem2 = (item) => {
-  navigation.navigate('LicenciasActivas', {
-      item: item.uid,
-      nombre: item.nombre_completo
+  const getItem2 = (item) => {
+    navigation.navigate('LicenciasActivas', {
+        item: item.uid,
+        nombre: item.nombre_completo
   });
-
 }
-  const alertDelete = (item) => {
 
+  const alertDelete = (item) => {
     Alert.alert(
       'Advertencia',
       'El Usuario ' +
@@ -78,7 +75,6 @@ const getItem2 = (item) => {
       ],
       {cancelable: false},
     );
-
   };
 
   const alertGetLicencias = (item) => {
@@ -97,7 +93,9 @@ const getItem2 = (item) => {
       {cancelable: false},
     );
   };
+
   console.log(listDeportistas.length)
+
   const _renderList = listDeportistas.map((item, index) => {
     if (listDeportistas.length >= 1) {
       return (

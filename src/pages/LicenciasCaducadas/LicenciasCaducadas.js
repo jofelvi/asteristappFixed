@@ -21,7 +21,6 @@ class LicenciasCaducadas extends Component {
       licenciasCad: [],
       isloading: true
     };
-
   };
 
   componentDidMount() {
@@ -32,7 +31,6 @@ class LicenciasCaducadas extends Component {
     }
   }
 
-
   getData = async (token) => {
     let api = await getLicCaducadas(token)
     this.setState({licenciasCad: api, isloading: false})
@@ -42,7 +40,6 @@ class LicenciasCaducadas extends Component {
     return <Text style={{paddingTop: 25, paddingLeft: 5, textAlign: "center"}}>
       el usuario {this.props.auth.usuario.current_user.name} No tiene licencias caducadas
     </Text>
-
   }
 
   render() {

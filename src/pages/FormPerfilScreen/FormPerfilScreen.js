@@ -80,9 +80,7 @@ class FormPerfilScreen extends Component {
   };
 
   handleSubmit = (values) => {
-
     this.props.navigation.navigate('FormPerfilScreenEdit')
-
   };
 
   setFirstValue = (value) => {
@@ -90,7 +88,6 @@ class FormPerfilScreen extends Component {
         //let clubsIds =  JSON.stringify(perfil.field_user_clubs.map((item) => item.target_id))
         this.setState({
           selectSexo: value,
-          //clubs: clubsIds
         });
       }
     }
@@ -100,9 +97,8 @@ class FormPerfilScreen extends Component {
     }
 
   render() {
-     let perfil = this.state.perfil
+    let perfil = this.state.perfil
     let fechaVar = this.state.fecha
-    console.log(" FECHA ANTES RETURN " , fechaVar)
 
     if (this.state.isloading === true) {
       return <Loading isVisible={this.state.isloading} text={'CARGANDO...'} />;
@@ -137,8 +133,7 @@ class FormPerfilScreen extends Component {
                   pais2: typeof perfil.field_user_pais_alter[0]=== 'undefined' ?  "":String(perfil.field_user_pais_alter[0].value),
                   tutorNif: typeof perfil.field_user_tutor_nif[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_nif[0].value),
                   tutorNombre: typeof perfil.field_user_tutor_nombre[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_nombre[0].value),
-                  tutorObs: typeof perfil.field_user_tutor_observaciones[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_observaciones[0].value),
-
+                  tutorObs: typeof perfil.field_user_tutor_observaciones[0]=== 'undefined' ?  "":String(perfil.field_user_tutor_observaciones[0].value)
                 }}
                 onSubmit={(values) => {
                   this.handleSubmit(values);

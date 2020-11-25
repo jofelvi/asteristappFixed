@@ -50,6 +50,7 @@ const myIcon3 = <Icon name="chevron-back-outline" size={40} color="#0053C9" />;
 const {width} = Dimensions.get('window');
 const height = width * 0.5;
 
+//Editar
 function CustomDrawer({...props}) {
   const auth = useSelector((state) => state.auth);
   const perfil = useSelector((state) => state.auth.perfil );
@@ -69,7 +70,6 @@ function CustomDrawer({...props}) {
     console.log(JSON.stringify(nombres))
     console.log(perfil !== [])
     console.log(perfil.length >= 1)
-
 
   useEffect(() => {
 
@@ -167,6 +167,7 @@ function RutasCampeonato({...props}) {
     );
 }
 
+//done
 function RutasGestorClub({...props}) {
   return (
     <Fragment>
@@ -209,7 +210,7 @@ function RutasGestorClub({...props}) {
         )}
         onPress={() => RootNavigation.navigate('Estadisticas', null)}
       />
-      
+
       <DrawerItem
         label="Campeonatos"
         icon={({focused, color, size}) => (

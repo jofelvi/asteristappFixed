@@ -433,7 +433,9 @@ function CampeonatosScreen() {
                   </View>
 
             <View>
-              <Text style={{color:"red", textAlign:"center", marginTop: 15, marginBottom:20}}> {apiCampeonatos.length <=0  ? "No hay campeonatos con esos parametros" : "LISTADO DE CAMPEONATOS" } </Text>
+              <Text style={{color:"red", textAlign:"center", marginTop: 15, marginBottom:20}}>
+                {apiCampeonatos.length <=0  ? "No hay campeonatos con esos parametros" : "LISTADO DE CAMPEONATOS" }
+              </Text>
 
             <CampeonatoList
              campeonatos={apiCampeonatos}

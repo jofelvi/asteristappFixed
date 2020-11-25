@@ -62,13 +62,12 @@ IconFont5.loadFont();
 IconOcticons.loadFont();
 const Stack = createStackNavigator();
 const StackPescador = createStackNavigator();
-
 const Drawer = createDrawerNavigator();
+
 
 function App() {
   useEffect(() => {
     SplashScreen.hide();
-
 }, [SplashScreen]);
 
   return (

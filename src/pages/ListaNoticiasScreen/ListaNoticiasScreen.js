@@ -39,9 +39,6 @@ function ListaNoticiasScreen(props) {
   let arrayholder = [];
   const ref = React.useRef(null);
   const [isloading, setisloading] = useState(true);
-  const usuario = useSelector((state) => state.auth.usuario);
-  const auth = useSelector((state) => state.auth);
-  const rolesUser = useSelector((state) => state.auth.rolesUser);
 
   useEffect(() => {
 

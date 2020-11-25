@@ -121,14 +121,13 @@ function EstadisticasScreen() {
       const totales = typeof Totales !== 'undefined' ? Totales : [];
 
       let totalesRow = Object.values(totales).map((value) => {
-        //console.log(totales.Periodo)
         return <DataTable.Cell>{value}</DataTable.Cell>;
       });
+
       return totalesRow;
     } else {
       null;
     }
-    
   };
 
   const _renderLicenciasHeader = () => {

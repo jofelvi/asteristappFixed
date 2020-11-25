@@ -14,6 +14,8 @@ import {getCLubsUser, getLicByYear} from "../../HttpRequest/Api";
 
 const {width: screenWidth} = Dimensions.get('window');
 
+//TODO: paginacion igual que lista noticias
+
 class LicenciasVigenYear extends Component {
   constructor(props) {
     super(props);

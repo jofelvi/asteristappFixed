@@ -299,13 +299,15 @@ export const getLicByYear = async (nidClub, year, token) => {
 }
 
 //editar usuarios
-export const editarPerfil = async (uid, token, data) =>{
+export const editarPerfil = async (uid, token, data, tokenCSFR) =>{
+
   try {
    await fetch(`https://licencias.fapd.org/user/${uid}?_format=json`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
+        'X-CSRF-Token':  {tokenCSFR}
       },
       body: data
     }).then((respuesta) => {
@@ -314,6 +316,7 @@ export const editarPerfil = async (uid, token, data) =>{
   } catch (error) {
     console.log(error)
   }
+
 }
 
 export const getDataPerfil = async (uid, access_token)=>{
@@ -328,7 +331,7 @@ export const getDataPerfil = async (uid, access_token)=>{
   };
 
   let respuesta = await axios.get(URLperfil, {headers}).then((respuesta) => {
-    console.log('exito entro funcion  respuesta API TRAER PERFIL');
+
     const { field_user_fechanac} = respuesta.data
     let fechaFormat = field_user_fechanac[0].value
     console.log("FOMRATO ORIGINAL fecha",fechaFormat)
